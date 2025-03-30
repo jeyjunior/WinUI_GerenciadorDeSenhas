@@ -15,6 +15,7 @@ using Domain.Interfaces;
 using Domain.Entidades;
 using InfraData.Repository;
 using JJ.NET.CrossData.Extensao;
+using Application.Services;
 
 
 namespace Application
@@ -39,7 +40,7 @@ namespace Application
                 Container.Register<IGSCredencialRepository, GSCredencialRepository>(Lifestyle.Singleton);
 
                 // APP SERVICE
-                // Container.Register<ICredencialAppService, CredencialAppService>(Lifestyle.Singleton);
+                Container.Register<ICredencialAppService, CredencialAppService>(Lifestyle.Singleton);
                 // Container.Register<IConfiguracaoAppService, ConfiguracaoAppService>(Lifestyle.Singleton);
 
                 // VIEW MODELS
@@ -71,7 +72,7 @@ namespace Application
 
             CriarTabelas(uow);
             InserirInformacoesIniciais(uow);
-            InserirInformacoesTeste();
+            //InserirInformacoesTeste();
         }
         private static void CriarTabelas(IUnitOfWork uow)
         {
