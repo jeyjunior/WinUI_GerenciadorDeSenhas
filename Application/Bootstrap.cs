@@ -8,14 +8,14 @@ using Microsoft.Data.SqlClient;
 using SimpleInjector;
 using JJ.NET.Data;
 using JJ.NET.CrossData;
+using JJ.NET.CrossData.Extensao;
 using JJ.NET.CrossData.Enumerador;
 using JJ.NET.Data.Interfaces;
-using Application.Interfaces;
 using Domain.Interfaces;
 using Domain.Entidades;
 using InfraData.Repository;
-using JJ.NET.CrossData.Extensao;
 using Application.Services;
+using Application.Interfaces;
 
 
 namespace Application
@@ -72,7 +72,7 @@ namespace Application
 
             CriarTabelas(uow);
             InserirInformacoesIniciais(uow);
-            //InserirInformacoesTeste();
+            InserirInformacoesTeste();
         }
         private static void CriarTabelas(IUnitOfWork uow)
         {

@@ -88,22 +88,22 @@ namespace Presentation.ViewModel
         #endregion
 
         #region Credencial
-        //private ObservableCollection<CredencialViewModel> _credenciais;
-        //public ObservableCollection<CredencialViewModel> Credenciais
-        //{
-        //    get => _credenciais;
-        //    set
-        //    {
-        //        _credenciais = value;
-        //        OnPropertyChanged(nameof(Credenciais));
-        //    }
-        //}
+        private ObservableCollection<CredencialViewModel> _credenciais;
+        public ObservableCollection<CredencialViewModel> Credenciais
+        {
+            get => _credenciais;
+            set
+            {
+                _credenciais = value;
+                OnPropertyChanged(nameof(Credenciais));
+            }
+        }
         #endregion
 
         #region Construtor
         public MainWindowViewModel()
         {
-            //Credenciais = new ObservableCollection<CredencialViewModel>();
+            Credenciais = new ObservableCollection<CredencialViewModel>();
         }
         #endregion
 

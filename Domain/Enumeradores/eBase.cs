@@ -20,4 +20,10 @@ namespace Domain.Enumeradores
         Categoria = 2,
         Credencial = 3
     }
+
+    public enum DirecaoOrdenacao
+    {
+        Crescente = 1,
+        Decrescente = 2
+    }
 }
