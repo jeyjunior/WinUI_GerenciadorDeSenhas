@@ -72,7 +72,7 @@ namespace Application
 
             CriarTabelas(uow);
             InserirInformacoesIniciais(uow);
-            InserirInformacoesTeste();
+            //InserirInformacoesTeste();
         }
         private static void CriarTabelas(IUnitOfWork uow)
         {

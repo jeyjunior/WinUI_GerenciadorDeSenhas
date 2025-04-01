@@ -55,6 +55,9 @@
     <Reference Include="JJ.NET.Core">
       <HintPath>..\..\JJ.Bridge\DLL\JJ.NET.Core.dll</HintPath>
     </Reference>
+    <Reference Include="JJ.NET.Cryptography">
+      <HintPath>..\..\JJ.Bridge\DLL\JJ.NET.Cryptography.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Themes\Colors.xaml">

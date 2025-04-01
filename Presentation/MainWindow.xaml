@@ -36,7 +36,7 @@
                           SelectedItem="{Binding TipoDeOrdenacaoSelecionado, Mode=TwoWay}"
                           HorizontalContentAlignment="Center"
                           VerticalAlignment="Center"/>
-                <Button Grid.Column="1" Padding="0" Width="32" Height="32" Style="{StaticResource AlternateCloseButtonStyle}">
+                <Button x:Name="btnOrdenar" Click="btnOrdenar_Click" Grid.Column="1" Padding="0" Width="32" Height="32" Style="{StaticResource AlternateCloseButtonStyle}">
                     <FontIcon Glyph="&#xE8CB;" FontFamily="Segoe Fluent Icons" FontSize="18"/>
                 </Button>
             </StackPanel>
@@ -108,8 +108,8 @@
                         </Grid.ColumnDefinitions>
 
                         <StackPanel Grid.Column="0" Padding="10" Margin="0" Orientation="Vertical" VerticalAlignment="Center" Height="70" Background="{StaticResource Cinza11}">
-                            <TextBlock Text="Teste Teste Teste Teste Teste Teste" FontWeight="Bold" FontSize="14" HorizontalTextAlignment="Center" TextWrapping="WrapWholeWords"/>
-                            <TextBlock Text="99/99/9999" HorizontalAlignment="Center" FontSize="11" Foreground="{StaticResource Cinza2}"/>
+                            <TextBlock Text="{Binding Categoria, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" FontSize="14" HorizontalTextAlignment="Center" TextWrapping="WrapWholeWords"/>
+                            <TextBlock Text="{Binding Modificacao, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" FontSize="11" Foreground="{StaticResource Cinza2}"/>
                         </StackPanel>
 
                         <Grid Grid.Column="1">
@@ -124,7 +124,7 @@
                                 <TextBlock Text="{Binding Credencial, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" FontSize="13" FontWeight="Bold"/>
                             </StackPanel>
 
-                            <Button x:Name="btnCopiarCredencial" Grid.Column="1" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                            <Button x:Name="btnCopiarCredencial" Click="btnCopiarCredencial_Click" Grid.Column="1" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
                                 <FontIcon Glyph="&#xE8C8;" FontFamily="Segoe Fluent Icons" FontSize="18"/>
                             </Button>
 
@@ -143,10 +143,10 @@
                                 <TextBlock Text="{Binding Senha, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" FontSize="13" FontWeight="Bold"/>
                             </StackPanel>
 
-                            <Button x:Name="btnExibirSenha" Grid.Column="1" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                            <Button x:Name="btnExibirSenha" Click="btnExibirSenha_Click" Grid.Column="1" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
                                 <FontIcon Glyph="&#xE7B3;" FontFamily="Segoe Fluent Icons" FontSize="18"/>
                             </Button>
-                            <Button x:Name="btnCopiarSenha" Grid.Column="2" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                            <Button x:Name="btnCopiarSenha" Click="btnCopiarSenha_Click" Grid.Column="2" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
                                 <FontIcon Glyph="&#xE8C8;" FontFamily="Segoe Fluent Icons" FontSize="18"/>
                             </Button>
                         </Grid>

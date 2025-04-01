@@ -13,6 +13,19 @@ namespace Presentation.ViewModel
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion
 
+        #region PK_GSCredencial
+        private int _pk_GSCredencial;
+        public int PK_GSCredencial
+        {
+            get => _pk_GSCredencial;
+            set
+            {
+                _pk_GSCredencial = value;
+                OnPropertyChanged(nameof(PK_GSCredencial));
+            }
+        }
+        #endregion
+
         #region Categoria
         private string _categoria;
         public string Categoria
