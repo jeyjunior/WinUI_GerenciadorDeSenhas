@@ -65,21 +65,31 @@ namespace Presentation
             OrdenarLista();
             BindPrincipal();
         }
-        private void btnCopiarCredencial_Click(object sender, RoutedEventArgs e)
+        private async void btnCopiarCredencial_Click(object sender, RoutedEventArgs e)
         {
-            var credencialViewModel = ObterCredencialViewModel(sender);
+            var button = sender as Button;
+            if (button == null)
+                return;
 
+            var credencialViewModel = ObterCredencialViewModel(sender);
             if (credencialViewModel == null)
                 return;
 
             CopiarParaClipboard(credencialViewModel.Credencial);
+
+            AlterarIconeBtn("\uE73E", "\uE8C8", button);
         }
+
         private void btnExibirSenha_Click(object sender, RoutedEventArgs e)
         {
 
         }
-        private void btnCopiarSenha_Click(object sender, RoutedEventArgs e)
+        private async void btnCopiarSenha_Click(object sender, RoutedEventArgs e)
         {
+            var button = sender as Button;
+            if (button == null)
+                return;
+
             var credencialViewModel = ObterCredencialViewModel(sender);
 
             if (credencialViewModel == null)
@@ -103,6 +113,8 @@ namespace Presentation
             }
 
             CopiarParaClipboard(senha.Valor.ObterValorOuPadrao("").Trim());
+
+            AlterarIconeBtn("\uE73E", "\uE8C8", button);
         }
         #endregion
 
@@ -162,7 +174,6 @@ namespace Presentation
                 );
             }
         }
-
         private string OcultarSenha(string senha, string iv)
         {
             var descriptografarRequest = new DescriptografarRequest { Valor = senha, IV = iv, TipoCriptografia = JJ.NET.Cryptography.Enumerador.TipoCriptografia.AES };
@@ -173,7 +184,6 @@ namespace Presentation
 
             return ret.Valor.ObterValorOuPadrao("").Trim().Ocultar();
         }
-
         private void OrdenarLista()
         {
             var tipoOrdenacao = ObterTipoDeOrdenacaoSelecionada(ViewModel.TipoDeOrdenacaoSelecionado);
@@ -256,6 +266,21 @@ namespace Presentation
 
             var toast = new ToastNotification(toastXml);
             ToastNotificationManager.CreateToastNotifier().Show(toast);
+        }
+        private async void AlterarIconeBtn(string iconeInicial, string iconeFinal, Button button)
+        {
+            var icon = button.Content as FontIcon;
+            if (icon != null)
+                icon.Glyph = iconeInicial;
+
+            button.IsEnabled = false;
+
+            await Task.Delay(2000);
+
+            if (icon != null)
+                icon.Glyph = iconeFinal;
+
+            button.IsEnabled = true;
         }
         #endregion
     }
