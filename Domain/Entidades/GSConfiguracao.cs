@@ -1,9 +1,9 @@
-﻿using JJ.NET.Core.Validador;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JJ.NET.Core.Validador;
 
 namespace Domain.Entidades
 {

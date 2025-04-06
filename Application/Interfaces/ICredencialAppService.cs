@@ -19,5 +19,8 @@ namespace Application.Interfaces
         ObservableCollection<Item> ObterCategoriasObservableCollection();
         int SalvarCredencial(GSCredencial gSCredencial);
         bool DeletarCredencial(int PK_GSCredencial);
+
+        string Descriptografar(string valor, string iv);
+        string Criptografar(string valor, string iv);
     }
 }

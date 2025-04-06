@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using JJ.NET.CrossData.Extensao;
+using JJ.NET.CrossData.Enumerador;
 using JJ.NET.CrossData.Interface;
 using JJ.NET.Data.Interfaces;
 
@@ -12,12 +13,15 @@ namespace InfraData.Repository
 {
     public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
+        public Conexao Conexao { get; set; }
+        
         protected IUnitOfWork unitOfWork = null;
 
         public Repository(IUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;
         }
+
 
         public virtual int Adicionar(TEntity entity)
         {

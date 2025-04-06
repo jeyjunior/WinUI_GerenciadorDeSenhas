@@ -22,16 +22,16 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="JJ.NET.Core">
-      <HintPath>..\..\JJ.Bridge\DLL\JJ.NET.Core.dll</HintPath>
+      <HintPath>..\DLL\JJ.NET.Core.dll</HintPath>
     </Reference>
     <Reference Include="JJ.NET.CrossData">
-      <HintPath>..\..\JJ.Bridge\DLL\JJ.NET.CrossData.dll</HintPath>
+      <HintPath>..\DLL\JJ.NET.CrossData.dll</HintPath>
     </Reference>
     <Reference Include="JJ.NET.Cryptography">
-      <HintPath>..\..\JJ.Bridge\DLL\JJ.NET.Cryptography.dll</HintPath>
+      <HintPath>..\DLL\JJ.NET.Cryptography.dll</HintPath>
     </Reference>
     <Reference Include="JJ.NET.Data">
-      <HintPath>..\..\JJ.Bridge\DLL\JJ.NET.Data.dll</HintPath>
+      <HintPath>..\DLL\JJ.NET.Data.dll</HintPath>
     </Reference>
   </ItemGroup>
   

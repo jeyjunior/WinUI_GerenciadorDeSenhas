@@ -67,6 +67,7 @@ namespace Presentation.ViewModel
 
         #region Senha
         private string _senha;
+        private bool _exibirSenha;
 
         public string Senha
         {
@@ -75,6 +76,16 @@ namespace Presentation.ViewModel
             {
                 _senha = value;
                 OnPropertyChanged(nameof(Senha));
+            }
+        }
+
+        public bool ExibirSenha
+        {
+            get => _exibirSenha;
+            set
+            {
+                _exibirSenha = value;
+                OnPropertyChanged(nameof(ExibirSenha));
             }
         }
         #endregion

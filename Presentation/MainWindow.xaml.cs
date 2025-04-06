@@ -18,7 +18,6 @@ using Presentation.ViewModel;
 using Windows.UI.Notifications;
 using JJ.NET.Core.DTO;
 using JJ.NET.Core.Extensoes;
-using JJ.NET.Cryptography;
 using Domain.Entidades;
 using Domain.Enumeradores;
 using Application;
@@ -82,7 +81,22 @@ namespace Presentation
 
         private void btnExibirSenha_Click(object sender, RoutedEventArgs e)
         {
+            var button = sender as Button;
+            if (button == null)
+                return;
 
+            var credencialViewModel = ObterCredencialViewModel(sender);
+
+            if (credencialViewModel == null)
+                return;
+
+            var credencial = gSCredencials.Where(i => i.PK_GSCredencial == credencialViewModel.PK_GSCredencial).FirstOrDefault();
+
+            credencialViewModel.ExibirSenha = !credencialViewModel.ExibirSenha;
+
+            credencialViewModel.Senha = ((credencialViewModel.ExibirSenha) ? 
+                credencialAppService.Descriptografar(credencial.Senha, credencial.IVSenha) : 
+                this.OcultarSenha(credencial.Senha, credencial.IVSenha));
         }
         private async void btnCopiarSenha_Click(object sender, RoutedEventArgs e)
         {
@@ -100,19 +114,12 @@ namespace Presentation
             if (gSCredencials == null)
                 return;
 
-            var descriptografarRequest = new DescriptografarRequest { Valor = gSCredencial.Senha, IV = gSCredencial.IVSenha, TipoCriptografia = JJ.NET.Cryptography.Enumerador.TipoCriptografia.AES };
-            var senha = Criptografia.Descriptografar(descriptografarRequest);
+            var senha = credencialAppService.Descriptografar(gSCredencial.Senha, gSCredencial.IVSenha);
 
-            if (senha == null)
+            if (senha.ObterValorOuPadrao("").Trim() == "")
                 return;
 
-            if (senha.Erro.Length > 0)
-            {
-                EnviarNotificacao("Erro", senha.Erro);
-                return;
-            }
-
-            CopiarParaClipboard(senha.Valor.ObterValorOuPadrao("").Trim());
+            CopiarParaClipboard(senha);
 
             AlterarIconeBtn("\uE73E", "\uE8C8", button);
         }
@@ -169,20 +176,16 @@ namespace Presentation
                         Categoria = item.GSCategoria?.Categoria ?? "",
                         Modificacao = item.DataModificacao?.ToShortDateString() ?? "",
                         Credencial = item.Credencial,
-                        Senha = OcultarSenha(item.Senha, item.IVSenha)//.Ocultar()
-                    }).ToList()
+                        Senha = OcultarSenha(item.Senha, item.IVSenha),
+                        ExibirSenha = false,
+                    })
+                    .ToList()
                 );
             }
         }
         private string OcultarSenha(string senha, string iv)
         {
-            var descriptografarRequest = new DescriptografarRequest { Valor = senha, IV = iv, TipoCriptografia = JJ.NET.Cryptography.Enumerador.TipoCriptografia.AES };
-            var ret = Criptografia.Descriptografar(descriptografarRequest);
-
-            if (ret == null || ret.Erro.Length > 0)
-                return "";
-
-            return ret.Valor.ObterValorOuPadrao("").Trim().Ocultar();
+            return credencialAppService.Descriptografar(senha, iv).Trim().Ocultar();
         }
         private void OrdenarLista()
         {

@@ -11,15 +11,15 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250310001" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="JJ.NET.Core">
-      <HintPath>..\..\JJ.Bridge\DLL\JJ.NET.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="JJ.NET.CrossData">
-      <HintPath>..\..\JJ.Bridge\DLL\JJ.NET.CrossData.dll</HintPath>
-    </Reference>
+    <Folder Include="Utilitarios\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Utilitarios\" />
+    <Reference Include="JJ.NET.Core">
+      <HintPath>..\DLL\JJ.NET.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="JJ.NET.CrossData">
+      <HintPath>..\DLL\JJ.NET.CrossData.dll</HintPath>
+    </Reference>
   </ItemGroup>
   
 </Project>

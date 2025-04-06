@@ -4,17 +4,17 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using JJ.NET.Core.DTO;
-using JJ.NET.Core.Extensoes;
-using JJ.NET.Core.Validador;
-using JJ.NET.CrossData;
-using JJ.NET.Cryptography;
-using JJ.NET.Data;
 using Domain.Entidades;
 using Domain.Enumeradores;
 using Domain.Interfaces;
 using InfraData.Repository;
 using Application.Interfaces;
+using JJ.NET.Core.DTO;
+using JJ.NET.Core.Validador;
+using JJ.NET.Core.Extensoes;
+using JJ.NET.Cryptography;
+using JJ.NET.Data;
+using JJ.NET.CrossData;
 
 namespace Application.Services
 {
@@ -162,7 +162,7 @@ namespace Application.Services
             if (gSCredencial.FK_GSCategoria != null)
                 credencial.FK_GSCategoria = gSCredencial.FK_GSCategoria;
 
-            var criptografarRequest = new CriptografarRequest
+            var criptografarRequest = new JJ.NET.Cryptography.CriptografiaRequest
             {
                 TipoCriptografia = JJ.NET.Cryptography.Enumerador.TipoCriptografia.AES,
                 Valor = gSCredencial.Senha,
@@ -238,6 +238,44 @@ namespace Application.Services
             }
 
             return ret;
+        }
+
+        public string Descriptografar(string valor, string iv)
+        {
+            string ret = "";
+
+            var criptografiaRequest = new JJ.NET.Cryptography.CriptografiaRequest
+            {
+                IV = iv.ObterValorOuPadrao("").Trim(),
+                Valor = valor.ObterValorOuPadrao("").Trim(),
+                TipoCriptografia = JJ.NET.Cryptography.Enumerador.TipoCriptografia.AES,
+            };
+
+            var result = Criptografia.Descriptografar(criptografiaRequest);
+
+            if (result.Erro.ObterValorOuPadrao("").Trim() != "")
+                return ret;
+
+            return result.Valor.ObterValorOuPadrao("").Trim();
+        }
+
+        public string Criptografar(string valor, string iv)
+        {
+            string ret = "";
+
+            var criptografiaRequest = new JJ.NET.Cryptography.CriptografiaRequest
+            {
+                IV = iv.ObterValorOuPadrao("").Trim(),
+                Valor = valor.ObterValorOuPadrao("").Trim(),
+                TipoCriptografia = JJ.NET.Cryptography.Enumerador.TipoCriptografia.AES,
+            };
+
+            var result = Criptografia.Descriptografar(criptografiaRequest);
+
+            if (result.Erro.ObterValorOuPadrao("").Trim() != "")
+                return ret;
+
+            return result.Valor.ObterValorOuPadrao("").Trim();
         }
         #endregion
     }
