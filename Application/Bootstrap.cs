@@ -16,6 +16,7 @@ using Domain.Entidades;
 using InfraData.Repository;
 using Application.Services;
 using Application.Interfaces;
+using Microsoft.UI.Xaml.Controls;
 
 
 namespace Application
@@ -41,12 +42,8 @@ namespace Application
 
                 // APP SERVICE
                 Container.Register<ICredencialAppService, CredencialAppService>(Lifestyle.Singleton);
-                // Container.Register<IConfiguracaoAppService, ConfiguracaoAppService>(Lifestyle.Singleton);
 
                 // VIEW MODELS
-                // Bootstrap.Container.Register<IConfiguracaoViewModel, ConfiguracaoViewModel>(Lifestyle.Singleton);
-                // Bootstrap.Container.Register<IGerenciadorSenhasViewModel, GerenciadorSenhasViewModel>(Lifestyle.Singleton);
-                // Bootstrap.Container.Register<ICadastrarSenhaViewModel, CadastrarSenhaViewModel>(Lifestyle.Singleton);
 
                 Container = Bootstrap.Container;
                 Container.Verify();

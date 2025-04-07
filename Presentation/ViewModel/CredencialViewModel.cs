@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
 
 namespace Presentation.ViewModel
 {
@@ -86,6 +87,20 @@ namespace Presentation.ViewModel
             {
                 _exibirSenha = value;
                 OnPropertyChanged(nameof(ExibirSenha));
+            }
+        }
+        #endregion
+
+        #region EstiloBotao
+        private Style _botaoStyle;
+
+        public Style BotaoStyle
+        {
+            get => _botaoStyle;
+            set
+            {
+                _botaoStyle = value;
+                OnPropertyChanged(nameof(BotaoStyle));
             }
         }
         #endregion

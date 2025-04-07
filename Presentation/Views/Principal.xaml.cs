@@ -1,0 +1,389 @@
+using Application;
+using Application.Interfaces;
+using Application.Services;
+using Domain.Entidades;
+using Domain.Enumeradores;
+using JJ.NET.Core.DTO;
+using JJ.NET.Core.Extensoes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using Presentation.ViewModel;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
+using Windows.UI.Notifications;
+
+
+namespace Presentation.Views
+{
+    public sealed partial class Principal : Page
+    {
+        #region Interfaces
+        private readonly ICredencialAppService credencialAppService;
+        #endregion
+
+        #region Propriedades
+        private List<GSCredencial> gSCredencials;
+        private DirecaoOrdenacao direcaoOrdenacao;
+        private MainWindowViewModel ViewModel;
+        #endregion
+
+        #region Construtor
+
+        public Principal()
+        {
+            this.InitializeComponent();
+
+            credencialAppService = Bootstrap.Container.GetInstance<ICredencialAppService>();
+
+            ViewModel = new MainWindowViewModel();
+
+            this.cboTipoDeOrdenacao.DataContext = ViewModel;
+            this.cboTipoDePesquisa.DataContext = ViewModel;
+            this.listaCredenciais.DataContext = ViewModel;
+
+            Load();
+        }
+        #endregion
+
+
+        #region Eventos
+        private void btnPesquisar_Click(object sender, RoutedEventArgs e)
+        {
+            Pesquisar();
+        }
+        private async void btnOrdenar_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                OrdenarLista();
+                BindPrincipal();
+            }
+            catch (Exception ex)
+            {
+                await ExibirErro(ex.Message);
+            }
+        }
+        private async void btnCopiarCredencial_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var button = sender as Button;
+                if (button == null)
+                    return;
+
+                var credencialViewModel = ObterCredencialViewModel(sender);
+                if (credencialViewModel == null)
+                    return;
+
+                CopiarParaClipboard(credencialViewModel.Credencial);
+
+                await AlterarIconeBtn("\uE73E", "\uE8C8", button);
+            }
+            catch (Exception ex)
+            {
+                await ExibirErro(ex.Message);
+            }
+        }
+        private async void btnExibirSenha_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var button = sender as Button;
+                if (button == null)
+                    return;
+
+                var credencialViewModel = ObterCredencialViewModel(sender);
+
+                if (credencialViewModel == null)
+                    return;
+
+                var credencial = gSCredencials.Where(i => i.PK_GSCredencial == credencialViewModel.PK_GSCredencial).FirstOrDefault();
+
+                credencialViewModel.ExibirSenha = !credencialViewModel.ExibirSenha;
+
+                if (credencialViewModel.ExibirSenha)
+                {
+                    credencialViewModel.Senha = credencialAppService.Descriptografar(credencial.Senha, credencial.IVSenha);
+                    credencialViewModel.BotaoStyle = (Style)App.Current.Resources["DefaultButtonStyle"];
+                }
+                else
+                {
+                    credencialViewModel.Senha = this.OcultarSenha(credencial.Senha, credencial.IVSenha);
+                    credencialViewModel.BotaoStyle = (Style)App.Current.Resources["AlternateCloseButtonStyle"];
+                }
+            }
+            catch (Exception ex)
+            {
+                await ExibirErro(ex.Message);
+            }
+        }
+        private async void btnCopiarSenha_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var button = sender as Button;
+                if (button == null)
+                    return;
+
+                var credencialViewModel = ObterCredencialViewModel(sender);
+
+                if (credencialViewModel == null)
+                    return;
+
+                var gSCredencial = gSCredencials.Where(i => i.PK_GSCredencial.Equals(credencialViewModel.PK_GSCredencial)).FirstOrDefault();
+
+                if (gSCredencials == null)
+                    return;
+
+                var senha = credencialAppService.Descriptografar(gSCredencial.Senha, gSCredencial.IVSenha);
+
+                if (senha.ObterValorOuPadrao("").Trim() == "")
+                    return;
+
+                CopiarParaClipboard(senha);
+
+                await AlterarIconeBtn("\uE73E", "\uE8C8", button);
+            }
+            catch (Exception ex)
+            {
+                await ExibirErro(ex.Message);
+            }
+        }
+        private async void btnExcluir_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var dialog = new ContentDialog
+                {
+                    Title = "Confirmação",
+                    Content = "Deseja excluir?",
+                    PrimaryButtonText = "Sim",
+                    CloseButtonText = "Não",
+                    DefaultButton = ContentDialogButton.Close,
+                    XamlRoot = this.Content.XamlRoot
+                };
+
+                var result = await dialog.ShowAsync();
+
+                if (result != ContentDialogResult.Primary)
+                    return;
+
+                var credencial = ObterCredencialViewModel(sender);
+                if (credencial == null)
+                {
+                    await ExibirErro("Não foi possível encontrar credencial para excluir.");
+                    return;
+                }
+
+                var ret = credencialAppService.DeletarCredencial(credencial.PK_GSCredencial);
+
+                if (!ret)
+                {
+                    await ExibirErro("Não foi possível deletar credencial.");
+                    return;
+                }
+
+                ViewModel.Credenciais.Remove(credencial);
+                EnviarNotificacao("Exclusão de credencial.", $"{credencial.Credencial} foi excluída com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                await ExibirErro(ex.Message);
+            }
+            finally
+            {
+                AtualizarStatus();
+            }
+        }
+        private void btnAlterar_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnAdicionar_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.NavegarPara(typeof(AdicionarPage));
+        }
+        #endregion
+
+        #region Metodos
+        private void Load()
+        {
+            ViewModel.TipoDeOrdenacao = credencialAppService.ObterTipoDeOrdenacao();
+            ViewModel.TipoDePesquisa = credencialAppService.ObterTipoDePesquisa();
+
+            ViewModel.SelecionarTipoDeOrdenacao(0);
+            ViewModel.SelecionarTipoDePesquisa(0);
+
+            Pesquisar();
+        }
+        private async void Pesquisar()
+        {
+            try
+            {
+                Item tipoDeOrdenacao = this.ViewModel.TipoDeOrdenacaoSelecionado;
+                Item tipoDePesquisa = this.ViewModel.TipoDePesquisaSelecionado;
+
+                var requisicao = new GSCredencialPesquisaRequest
+                {
+                    Valor = txtPesquisa.Text.ObterValorOuPadrao(""),
+                    TipoDePesquisa = (TipoDePesquisa)tipoDePesquisa.ID.ConverterParaInt32(0),
+                    TipoDeOrdenacao = (TipoDeOrdenacao)tipoDeOrdenacao.ID.ConverterParaInt32(0)
+                };
+
+                gSCredencials = credencialAppService.Pesquisar(requisicao).ToList();
+
+                OrdenarLista();
+                BindPrincipal();
+                AtualizarStatus();
+
+                direcaoOrdenacao = DirecaoOrdenacao.Crescente;
+            }
+            catch (Exception ex)
+            {
+                await ExibirErro(ex.Message);
+            }
+        }
+        private void BindPrincipal()
+        {
+            ViewModel.Credenciais.Clear();
+
+            if (gSCredencials != null && gSCredencials.Count() > 0)
+            {
+                ViewModel.Credenciais = new ObservableCollection<CredencialViewModel>(
+                    gSCredencials.Select(item => new CredencialViewModel
+                    {
+                        PK_GSCredencial = item.PK_GSCredencial,
+                        Categoria = item.GSCategoria?.Categoria ?? "",
+                        Modificacao = item.DataModificacao?.ToShortDateString() ?? "",
+                        Credencial = item.Credencial,
+                        Senha = OcultarSenha(item.Senha, item.IVSenha),
+                        ExibirSenha = false,
+                        BotaoStyle = (Style)App.Current.Resources["AlternateCloseButtonStyle"]
+                    })
+                    .ToList()
+                );
+            }
+        }
+        private string OcultarSenha(string senha, string iv)
+        {
+            return credencialAppService.Descriptografar(senha, iv).Trim().Ocultar();
+        }
+        private void OrdenarLista()
+        {
+            var tipoOrdenacao = ObterTipoDeOrdenacaoSelecionada(ViewModel.TipoDeOrdenacaoSelecionado);
+
+            Func<GSCredencial, object> keySelector;
+
+            switch (tipoOrdenacao)
+            {
+                case TipoDeOrdenacao.Cadastro:
+                    keySelector = cred => cred.DataCriacao;
+                    break;
+                case TipoDeOrdenacao.Modificação:
+                    keySelector = cred => cred.DataModificacao ?? DateTime.MinValue;
+                    break;
+                case TipoDeOrdenacao.Categoria:
+                    keySelector = cred => cred.GSCategoria?.Categoria ?? string.Empty;
+                    break;
+                case TipoDeOrdenacao.Credencial:
+                    keySelector = cred => cred.Credencial;
+                    break;
+                default:
+                    keySelector = cred => cred.DataCriacao;
+                    break;
+            }
+
+            gSCredencials = direcaoOrdenacao == DirecaoOrdenacao.Crescente
+                ? gSCredencials.OrderBy(keySelector).ToList()
+                : gSCredencials.OrderByDescending(keySelector).ToList();
+
+            direcaoOrdenacao = direcaoOrdenacao == DirecaoOrdenacao.Crescente
+                ? DirecaoOrdenacao.Decrescente
+                : DirecaoOrdenacao.Crescente;
+        }
+        public TipoDeOrdenacao ObterTipoDeOrdenacaoSelecionada(Item? item)
+        {
+            return (TipoDeOrdenacao)item.ID.ObterValorOuPadrao(0);
+        }
+        private void AtualizarStatus()
+        {
+            txtStatus.Text = $"Credenciais: " + ViewModel.Credenciais.Count().ToString("N0");
+        }
+        private void CopiarParaClipboard(string texto)
+        {
+            var pacote = new DataPackage();
+            pacote.SetText(texto);
+            Clipboard.SetContent(pacote);
+        }
+        private CredencialViewModel ObterCredencialViewModel(object sender)
+        {
+            if (sender is not Button)
+                return null;
+
+            Button btn = (Button)sender;
+
+            CredencialViewModel gSCredencial = (CredencialViewModel)btn.DataContext;
+
+            if (gSCredencial == null)
+                return null;
+
+            return gSCredencial;
+        }
+        private async Task AlterarIconeBtn(string iconeInicial, string iconeFinal, Button button)
+        {
+            var icon = button.Content as FontIcon;
+            if (icon != null)
+                icon.Glyph = iconeInicial;
+
+            button.IsEnabled = false;
+
+            await Task.Delay(2000);
+
+            if (icon != null)
+                icon.Glyph = iconeFinal;
+
+            button.IsEnabled = true;
+        }
+        private async Task ExibirErro(string mensagem)
+        {
+            ContentDialog dialog = new ContentDialog
+            {
+                Title = "Erro",
+                Content = mensagem,
+                CloseButtonText = "OK",
+                XamlRoot = this.Content.XamlRoot
+            };
+
+            await dialog.ShowAsync();
+        }
+        private void EnviarNotificacao(string titulo, string mensagem)
+        {
+            var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText02);
+
+            var toastElement = (Windows.Data.Xml.Dom.XmlElement)toastXml.SelectSingleNode("/toast");
+            toastElement.SetAttribute("duration", "short");
+
+            var toastTextElements = toastXml.GetElementsByTagName("text");
+            toastTextElements[0].AppendChild(toastXml.CreateTextNode(titulo));
+            toastTextElements[1].AppendChild(toastXml.CreateTextNode(mensagem));
+
+            var toast = new ToastNotification(toastXml);
+            ToastNotificationManager.CreateToastNotifier().Show(toast);
+        }
+        #endregion
+    }
+}

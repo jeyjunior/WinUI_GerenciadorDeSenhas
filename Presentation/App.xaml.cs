@@ -40,7 +40,6 @@ namespace Presentation
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             Bootstrap.Inicializar();
-
             m_window = new MainWindow();
             m_window.Activate();
         }

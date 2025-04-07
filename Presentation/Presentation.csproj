@@ -14,6 +14,8 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Themes\Colors.xaml" />
+    <None Remove="Views\AdicionarPage.xaml" />
+    <None Remove="Views\Principal.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -55,6 +57,16 @@
     <Reference Include="JJ.NET.Core">
       <HintPath>..\DLL\JJ.NET.Core.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Principal.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\AdicionarPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Themes\Colors.xaml">
