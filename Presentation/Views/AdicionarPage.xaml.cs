@@ -11,27 +11,70 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace Presentation.Views
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class AdicionarPage : Page
     {
         public AdicionarPage()
         {
             this.InitializeComponent();
         }
-
-        private void btnVoltar_Click(object sender, RoutedEventArgs e)
+        private async void btnConfigCategoria_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.NavegarPara(typeof(Principal));
+            bool isVisible = CategoriaExpander.Visibility == Visibility.Visible;
+
+            CategoriaExpander.Visibility = isVisible ? Visibility.Collapsed : Visibility.Visible;
+
+            if (btnConfigCategoria.Content is FontIcon icon)
+                icon.Glyph = ObterIconeCampoExpandido(isVisible);
+
+            await Task.Delay(50);
+
+            MoverScrollParaAreaExpandida(CategoriaExpander.TransformToVisual(MainScrollViewer));
+        }
+
+        private async void btnConfigCredencial_Click(object sender, RoutedEventArgs e)
+        {
+            bool isVisible = CredencialExpander.Visibility == Visibility.Visible;
+
+            CredencialExpander.Visibility = isVisible ? Visibility.Collapsed : Visibility.Visible;
+
+            if (btnConfigCredencial.Content is FontIcon icon)
+                icon.Glyph = ObterIconeCampoExpandido(isVisible);
+
+            await Task.Delay(50);
+
+            MoverScrollParaAreaExpandida(CredencialExpander.TransformToVisual(MainScrollViewer));
+        }
+
+        private async void btnConfigSenha_Click(object sender, RoutedEventArgs e)
+        {
+            bool isVisible = SenhaExpander.Visibility == Visibility.Visible;
+
+            SenhaExpander.Visibility = isVisible ? Visibility.Collapsed : Visibility.Visible;
+
+            if (btnConfigSenha.Content is FontIcon icon)
+                icon.Glyph = ObterIconeCampoExpandido(isVisible);
+
+            await Task.Delay(50);
+
+            MoverScrollParaAreaExpandida(SenhaExpander.TransformToVisual(MainScrollViewer));
+        }
+
+        private void MoverScrollParaAreaExpandida(GeneralTransform transform)
+        {
+            Point position = transform.TransformPoint(new Point(0, 0));
+
+            MainScrollViewer.ChangeView(null, position.Y, null, true);
+        }
+
+        private string ObterIconeCampoExpandido(bool expandido)
+        {
+            return (expandido) ? "\uE972" : "\uE971";
         }
     }
 }

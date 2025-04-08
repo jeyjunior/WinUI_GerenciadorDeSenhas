@@ -118,12 +118,22 @@ namespace Presentation.Views
                 {
                     credencialViewModel.Senha = credencialAppService.Descriptografar(credencial.Senha, credencial.IVSenha);
                     credencialViewModel.BotaoStyle = (Style)App.Current.Resources["DefaultButtonStyle"];
+
+                    if (button.Content is FontIcon icon)
+                        icon.Glyph = "\uE7B3";
                 }
                 else
                 {
                     credencialViewModel.Senha = this.OcultarSenha(credencial.Senha, credencial.IVSenha);
                     credencialViewModel.BotaoStyle = (Style)App.Current.Resources["AlternateCloseButtonStyle"];
+                    
+                    if (button.Content is FontIcon icon)
+                        icon.Glyph = "\uE890";
                 }
+
+
+
+                //E890
             }
             catch (Exception ex)
             {

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Page
     x:Class="Presentation.Views.AdicionarPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -7,9 +6,177 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Padding="32">
 
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Button x:Name="btnVoltar" Content="Voltar" Click="btnVoltar_Click"></Button>
-    </StackPanel>
+    <ScrollViewer x:Name="MainScrollViewer" VerticalScrollBarVisibility="Auto" Padding="32">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="18">
+            <TextBlock Text="Adicionar credencial" 
+                       HorizontalAlignment="Center" 
+                       Foreground="{StaticResource Cinza2}"
+                       FontSize="18" 
+                       FontWeight="Bold"/>
+        
+            <StackPanel x:Name="spPrincipal" 
+                        HorizontalAlignment="Center" 
+                        VerticalAlignment="Center" 
+                        Spacing="18"
+                        BorderBrush="{StaticResource Cinza11Transp20}" 
+                        BorderThickness="0.5,0.2,0.5,2.5" Background="{StaticResource Cinza10}" 
+                        Padding="32" 
+                        CornerRadius="10">
+
+
+                <StackPanel x:Name="spCategoria" Spacing="6">
+                    <TextBlock Text="Categoria"/>
+                    <Grid Padding="0" Margin="0,0,0,0">
+                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" RowSpacing="8">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,0" ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" MinWidth="400"/>
+                                    <ColumnDefinition Width="32"/>
+                                </Grid.ColumnDefinitions>
+                
+                                <ComboBox x:Name="CategoriaComboBox" MinWidth="400" HorizontalAlignment="Stretch" />
+                                <Button x:Name="btnConfigCategoria" Click="btnConfigCategoria_Click" Grid.Column="1" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DefaultButtonStyle}">
+                                    <FontIcon Glyph="&#xE972;" FontFamily="Segoe Fluent Icons" FontSize="16"/>
+                                </Button>
+                            </Grid>
+
+                            <StackPanel x:Name="CategoriaExpander" Grid.Row="1" Spacing="8" Orientation="Vertical" Visibility="Collapsed" Padding="20" Background="{StaticResource Cinza11Transp50}" CornerRadius="10">
+                                <TextBlock Text="Editar categoria" HorizontalAlignment="Stretch"/>
+                                <TextBox x:Name="txtCategoria" Text="" HorizontalAlignment="Stretch" IsEnabled="False"/>
+                        
+                                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                                    <Button x:Name="btnExcluirCategoria" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                                        <FontIcon Glyph="&#xE74D;" FontFamily="Segoe Fluent Icons" FontSize="16"/>
+                                    </Button>
+                                    <Button x:Name="btnAlterarCategoria" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                                        <FontIcon Glyph="&#xEB7E;" FontFamily="Segoe Fluent Icons" FontSize="16"/>
+                                    </Button>
+                                    <Button x:Name="btnNovaCategoria" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                                        <FontIcon Glyph="&#xE710;" FontFamily="Segoe Fluent Icons" FontSize="16"/>
+                                    </Button>
+                                    <Button x:Name="btnSalvarCategoria" Padding="0" Width="32" Height="32" IsEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                                        <FontIcon Glyph="&#xE74E;" FontFamily="Segoe Fluent Icons" FontSize="16"/>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </StackPanel>
+
+                <Border Background="{StaticResource Cinza9}" Height="1"></Border>
+        
+                <StackPanel x:Name="spCredencial" Spacing="6">
+                    <TextBlock Text="Credencial"/>
+                    <Grid Padding="0">
+                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" RowSpacing="8">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,10" ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" MinWidth="400"/>
+                                    <ColumnDefinition Width="32"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBox x:Name="txtCredencial" MinWidth="400" HorizontalAlignment="Stretch" />
+                                <Button x:Name="btnConfigCredencial" Click="btnConfigCredencial_Click" Grid.Column="1" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DefaultButtonStyle}">
+                                    <FontIcon Glyph="&#xE972;" FontFamily="Segoe Fluent Icons" FontSize="16"/>
+                                </Button>
+                            </Grid>
+
+                            <StackPanel x:Name="CredencialExpander" Grid.Row="1" Spacing="8" Orientation="Vertical" Visibility="Collapsed" Padding="20" Background="{StaticResource Cinza11Transp50}" CornerRadius="10">
+                                <TextBlock Text="Gerar credencial aleatória" HorizontalAlignment="Stretch"/>
+                                <Border Background="{StaticResource Cinza9}" Height="1"/>
+                                <CheckBox Content="Letras minúsculas" IsChecked="True" FlowDirection="LeftToRight"/>
+                                <CheckBox Content="Letras maiúsculas" FlowDirection="LeftToRight"/>
+                                <CheckBox Content="Números" FlowDirection="LeftToRight"/>
+                                <CheckBox Content="Símbolos" FlowDirection="LeftToRight"/>
+
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="12">
+                                    <NumberBox Value="8" Minimum="8" Maximum="128" SpinButtonPlacementMode="Hidden" MaxWidth="64" HorizontalAlignment="Left"/>
+                                    <TextBlock Text="Quantidade mínima de caracteres" VerticalAlignment="Center"/>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="12">
+                                    <NumberBox Value="16" Minimum="8" Maximum="128" SpinButtonPlacementMode="Hidden" MaxWidth="64" HorizontalAlignment="Left"/>
+                                    <TextBlock Text="Quantidade máxima de caracteres" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <Border Background="{StaticResource Cinza9}" Height="1" Margin="0,8,0,0"/>
+
+                                <Button x:Name="btnGerarCredencial" Padding="0" Margin="0,8,0,0" Height="32" HorizontalAlignment="Stretch" VerticalAlignment="Center" Style="{StaticResource DefaultButtonStyle}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8" Padding="0" VerticalAlignment="Center">
+                                        <TextBlock Text="Gerar" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+
+                        </Grid>
+                    </Grid>
+                </StackPanel>
+
+                <Border Background="{StaticResource Cinza9}" Height="1"></Border>
+
+                <StackPanel x:Name="spSenha" Spacing="6">
+                    <TextBlock Text="Senha"/>
+                    <Grid Padding="0">
+                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" RowSpacing="8">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,10" ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" MinWidth="400"/>
+                                    <ColumnDefinition Width="32"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBox x:Name="txtSenha" MinWidth="400" HorizontalAlignment="Stretch" />
+                                <Button x:Name="btnConfigSenha" Click="btnConfigSenha_Click" Grid.Column="1" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DefaultButtonStyle}">
+                                    <FontIcon Glyph="&#xE972;" FontFamily="Segoe Fluent Icons" FontSize="16"/>
+                                </Button>
+                            </Grid>
+
+                            <StackPanel x:Name="SenhaExpander" Grid.Row="1" Spacing="8" Orientation="Vertical" Visibility="Collapsed" Padding="20" Background="{StaticResource Cinza11Transp50}" CornerRadius="10">
+                                <TextBlock Text="Gerar senha aleatória" HorizontalAlignment="Stretch"/>
+                                <Border Background="{StaticResource Cinza9}" Height="1"/>
+                                <CheckBox Content="Letras minúsculas" IsChecked="True" FlowDirection="LeftToRight"/>
+                                <CheckBox Content="Letras maiúsculas" FlowDirection="LeftToRight"/>
+                                <CheckBox Content="Números" FlowDirection="LeftToRight"/>
+                                <CheckBox Content="Símbolos" FlowDirection="LeftToRight"/>
+
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="12">
+                                    <NumberBox Value="8" Minimum="8" Maximum="128" SpinButtonPlacementMode="Hidden" MaxWidth="64" HorizontalAlignment="Left"/>
+                                    <TextBlock Text="Quantidade mínima de caracteres" VerticalAlignment="Center"/>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="12">
+                                    <NumberBox Value="16" Minimum="8" Maximum="128" SpinButtonPlacementMode="Hidden" MaxWidth="64" HorizontalAlignment="Left"/>
+                                    <TextBlock Text="Quantidade máxima de caracteres" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <Border Background="{StaticResource Cinza9}" Height="1" Margin="0,8,0,0"/>
+
+                                <Button x:Name="btnGerarSenha" Padding="0" Margin="0,8,0,0" Height="32" HorizontalAlignment="Stretch" VerticalAlignment="Center" Style="{StaticResource DefaultButtonStyle}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8" Padding="0" VerticalAlignment="Center">
+                                        <TextBlock Text="Gerar" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+
+                        </Grid>
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
 </Page>
