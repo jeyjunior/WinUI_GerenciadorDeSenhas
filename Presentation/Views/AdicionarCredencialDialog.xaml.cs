@@ -1,5 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text;
+using System.Threading.Tasks;
 using Application;
 using Application.Interfaces;
+using Domain.Entidades;
 using JJ.NET.Core.Extensoes;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -9,12 +17,6 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Presentation.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
@@ -109,5 +111,137 @@ namespace Presentation.Views
             return (expandido) ? "\uE972" : "\uE971";
         }
         #endregion
+
+        private void btnGerarCredencial_Click(object sender, RoutedEventArgs e)
+        {
+            var incluirMinusculas = chkLetraMinuscula.IsChecked == true;
+            var incluirMaiusculas = chkLetraMaiuscula.IsChecked == true;
+            var incluirNumeros = chkNumeros.IsChecked == true;
+            var incluirSimbolos = chkSimbolos.IsChecked == true;
+
+            var caracteres = "";
+
+            if (incluirMinusculas)
+                caracteres += ObterLetras(true);
+
+            if (incluirMaiusculas)
+                caracteres += ObterLetras(false);
+
+            if (incluirNumeros)
+                caracteres += ObterNumeros();
+
+            if (incluirSimbolos)
+                caracteres += ObterSimbolos();
+
+            int min = (int)nbQuantidadeMinimaCredencial.Value;
+            int max = (int)nbQuantidadeMaximaCredencial.Value;
+
+            int tamanho = new Random().Next(min, max + 1);
+            var random = new Random();
+            var credencial = new StringBuilder();
+
+            for (int i = 0; i < tamanho; i++)
+            {
+                int index = random.Next(caracteres.Length);
+                credencial.Append(caracteres[index]);
+            }
+
+            txtCredencial.Text = credencial.ToString();
+        }
+
+        private void nbQuantidadeMaximaCredencial_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
+        {
+            if (double.IsNaN(sender.Value))
+            {
+                sender.Value = sender.Minimum;
+            }
+        }
+
+        private void nbQuantidadeMinimaCredencial_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
+        {
+            if (double.IsNaN(sender.Value))
+            {
+                sender.Value = sender.Minimum;
+            }
+        }
+
+        private string ObterLetras(bool minuscula)
+        {
+            string caracteres = "abcdefghijklmnopqrstuvwxyz";
+
+            if (minuscula)
+                return caracteres.ToLower();
+
+            return caracteres.ToUpper();
+        }
+
+        private string ObterNumeros()
+        {
+            return "0123456789";
+        }
+
+        private string ObterSimbolos()
+        {
+            return "@#$&*_-";
+        }
+
+        private void btnGerarSenha_Click(object sender, RoutedEventArgs e)
+        {
+            var incluirMinusculas = chkLetraMinusculaSenha.IsChecked == true;
+            var incluirMaiusculas = chkLetraMaiusculaSenha.IsChecked == true;
+            var incluirNumeros = chkNumerosSenha.IsChecked == true;
+            var incluirSimbolos = chkSimbolosSenha.IsChecked == true;
+
+            var caracteres = "";
+
+            if (incluirMinusculas)
+                caracteres += ObterLetras(true);
+
+            if (incluirMaiusculas)
+                caracteres += ObterLetras(false);
+
+            if (incluirNumeros)
+                caracteres += ObterNumeros();
+
+            if (incluirSimbolos)
+                caracteres += ObterSimbolos();
+
+            int min = (int)nbQuantidadeMinimaSenha.Value;
+            int max = (int)nbQuantidadeMaximaSenha.Value;
+
+            int tamanho = new Random().Next(min, max + 1);
+            var random = new Random();
+            var senha = new StringBuilder();
+
+            for (int i = 0; i < tamanho; i++)
+            {
+                int index = random.Next(caracteres.Length);
+                senha.Append(caracteres[index]);
+            }
+
+            txtSenha.Text = senha.ToString();
+        }
+
+        private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            var categoria = ViewModel.CategoriaSelecionada;
+
+            string credencial = txtCredencial.Text.ObterValorOuPadrao("").Trim();
+            string senha = txtSenha.Text.ObterValorOuPadrao("").Trim();
+
+            var gSCredencial = new GSCredencial
+            {
+                Credencial = credencial,
+                Senha = senha,
+                FK_GSCategoria = categoria.PK_GSCategoria,
+            };
+
+            var ret = credencialAppService.SalvarCredencial(gSCredencial);
+
+            if ((int)ret > 0)
+            {
+                
+            }
+        }
     }
 }

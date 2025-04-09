@@ -228,9 +228,7 @@ namespace Presentation.Views
             var result = await dialog.ShowAsync();
 
             if (result == ContentDialogResult.Primary)
-            {
-                
-            }
+                Pesquisar();
         }
         #endregion
 

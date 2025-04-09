@@ -10,6 +10,7 @@
     PrimaryButtonText="Salvar"
     SecondaryButtonText="Cancelar"
     DefaultButton="Primary"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
     SecondaryButtonStyle="{StaticResource DefaultButtonStyle}" Loaded="ContentDialog_Loaded">
 
         <ScrollViewer x:Name="MainScrollViewer" VerticalScrollBarVisibility="Auto" Padding="0">
@@ -89,7 +90,7 @@
                                     <ColumnDefinition Width="32"/>
                                 </Grid.ColumnDefinitions>
 
-                                <TextBox x:Name="txtCredencial" MinWidth="417" HorizontalAlignment="Stretch" />
+                                <TextBox x:Name="txtCredencial" MinWidth="417" MaxWidth="417" HorizontalAlignment="Stretch" />
                                 <Button x:Name="btnConfigCredencial" Click="btnConfigCredencial_Click" Grid.Column="1" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DefaultButtonStyle}">
                                     <FontIcon Glyph="&#xE972;" FontFamily="Segoe Fluent Icons" FontSize="16"/>
                                 </Button>
@@ -97,28 +98,31 @@
 
                             <StackPanel x:Name="CredencialExpander" Grid.Row="1" Spacing="8" Orientation="Vertical" Visibility="Collapsed" Padding="20" Background="{StaticResource Cinza11Transp50}" CornerRadius="10">
                                 <TextBlock Text="Gerar credencial aleatória" HorizontalAlignment="Stretch"/>
+                                
                                 <Border Background="{StaticResource Cinza9}" Height="1"/>
-                                <CheckBox Content="Letras minúsculas" IsChecked="True" FlowDirection="LeftToRight"/>
-                                <CheckBox Content="Letras maiúsculas" FlowDirection="LeftToRight"/>
-                                <CheckBox Content="Números" FlowDirection="LeftToRight"/>
-                                <CheckBox Content="Símbolos" FlowDirection="LeftToRight"/>
+                                
+                                <CheckBox x:Name="chkLetraMinuscula" Content="Letras minúsculas" IsChecked="True" FlowDirection="LeftToRight"/>
+                                <CheckBox x:Name="chkLetraMaiuscula" Content="Letras maiúsculas" FlowDirection="LeftToRight"/>
+                                <CheckBox x:Name="chkNumeros" Content="Números" FlowDirection="LeftToRight"/>
+                                <CheckBox x:Name="chkSimbolos" Content="Símbolos" FlowDirection="LeftToRight"/>
 
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="12">
-                                    <NumberBox Value="8" Minimum="8" Maximum="128" SpinButtonPlacementMode="Hidden" MaxWidth="64" HorizontalAlignment="Left"/>
+                                    <NumberBox x:Name="nbQuantidadeMinimaCredencial" ValueChanged="nbQuantidadeMinimaCredencial_ValueChanged" Value="8" Minimum="3" Maximum="128" SpinButtonPlacementMode="Hidden" MaxWidth="64" HorizontalAlignment="Left"/>
                                     <TextBlock Text="Quantidade mínima de caracteres" VerticalAlignment="Center"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="12">
-                                    <NumberBox Value="16" Minimum="8" Maximum="128" SpinButtonPlacementMode="Hidden" MaxWidth="64" HorizontalAlignment="Left"/>
+                                    <NumberBox x:Name="nbQuantidadeMaximaCredencial" ValueChanged="nbQuantidadeMaximaCredencial_ValueChanged" Value="16" Minimum="3" Maximum="128" SpinButtonPlacementMode="Hidden" MaxWidth="64" HorizontalAlignment="Left"/>
                                     <TextBlock Text="Quantidade máxima de caracteres" VerticalAlignment="Center"/>
                                 </StackPanel>
                                 <Border Background="{StaticResource Cinza9}" Height="1" Margin="0,8,0,0"/>
 
-                                <Button x:Name="btnGerarCredencial" Padding="0" Margin="0,8,0,0" Height="32" HorizontalAlignment="Stretch" VerticalAlignment="Center" Style="{StaticResource DefaultButtonStyle}">
+                                <Button x:Name="btnGerarCredencial" Click="btnGerarCredencial_Click" Padding="0" Margin="0,8,0,0" Height="32" HorizontalAlignment="Stretch" VerticalAlignment="Center" Style="{StaticResource DefaultButtonStyle}">
                                     <StackPanel Orientation="Horizontal" Spacing="8" Padding="0" VerticalAlignment="Center">
                                         <TextBlock Text="Gerar" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
+                                
                             </StackPanel>
 
                         </Grid>
@@ -142,7 +146,7 @@
                                     <ColumnDefinition Width="32"/>
                                 </Grid.ColumnDefinitions>
 
-                                <TextBox x:Name="txtSenha" MinWidth="417" HorizontalAlignment="Stretch" />
+                                <TextBox x:Name="txtSenha" MinWidth="417" MaxWidth="417" HorizontalAlignment="Stretch" />
                                 <Button x:Name="btnConfigSenha" Click="btnConfigSenha_Click" Grid.Column="1" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DefaultButtonStyle}">
                                     <FontIcon Glyph="&#xE972;" FontFamily="Segoe Fluent Icons" FontSize="16"/>
                                 </Button>
@@ -150,24 +154,26 @@
 
                             <StackPanel x:Name="SenhaExpander" Grid.Row="1" Spacing="8" Orientation="Vertical" Visibility="Collapsed" Padding="20" Background="{StaticResource Cinza11Transp50}" CornerRadius="10">
                                 <TextBlock Text="Gerar senha aleatória" HorizontalAlignment="Stretch"/>
+                                
                                 <Border Background="{StaticResource Cinza9}" Height="1"/>
-                                <CheckBox Content="Letras minúsculas" IsChecked="True" FlowDirection="LeftToRight"/>
-                                <CheckBox Content="Letras maiúsculas" FlowDirection="LeftToRight"/>
-                                <CheckBox Content="Números" FlowDirection="LeftToRight"/>
-                                <CheckBox Content="Símbolos" FlowDirection="LeftToRight"/>
+                                
+                                <CheckBox x:Name="chkLetraMinusculaSenha" Content="Letras minúsculas" IsChecked="True" FlowDirection="LeftToRight"/>
+                                <CheckBox x:Name="chkLetraMaiusculaSenha" Content="Letras maiúsculas" FlowDirection="LeftToRight"/>
+                                <CheckBox x:Name="chkNumerosSenha" Content="Números" FlowDirection="LeftToRight"/>
+                                <CheckBox x:Name="chkSimbolosSenha" Content="Símbolos" FlowDirection="LeftToRight"/>
 
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="12">
-                                    <NumberBox Value="8" Minimum="8" Maximum="128" SpinButtonPlacementMode="Hidden" MaxWidth="64" HorizontalAlignment="Left"/>
+                                <NumberBox x:Name="nbQuantidadeMinimaSenha" Value="8" Minimum="8" Maximum="128" SpinButtonPlacementMode="Hidden" MaxWidth="64" HorizontalAlignment="Left"/>
                                     <TextBlock Text="Quantidade mínima de caracteres" VerticalAlignment="Center"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="12">
-                                    <NumberBox Value="16" Minimum="8" Maximum="128" SpinButtonPlacementMode="Hidden" MaxWidth="64" HorizontalAlignment="Left"/>
+                                <NumberBox x:Name="nbQuantidadeMaximaSenha" Value="16" Minimum="8" Maximum="128" SpinButtonPlacementMode="Hidden" MaxWidth="64" HorizontalAlignment="Left"/>
                                     <TextBlock Text="Quantidade máxima de caracteres" VerticalAlignment="Center"/>
                                 </StackPanel>
                                 <Border Background="{StaticResource Cinza9}" Height="1" Margin="0,8,0,0"/>
 
-                                <Button x:Name="btnGerarSenha" Padding="0" Margin="0,8,0,0" Height="32" HorizontalAlignment="Stretch" VerticalAlignment="Center" Style="{StaticResource DefaultButtonStyle}">
+                                <Button x:Name="btnGerarSenha" Click="btnGerarSenha_Click" Padding="0" Margin="0,8,0,0" Height="32" HorizontalAlignment="Stretch" VerticalAlignment="Center" Style="{StaticResource DefaultButtonStyle}">
                                     <StackPanel Orientation="Horizontal" Spacing="8" Padding="0" VerticalAlignment="Center">
                                         <TextBlock Text="Gerar" VerticalAlignment="Center"/>
                                     </StackPanel>
