@@ -101,7 +101,6 @@ namespace Application.Services
 
             return tipoDePesquisa;
         }
-
         public ObservableCollection<Item> ObterTipoDeOrdenacao()
         {
             var tipoDeOrdenacao = new ObservableCollection<Item>()
@@ -119,13 +118,13 @@ namespace Application.Services
         {
             return gSCategoriaRepository.ObterLista();
         }
-        public ObservableCollection<Item> ObterCategoriasObservableCollection()
+        public ObservableCollection<GSCategoria> ObterCategoriasObservableCollection()
         {
-            var gSCategoria = gSCategoriaRepository.ObterLista();
-            var gSCategoriaObservableCollection = new ObservableCollection<Item>();
+            var gSCategoria = gSCategoriaRepository.ObterLista().OrderBy(i => i.Categoria);
+            var gSCategoriaObservableCollection = new ObservableCollection<GSCategoria>();
 
             foreach (var item in gSCategoria)
-                gSCategoriaObservableCollection.Add(new Item { ID = item.PK_GSCategoria.ToString(), Valor = item.Categoria.ToString() });
+                gSCategoriaObservableCollection.Add(item);
 
             return gSCategoriaObservableCollection;
         }
@@ -239,7 +238,6 @@ namespace Application.Services
 
             return ret;
         }
-
         public string Descriptografar(string valor, string iv)
         {
             string ret = "";
@@ -258,7 +256,6 @@ namespace Application.Services
 
             return result.Valor.ObterValorOuPadrao("").Trim();
         }
-
         public string Criptografar(string valor, string iv)
         {
             string ret = "";

@@ -1,31 +1,26 @@
-<Page
-    x:Class="Presentation.Views.AdicionarPage"
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    x:Class="Presentation.Views.AdicionarCredencialDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Presentation.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    Padding="32">
+    Title="Adicionar credencial"
+    PrimaryButtonText="Salvar"
+    SecondaryButtonText="Cancelar"
+    DefaultButton="Primary"
+    SecondaryButtonStyle="{StaticResource DefaultButtonStyle}" Loaded="ContentDialog_Loaded">
 
-    <ScrollViewer x:Name="MainScrollViewer" VerticalScrollBarVisibility="Auto" Padding="32">
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="18">
-            <TextBlock Text="Adicionar credencial" 
-                       HorizontalAlignment="Center" 
-                       Foreground="{StaticResource Cinza2}"
-                       FontSize="18" 
-                       FontWeight="Bold"/>
-        
+        <ScrollViewer x:Name="MainScrollViewer" VerticalScrollBarVisibility="Auto" Padding="0">
             <StackPanel x:Name="spPrincipal" 
-                        HorizontalAlignment="Center" 
-                        VerticalAlignment="Center" 
-                        Spacing="18"
-                        BorderBrush="{StaticResource Cinza11Transp20}" 
-                        BorderThickness="0.5,0.2,0.5,2.5" Background="{StaticResource Cinza10}" 
-                        Padding="32" 
-                        CornerRadius="10">
-
+                    Width="500"
+                    HorizontalAlignment="Stretch" 
+                    VerticalAlignment="Stretch" 
+                    Spacing="18" 
+                    Background="{StaticResource Nenhuma}" 
+                    Padding="20" 
+                    CornerRadius="10">
 
                 <StackPanel x:Name="spCategoria" Spacing="6">
                     <TextBlock Text="Categoria"/>
@@ -38,11 +33,17 @@
 
                             <Grid Grid.Row="0" Margin="0,0,0,0" ColumnSpacing="8">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" MinWidth="400"/>
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="32"/>
                                 </Grid.ColumnDefinitions>
-                
-                                <ComboBox x:Name="CategoriaComboBox" MinWidth="400" HorizontalAlignment="Stretch" />
+
+                                <ComboBox x:Name="cboCategoria" 
+                                          DisplayMemberPath="Categoria" 
+                                          ItemsSource="{Binding Categoria}" 
+                                          SelectedItem="{Binding CategoriaSelecionada, Mode=TwoWay}" 
+                                          MinWidth="417" 
+                                          HorizontalAlignment="Stretch" />
+                                
                                 <Button x:Name="btnConfigCategoria" Click="btnConfigCategoria_Click" Grid.Column="1" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DefaultButtonStyle}">
                                     <FontIcon Glyph="&#xE972;" FontFamily="Segoe Fluent Icons" FontSize="16"/>
                                 </Button>
@@ -51,9 +52,9 @@
                             <StackPanel x:Name="CategoriaExpander" Grid.Row="1" Spacing="8" Orientation="Vertical" Visibility="Collapsed" Padding="20" Background="{StaticResource Cinza11Transp50}" CornerRadius="10">
                                 <TextBlock Text="Editar categoria" HorizontalAlignment="Stretch"/>
                                 <TextBox x:Name="txtCategoria" Text="" HorizontalAlignment="Stretch" IsEnabled="False"/>
-                        
+
                                 <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
-                                    <Button x:Name="btnExcluirCategoria" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                                    <Button x:Name="btnExcluirCategoria" Click="btnExcluirCategoria_Click" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
                                         <FontIcon Glyph="&#xE74D;" FontFamily="Segoe Fluent Icons" FontSize="16"/>
                                     </Button>
                                     <Button x:Name="btnAlterarCategoria" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
@@ -71,8 +72,8 @@
                     </Grid>
                 </StackPanel>
 
-                <Border Background="{StaticResource Cinza9}" Height="1"></Border>
-        
+                <Border x:Name="bCredencial" Background="{StaticResource Cinza9}" Height="1"></Border>
+
                 <StackPanel x:Name="spCredencial" Spacing="6">
                     <TextBlock Text="Credencial"/>
                     <Grid Padding="0">
@@ -84,11 +85,11 @@
 
                             <Grid Grid.Row="0" Margin="0,0,0,10" ColumnSpacing="8">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" MinWidth="400"/>
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="32"/>
                                 </Grid.ColumnDefinitions>
 
-                                <TextBox x:Name="txtCredencial" MinWidth="400" HorizontalAlignment="Stretch" />
+                                <TextBox x:Name="txtCredencial" MinWidth="417" HorizontalAlignment="Stretch" />
                                 <Button x:Name="btnConfigCredencial" Click="btnConfigCredencial_Click" Grid.Column="1" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DefaultButtonStyle}">
                                     <FontIcon Glyph="&#xE972;" FontFamily="Segoe Fluent Icons" FontSize="16"/>
                                 </Button>
@@ -124,7 +125,7 @@
                     </Grid>
                 </StackPanel>
 
-                <Border Background="{StaticResource Cinza9}" Height="1"></Border>
+                <Border x:Name="bSenha" Background="{StaticResource Cinza9}" Height="1"></Border>
 
                 <StackPanel x:Name="spSenha" Spacing="6">
                     <TextBlock Text="Senha"/>
@@ -137,11 +138,11 @@
 
                             <Grid Grid.Row="0" Margin="0,0,0,10" ColumnSpacing="8">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" MinWidth="400"/>
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="32"/>
                                 </Grid.ColumnDefinitions>
 
-                                <TextBox x:Name="txtSenha" MinWidth="400" HorizontalAlignment="Stretch" />
+                                <TextBox x:Name="txtSenha" MinWidth="417" HorizontalAlignment="Stretch" />
                                 <Button x:Name="btnConfigSenha" Click="btnConfigSenha_Click" Grid.Column="1" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DefaultButtonStyle}">
                                     <FontIcon Glyph="&#xE972;" FontFamily="Segoe Fluent Icons" FontSize="16"/>
                                 </Button>
@@ -176,7 +177,8 @@
                         </Grid>
                     </Grid>
                 </StackPanel>
+
             </StackPanel>
-        </StackPanel>
-    </ScrollViewer>
-</Page>
+        </ScrollViewer>
+
+</ContentDialog>

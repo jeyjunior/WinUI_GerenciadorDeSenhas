@@ -1,18 +1,3 @@
-using Application;
-using Application.Interfaces;
-using Application.Services;
-using Domain.Entidades;
-using Domain.Enumeradores;
-using JJ.NET.Core.DTO;
-using JJ.NET.Core.Extensoes;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Presentation.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,11 +5,25 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Application.Services;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Notifications;
-
+using JJ.NET.Core.DTO;
+using JJ.NET.Core.Extensoes;
+using Presentation.ViewModel;
+using Domain.Entidades;
+using Domain.Enumeradores;
+using Application;
+using Application.Interfaces;
 
 namespace Presentation.Views
 {
@@ -41,7 +40,6 @@ namespace Presentation.Views
         #endregion
 
         #region Construtor
-
         public Principal()
         {
             this.InitializeComponent();
@@ -57,7 +55,6 @@ namespace Presentation.Views
             Load();
         }
         #endregion
-
 
         #region Eventos
         private void btnPesquisar_Click(object sender, RoutedEventArgs e)
@@ -223,9 +220,17 @@ namespace Presentation.Views
 
         }
 
-        private void btnAdicionar_Click(object sender, RoutedEventArgs e)
+        private async void btnAdicionar_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.NavegarPara(typeof(AdicionarPage));
+            var dialog = new AdicionarCredencialDialog();
+            dialog.XamlRoot = this.Content.XamlRoot;
+
+            var result = await dialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                
+            }
         }
         #endregion
 

@@ -29,7 +29,6 @@ namespace Presentation.ViewModel
                 OnPropertyChanged(nameof(TipoDeOrdenacao));
             }
         }
-
         public Item TipoDeOrdenacaoSelecionado
         {
             get => _tipoDeOrdenacaoSelecionado;

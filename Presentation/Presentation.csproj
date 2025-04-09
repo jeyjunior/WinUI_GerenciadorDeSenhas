@@ -14,7 +14,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Themes\Colors.xaml" />
-    <None Remove="Views\AdicionarPage.xaml" />
+    <None Remove="Views\AdicionarCredencialDialog.xaml" />
     <None Remove="Views\Principal.xaml" />
   </ItemGroup>
 
@@ -59,12 +59,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Views\Principal.xaml">
+    <Page Update="Views\AdicionarCredencialDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Views\AdicionarPage.xaml">
+    <Page Update="Views\Principal.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
