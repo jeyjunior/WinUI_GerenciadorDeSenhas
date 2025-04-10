@@ -39,6 +39,7 @@
                                 </Grid.ColumnDefinitions>
 
                                 <ComboBox x:Name="cboCategoria" 
+                                          SelectionChanged="cboCategoria_SelectionChanged"
                                           DisplayMemberPath="Categoria" 
                                           ItemsSource="{Binding Categoria}" 
                                           SelectedItem="{Binding CategoriaSelecionada, Mode=TwoWay}" 
@@ -55,17 +56,21 @@
                                 <TextBox x:Name="txtCategoria" Text="" HorizontalAlignment="Stretch" IsEnabled="False"/>
 
                                 <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
-                                    <Button x:Name="btnExcluirCategoria" Click="btnExcluirCategoria_Click" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                                    <Button x:Name="btnExcluirCategoria" Click="btnExcluirCategoria_Click" Padding="0" Width="32" Height="32" ToolTipService.ToolTip="Excluir Categoria" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
                                         <FontIcon Glyph="&#xE74D;" FontFamily="Segoe Fluent Icons" FontSize="16"/>
                                     </Button>
-                                    <Button x:Name="btnAlterarCategoria" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                                    <Button x:Name="btnAlterarCategoria" Click="btnAlterarCategoria_Click" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" ToolTipService.ToolTip="Editar Categoria" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
                                         <FontIcon Glyph="&#xEB7E;" FontFamily="Segoe Fluent Icons" FontSize="16"/>
                                     </Button>
-                                    <Button x:Name="btnNovaCategoria" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                                    <Button x:Name="btnNovaCategoria" Click="btnNovaCategoria_Click" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" ToolTipService.ToolTip="Nova Categoria" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
                                         <FontIcon Glyph="&#xE710;" FontFamily="Segoe Fluent Icons" FontSize="16"/>
                                     </Button>
-                                    <Button x:Name="btnSalvarCategoria" Padding="0" Width="32" Height="32" IsEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
-                                        <FontIcon Glyph="&#xE74E;" FontFamily="Segoe Fluent Icons" FontSize="16"/>
+                                    <Button x:Name="btnCancelarCategoria" Click="btnCancelarCategoria_Click" Padding="0" Width="32" Height="32" IsEnabled="True" Visibility="Visible" ToolTipService.ToolTip="Cancelar" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                                        <FontIcon Glyph="&#xE711;" FontFamily="Segoe Fluent Icons" FontSize="16" Foreground="{StaticResource Laranja}"/>
+                                    </Button>
+
+                                    <Button x:Name="btnSalvarCategoria" Click="btnSalvarCategoria_Click" Padding="0" Width="32" Height="32" IsEnabled="True" Visibility="Visible" ToolTipService.ToolTip="Salvar" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                                        <FontIcon Glyph="&#xE74E;" FontFamily="Segoe Fluent Icons" FontSize="16" Foreground="{StaticResource Verde2}"/>
                                     </Button>
                                 </StackPanel>
                             </StackPanel>
@@ -100,11 +105,11 @@
                                 <TextBlock Text="Gerar credencial aleatória" HorizontalAlignment="Stretch"/>
                                 
                                 <Border Background="{StaticResource Cinza9}" Height="1"/>
-                                
-                                <CheckBox x:Name="chkLetraMinuscula" Content="Letras minúsculas" IsChecked="True" FlowDirection="LeftToRight"/>
-                                <CheckBox x:Name="chkLetraMaiuscula" Content="Letras maiúsculas" FlowDirection="LeftToRight"/>
-                                <CheckBox x:Name="chkNumeros" Content="Números" FlowDirection="LeftToRight"/>
-                                <CheckBox x:Name="chkSimbolos" Content="Símbolos" FlowDirection="LeftToRight"/>
+
+                            <CheckBox x:Name="chkLetraMinuscula" Checked="CheckCredencial_Checked" Unchecked="CheckCredencial_Unchecked" Content="Letras minúsculas" IsChecked="True" FlowDirection="LeftToRight"/>
+                            <CheckBox x:Name="chkLetraMaiuscula" Checked="CheckCredencial_Checked" Unchecked="CheckCredencial_Unchecked" Content="Letras maiúsculas" IsChecked="True"  FlowDirection="LeftToRight"/>
+                            <CheckBox x:Name="chkNumeros" Checked="CheckCredencial_Checked" Unchecked="CheckCredencial_Unchecked" Content="Números" IsChecked="True"  FlowDirection="LeftToRight"/>
+                            <CheckBox x:Name="chkSimbolos" Checked="CheckCredencial_Checked" Unchecked="CheckCredencial_Unchecked" Content="Símbolos" IsChecked="True"  FlowDirection="LeftToRight"/>
 
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="12">
                                     <NumberBox x:Name="nbQuantidadeMinimaCredencial" ValueChanged="nbQuantidadeMinimaCredencial_ValueChanged" Value="8" Minimum="3" Maximum="128" SpinButtonPlacementMode="Hidden" MaxWidth="64" HorizontalAlignment="Left"/>
@@ -157,10 +162,10 @@
                                 
                                 <Border Background="{StaticResource Cinza9}" Height="1"/>
                                 
-                                <CheckBox x:Name="chkLetraMinusculaSenha" Content="Letras minúsculas" IsChecked="True" FlowDirection="LeftToRight"/>
-                                <CheckBox x:Name="chkLetraMaiusculaSenha" Content="Letras maiúsculas" FlowDirection="LeftToRight"/>
-                                <CheckBox x:Name="chkNumerosSenha" Content="Números" FlowDirection="LeftToRight"/>
-                                <CheckBox x:Name="chkSimbolosSenha" Content="Símbolos" FlowDirection="LeftToRight"/>
+                                <CheckBox x:Name="chkLetraMinusculaSenha" Checked="CheckSenha_Checked" Unchecked="CheckSenha_Unchecked" Content="Letras minúsculas" IsChecked="True" FlowDirection="LeftToRight"/>
+                            <CheckBox x:Name="chkLetraMaiusculaSenha" Checked="CheckSenha_Checked" Unchecked="CheckSenha_Unchecked" Content="Letras maiúsculas" IsChecked="True"  FlowDirection="LeftToRight"/>
+                            <CheckBox x:Name="chkNumerosSenha" Checked="CheckSenha_Checked" Unchecked="CheckSenha_Unchecked" Content="Números" IsChecked="True"  FlowDirection="LeftToRight"/>
+                            <CheckBox x:Name="chkSimbolosSenha" Checked="CheckSenha_Checked" Unchecked="CheckSenha_Unchecked" Content="Símbolos" IsChecked="True"  FlowDirection="LeftToRight"/>
 
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="12">
                                 <NumberBox x:Name="nbQuantidadeMinimaSenha" Value="8" Minimum="8" Maximum="128" SpinButtonPlacementMode="Hidden" MaxWidth="64" HorizontalAlignment="Left"/>

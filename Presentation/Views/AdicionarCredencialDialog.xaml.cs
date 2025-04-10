@@ -7,8 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Application;
 using Application.Interfaces;
-using Domain.Entidades;
-using JJ.NET.Core.Extensoes;
+using Application.Services;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -16,9 +15,12 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using Presentation.ViewModel;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using JJ.NET.Core.Extensoes;
+using JJ.NET.Core.Enumeradores;
+using Domain.Entidades;
+using Presentation.ViewModel;
 
 namespace Presentation.Views
 {
@@ -26,10 +28,12 @@ namespace Presentation.Views
     {
         #region Interfaces
         private readonly ICredencialAppService credencialAppService;
+        private readonly INotificationService notificationService;
         #endregion
 
         #region Propriedades
         private AdicionarCredencialDialogViewModel ViewModel;
+        private ModoEdicao modoEdicao;
         #endregion
 
         #region Construtor
@@ -38,6 +42,7 @@ namespace Presentation.Views
             this.InitializeComponent();
 
             credencialAppService = Bootstrap.Container.GetInstance<ICredencialAppService>();
+            notificationService = Bootstrap.Container.GetInstance<INotificationService>();
 
             ViewModel = new AdicionarCredencialDialogViewModel();
 
@@ -52,6 +57,8 @@ namespace Presentation.Views
 
             var gSCategoria = ViewModel.Categoria.FirstOrDefault();
             ViewModel.SelecionarCategoria(gSCategoria.PK_GSCategoria);
+
+            modoEdicao = ModoEdicao.Nenhum;
         }
         private async void btnConfigCategoria_Click(object sender, RoutedEventArgs e)
         {
@@ -62,9 +69,18 @@ namespace Presentation.Views
             if (btnConfigCategoria.Content is FontIcon icon)
                 icon.Glyph = ObterIconeCampoExpandido(isVisible);
 
-            await Task.Delay(50);
+            if (ViewModel.CategoriaSelecionada != null)
+                txtCategoria.Text = ViewModel.CategoriaSelecionada.Categoria;
 
+            AlternarModoEdicao(false);
+
+            await Task.Delay(50);
             MoverScrollParaAreaExpandida(spPrincipal.TransformToVisual(MainScrollViewer));
+        }
+        private void cboCategoria_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ViewModel.CategoriaSelecionada != null && txtCategoria != null)
+                txtCategoria.Text = ViewModel.CategoriaSelecionada.Categoria;
         }
         private async void btnConfigCredencial_Click(object sender, RoutedEventArgs e)
         {
@@ -92,63 +108,101 @@ namespace Presentation.Views
 
             MoverScrollParaAreaExpandida(btnGerarSenha.TransformToVisual(MainScrollViewer));
         }
-        private async void btnExcluirCategoria_Click(object sender, RoutedEventArgs e)
+        private void btnExcluirCategoria_Click(object sender, RoutedEventArgs e)
         {
-            
+            modoEdicao = ModoEdicao.Excluir;
+            AlternarModoEdicao(true);
+            btnCancelarCategoria.Focus(FocusState.Keyboard);
         }
-        #endregion
-
-        #region Metodos
-        // Scroll behavior
-        private void MoverScrollParaAreaExpandida(GeneralTransform transform)
+        private void btnAlterarCategoria_Click(object sender, RoutedEventArgs e)
         {
-            Point position = transform.TransformPoint(new Point(0, 0));
-
-            MainScrollViewer.ChangeView(null, position.Y, null, true);
+            modoEdicao = ModoEdicao.Editar;
+            AlternarModoEdicao(true);
         }
-        private string ObterIconeCampoExpandido(bool expandido)
+        private void btnNovaCategoria_Click(object sender, RoutedEventArgs e)
         {
-            return (expandido) ? "\uE972" : "\uE971";
+            txtCategoria.Text = "";
+            modoEdicao = ModoEdicao.Novo;
+            AlternarModoEdicao(true);
         }
-        #endregion
-
-        private void btnGerarCredencial_Click(object sender, RoutedEventArgs e)
+        private void btnCancelarCategoria_Click(object sender, RoutedEventArgs e)
         {
-            var incluirMinusculas = chkLetraMinuscula.IsChecked == true;
-            var incluirMaiusculas = chkLetraMaiuscula.IsChecked == true;
-            var incluirNumeros = chkNumeros.IsChecked == true;
-            var incluirSimbolos = chkSimbolos.IsChecked == true;
+            modoEdicao = ModoEdicao.Nenhum;
+            AlternarModoEdicao(false);
+            cboCategoria.Focus(FocusState.Keyboard);
+            cboCategoria_SelectionChanged(null, null);
+        }
 
-            var caracteres = "";
-
-            if (incluirMinusculas)
-                caracteres += ObterLetras(true);
-
-            if (incluirMaiusculas)
-                caracteres += ObterLetras(false);
-
-            if (incluirNumeros)
-                caracteres += ObterNumeros();
-
-            if (incluirSimbolos)
-                caracteres += ObterSimbolos();
-
-            int min = (int)nbQuantidadeMinimaCredencial.Value;
-            int max = (int)nbQuantidadeMaximaCredencial.Value;
-
-            int tamanho = new Random().Next(min, max + 1);
-            var random = new Random();
-            var credencial = new StringBuilder();
-
-            for (int i = 0; i < tamanho; i++)
+        private void btnSalvarCategoria_Click(object sender, RoutedEventArgs e)
+        {
+            switch (modoEdicao)
             {
-                int index = random.Next(caracteres.Length);
-                credencial.Append(caracteres[index]);
+                case ModoEdicao.Nenhum:
+                    break;
+                case ModoEdicao.Novo:
+                    break;
+                case ModoEdicao.Editar:
+                    break;
+                case ModoEdicao.Excluir:
+                    break;
+                default:
+                    break;
             }
 
-            txtCredencial.Text = credencial.ToString();
+            modoEdicao = ModoEdicao.Nenhum;
+            AlternarModoEdicao(false);
+            cboCategoria.Focus(FocusState.Keyboard);
+            cboCategoria_SelectionChanged(null, null);
         }
+        private void btnGerarCredencial_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var incluirMinusculas = chkLetraMinuscula.IsChecked == true;
+                var incluirMaiusculas = chkLetraMaiuscula.IsChecked == true;
+                var incluirNumeros = chkNumeros.IsChecked == true;
+                var incluirSimbolos = chkSimbolos.IsChecked == true;
 
+                var caracteres = "";
+
+                if (incluirMinusculas)
+                    caracteres += ObterLetras(true);
+
+                if (incluirMaiusculas)
+                    caracteres += ObterLetras(false);
+
+                if (incluirNumeros)
+                    caracteres += ObterNumeros();
+
+                if (incluirSimbolos)
+                    caracteres += ObterSimbolos();
+
+                if (caracteres.ObterValorOuPadrao("").Trim() == "")
+                {
+                    notificationService.EnviarNotificacao("É necessário marcar alguma das opções para gerar credencial.", "");
+                    return;
+                }
+
+                int min = (int)nbQuantidadeMinimaCredencial.Value;
+                int max = (int)nbQuantidadeMaximaCredencial.Value;
+
+                int tamanho = new Random().Next(min, max + 1);
+                var random = new Random();
+                var credencial = new StringBuilder();
+
+                for (int i = 0; i < tamanho; i++)
+                {
+                    int index = random.Next(caracteres.Length);
+                    credencial.Append(caracteres[index]);
+                }
+
+                txtCredencial.Text = credencial.ToString();
+            }
+            catch (Exception ex)
+            {
+                notificationService.EnviarNotificacao("Erro", ex.Message);
+            }
+        }
         private void nbQuantidadeMaximaCredencial_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
         {
             if (double.IsNaN(sender.Value))
@@ -156,7 +210,6 @@ namespace Presentation.Views
                 sender.Value = sender.Minimum;
             }
         }
-
         private void nbQuantidadeMinimaCredencial_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
         {
             if (double.IsNaN(sender.Value))
@@ -164,64 +217,55 @@ namespace Presentation.Views
                 sender.Value = sender.Minimum;
             }
         }
-
-        private string ObterLetras(bool minuscula)
-        {
-            string caracteres = "abcdefghijklmnopqrstuvwxyz";
-
-            if (minuscula)
-                return caracteres.ToLower();
-
-            return caracteres.ToUpper();
-        }
-
-        private string ObterNumeros()
-        {
-            return "0123456789";
-        }
-
-        private string ObterSimbolos()
-        {
-            return "@#$&*_-";
-        }
-
         private void btnGerarSenha_Click(object sender, RoutedEventArgs e)
         {
-            var incluirMinusculas = chkLetraMinusculaSenha.IsChecked == true;
-            var incluirMaiusculas = chkLetraMaiusculaSenha.IsChecked == true;
-            var incluirNumeros = chkNumerosSenha.IsChecked == true;
-            var incluirSimbolos = chkSimbolosSenha.IsChecked == true;
-
-            var caracteres = "";
-
-            if (incluirMinusculas)
-                caracteres += ObterLetras(true);
-
-            if (incluirMaiusculas)
-                caracteres += ObterLetras(false);
-
-            if (incluirNumeros)
-                caracteres += ObterNumeros();
-
-            if (incluirSimbolos)
-                caracteres += ObterSimbolos();
-
-            int min = (int)nbQuantidadeMinimaSenha.Value;
-            int max = (int)nbQuantidadeMaximaSenha.Value;
-
-            int tamanho = new Random().Next(min, max + 1);
-            var random = new Random();
-            var senha = new StringBuilder();
-
-            for (int i = 0; i < tamanho; i++)
+            try
             {
-                int index = random.Next(caracteres.Length);
-                senha.Append(caracteres[index]);
+                var incluirMinusculas = chkLetraMinusculaSenha.IsChecked == true;
+                var incluirMaiusculas = chkLetraMaiusculaSenha.IsChecked == true;
+                var incluirNumeros = chkNumerosSenha.IsChecked == true;
+                var incluirSimbolos = chkSimbolosSenha.IsChecked == true;
+
+                var caracteres = "";
+
+                if (incluirMinusculas)
+                    caracteres += ObterLetras(true);
+
+                if (incluirMaiusculas)
+                    caracteres += ObterLetras(false);
+
+                if (incluirNumeros)
+                    caracteres += ObterNumeros();
+
+                if (incluirSimbolos)
+                    caracteres += ObterSimbolos();
+
+                if (caracteres.ObterValorOuPadrao("").Trim() == "")
+                {
+                    notificationService.EnviarNotificacao("É necessário marcar alguma das opções para gerar uma senha.", "");
+                    return;
+                }
+
+                int min = (int)nbQuantidadeMinimaSenha.Value;
+                int max = (int)nbQuantidadeMaximaSenha.Value;
+
+                int tamanho = new Random().Next(min, max + 1);
+                var random = new Random();
+                var senha = new StringBuilder();
+
+                for (int i = 0; i < tamanho; i++)
+                {
+                    int index = random.Next(caracteres.Length);
+                    senha.Append(caracteres[index]);
+                }
+
+                txtSenha.Text = senha.ToString();
             }
-
-            txtSenha.Text = senha.ToString();
+            catch (Exception ex)
+            {
+                notificationService.EnviarNotificacao("Erro", ex.Message);
+            }
         }
-
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             var categoria = ViewModel.CategoriaSelecionada;
@@ -240,8 +284,105 @@ namespace Presentation.Views
 
             if ((int)ret > 0)
             {
-                
+
             }
         }
+        private void CheckCredencial_Checked(object sender, RoutedEventArgs e)
+        {
+            HabilitarBtnGerarCredencial();
+        }
+        private void CheckCredencial_Unchecked(object sender, RoutedEventArgs e)
+        {
+            HabilitarBtnGerarCredencial();
+        }
+        private void CheckSenha_Checked(object sender, RoutedEventArgs e)
+        {
+            HabilitarBtnGerarSenha();
+        }
+        private void CheckSenha_Unchecked(object sender, RoutedEventArgs e)
+        {
+            HabilitarBtnGerarSenha();
+        }
+        #endregion
+
+        #region Metodos
+        // operações categoria
+        private void AlternarModoEdicao(bool emEdicao)
+        {
+            btnNovaCategoria.Visibility = emEdicao ? Visibility.Collapsed : Visibility.Visible;
+            btnAlterarCategoria.Visibility = emEdicao ? Visibility.Collapsed : Visibility.Visible;
+            btnExcluirCategoria.Visibility = emEdicao ? Visibility.Collapsed : Visibility.Visible;
+
+            btnSalvarCategoria.Visibility = emEdicao ? Visibility.Visible : Visibility.Collapsed;
+            btnCancelarCategoria.Visibility = emEdicao ? Visibility.Visible : Visibility.Collapsed;
+
+            txtCategoria.IsEnabled = (modoEdicao == ModoEdicao.Editar || modoEdicao == ModoEdicao.Novo);
+            txtCategoria.Focus(FocusState.Keyboard);
+        }
+
+        // Gerar credencial e senha
+        private string ObterLetras(bool minuscula)
+        {
+            string caracteres = "abcdefghijklmnopqrstuvwxyz";
+
+            if (minuscula)
+                return caracteres.ToLower();
+
+            return caracteres.ToUpper();
+        }
+        private string ObterNumeros()
+        {
+            return "0123456789";
+        }
+        private string ObterSimbolos()
+        {
+            return "@#$&*_-";
+        }
+        private bool IsCheckBoxChecked(CheckBox? checkBox)
+        {
+            if (checkBox == null)
+                return false;
+
+            if (checkBox.IsChecked == null)
+                return false;
+
+            return checkBox.IsChecked.Value;
+        }
+        private void HabilitarBtnGerarCredencial()
+        {
+            if (CredencialExpander.Visibility == Visibility.Collapsed)
+                return;
+
+            btnGerarCredencial.IsEnabled =
+                IsCheckBoxChecked(chkLetraMinuscula) ||
+                IsCheckBoxChecked(chkLetraMaiuscula) ||
+                IsCheckBoxChecked(chkNumeros) ||
+                IsCheckBoxChecked(chkSimbolos);
+        }
+        private void HabilitarBtnGerarSenha()
+        {
+            if (SenhaExpander.Visibility == Visibility.Collapsed)
+                return;
+
+            btnGerarSenha.IsEnabled =
+                IsCheckBoxChecked(chkLetraMinusculaSenha) ||
+                IsCheckBoxChecked(chkLetraMaiusculaSenha) ||
+                IsCheckBoxChecked(chkNumerosSenha) ||
+                IsCheckBoxChecked(chkSimbolosSenha);
+        }
+
+        // Scroll behavior
+        private void MoverScrollParaAreaExpandida(GeneralTransform transform)
+        {
+            Point position = transform.TransformPoint(new Point(0, 0));
+
+            MainScrollViewer.ChangeView(null, position.Y, null, true);
+        }
+        private string ObterIconeCampoExpandido(bool expandido)
+        {
+            return (expandido) ? "\uE972" : "\uE971";
+        }
+        #endregion
+
     }
 }
