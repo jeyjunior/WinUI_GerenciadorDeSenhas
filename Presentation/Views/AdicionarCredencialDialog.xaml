@@ -44,7 +44,7 @@
                                           ItemsSource="{Binding Categoria}" 
                                           SelectedItem="{Binding CategoriaSelecionada, Mode=TwoWay}" 
                                           MinWidth="417" 
-                                          HorizontalAlignment="Stretch" />
+                                          HorizontalAlignment="Stretch"/>
                                 
                                 <Button x:Name="btnConfigCategoria" Click="btnConfigCategoria_Click" Grid.Column="1" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DefaultButtonStyle}">
                                     <FontIcon Glyph="&#xE972;" FontFamily="Segoe Fluent Icons" FontSize="16"/>
@@ -103,7 +103,6 @@
 
                             <StackPanel x:Name="CredencialExpander" Grid.Row="1" Spacing="8" Orientation="Vertical" Visibility="Collapsed" Padding="20" Background="{StaticResource Cinza11Transp50}" CornerRadius="10">
                                 <TextBlock Text="Gerar credencial aleatória" HorizontalAlignment="Stretch"/>
-                                
                                 <Border Background="{StaticResource Cinza9}" Height="1"/>
 
                             <CheckBox x:Name="chkLetraMinuscula" Checked="CheckCredencial_Checked" Unchecked="CheckCredencial_Unchecked" Content="Letras minúsculas" IsChecked="True" FlowDirection="LeftToRight"/>
@@ -112,12 +111,12 @@
                             <CheckBox x:Name="chkSimbolos" Checked="CheckCredencial_Checked" Unchecked="CheckCredencial_Unchecked" Content="Símbolos" IsChecked="True"  FlowDirection="LeftToRight"/>
 
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="12">
-                                    <NumberBox x:Name="nbQuantidadeMinimaCredencial" ValueChanged="nbQuantidadeMinimaCredencial_ValueChanged" Value="8" Minimum="3" Maximum="128" SpinButtonPlacementMode="Hidden" MaxWidth="64" HorizontalAlignment="Left"/>
+                                    <NumberBox x:Name="nbQuantidadeMinimaCredencial" ValueChanged="QuantidadeMinima_ValueChanged" Value="8" Minimum="3" Maximum="128" SpinButtonPlacementMode="Hidden" MaxWidth="64" HorizontalAlignment="Left"/>
                                     <TextBlock Text="Quantidade mínima de caracteres" VerticalAlignment="Center"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="12">
-                                    <NumberBox x:Name="nbQuantidadeMaximaCredencial" ValueChanged="nbQuantidadeMaximaCredencial_ValueChanged" Value="16" Minimum="3" Maximum="128" SpinButtonPlacementMode="Hidden" MaxWidth="64" HorizontalAlignment="Left"/>
+                                    <NumberBox x:Name="nbQuantidadeMaximaCredencial" ValueChanged="QuantidadeMaxima_ValueChanged" Value="16" Minimum="3" Maximum="128" SpinButtonPlacementMode="Hidden" MaxWidth="64" HorizontalAlignment="Left"/>
                                     <TextBlock Text="Quantidade máxima de caracteres" VerticalAlignment="Center"/>
                                 </StackPanel>
                                 <Border Background="{StaticResource Cinza9}" Height="1" Margin="0,8,0,0"/>
@@ -127,7 +126,6 @@
                                         <TextBlock Text="Gerar" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
-                                
                             </StackPanel>
 
                         </Grid>
@@ -138,6 +136,7 @@
 
                 <StackPanel x:Name="spSenha" Spacing="6">
                     <TextBlock Text="Senha"/>
+                    
                     <Grid Padding="0">
                         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" RowSpacing="8">
                             <Grid.RowDefinitions>
@@ -163,17 +162,17 @@
                                 <Border Background="{StaticResource Cinza9}" Height="1"/>
                                 
                                 <CheckBox x:Name="chkLetraMinusculaSenha" Checked="CheckSenha_Checked" Unchecked="CheckSenha_Unchecked" Content="Letras minúsculas" IsChecked="True" FlowDirection="LeftToRight"/>
-                            <CheckBox x:Name="chkLetraMaiusculaSenha" Checked="CheckSenha_Checked" Unchecked="CheckSenha_Unchecked" Content="Letras maiúsculas" IsChecked="True"  FlowDirection="LeftToRight"/>
-                            <CheckBox x:Name="chkNumerosSenha" Checked="CheckSenha_Checked" Unchecked="CheckSenha_Unchecked" Content="Números" IsChecked="True"  FlowDirection="LeftToRight"/>
-                            <CheckBox x:Name="chkSimbolosSenha" Checked="CheckSenha_Checked" Unchecked="CheckSenha_Unchecked" Content="Símbolos" IsChecked="True"  FlowDirection="LeftToRight"/>
+                                <CheckBox x:Name="chkLetraMaiusculaSenha" Checked="CheckSenha_Checked" Unchecked="CheckSenha_Unchecked" Content="Letras maiúsculas" IsChecked="True"  FlowDirection="LeftToRight"/>
+                                <CheckBox x:Name="chkNumerosSenha" Checked="CheckSenha_Checked" Unchecked="CheckSenha_Unchecked" Content="Números" IsChecked="True"  FlowDirection="LeftToRight"/>
+                                <CheckBox x:Name="chkSimbolosSenha" Checked="CheckSenha_Checked" Unchecked="CheckSenha_Unchecked" Content="Símbolos" IsChecked="True"  FlowDirection="LeftToRight"/>
 
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="12">
-                                <NumberBox x:Name="nbQuantidadeMinimaSenha" Value="8" Minimum="8" Maximum="128" SpinButtonPlacementMode="Hidden" MaxWidth="64" HorizontalAlignment="Left"/>
+                                <NumberBox x:Name="nbQuantidadeMinimaSenha" ValueChanged="QuantidadeMinima_ValueChanged" Value="8" Minimum="8" Maximum="128" SpinButtonPlacementMode="Hidden" MaxWidth="64" HorizontalAlignment="Left"/>
                                     <TextBlock Text="Quantidade mínima de caracteres" VerticalAlignment="Center"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="12">
-                                <NumberBox x:Name="nbQuantidadeMaximaSenha" Value="16" Minimum="8" Maximum="128" SpinButtonPlacementMode="Hidden" MaxWidth="64" HorizontalAlignment="Left"/>
+                                <NumberBox x:Name="nbQuantidadeMaximaSenha" ValueChanged="QuantidadeMaxima_ValueChanged" Value="16" Minimum="8" Maximum="128" SpinButtonPlacementMode="Hidden" MaxWidth="64" HorizontalAlignment="Left"/>
                                     <TextBlock Text="Quantidade máxima de caracteres" VerticalAlignment="Center"/>
                                 </StackPanel>
                                 <Border Background="{StaticResource Cinza9}" Height="1" Margin="0,8,0,0"/>

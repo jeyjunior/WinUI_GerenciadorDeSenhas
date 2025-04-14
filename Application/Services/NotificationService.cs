@@ -30,6 +30,10 @@ namespace Application.Services
             await dialog.ShowAsync();
         }
 
+        public void EnviarNotificacao(string titulo)
+        {
+            EnviarNotificacao(titulo, "");
+        }
         public void EnviarNotificacao(string titulo, string mensagem, bool duracaoRapida = true)
         {
             var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText02);

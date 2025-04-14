@@ -13,7 +13,6 @@ namespace InfraData.Repository
     {
         public GSCategoriaRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
-
         }
     }
 }

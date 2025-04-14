@@ -17,6 +17,6 @@ namespace Domain.Entidades
         public string Categoria { get; set; }
 
         [Editavel(false)]
-        public ValidarResultado Validar { get; set; } = new ValidarResultado();
+        public ValidarResultado ValidarResultado { get; set; } = new ValidarResultado();
     }
 }

@@ -28,6 +28,7 @@ namespace Presentation.Views
     {
         #region Interfaces
         private readonly ICredencialAppService credencialAppService;
+        private readonly ICategoriaAppService categoriaAppService;
         private readonly INotificationService notificationService;
         #endregion
 
@@ -42,6 +43,7 @@ namespace Presentation.Views
             this.InitializeComponent();
 
             credencialAppService = Bootstrap.Container.GetInstance<ICredencialAppService>();
+            categoriaAppService = Bootstrap.Container.GetInstance<ICategoriaAppService>();
             notificationService = Bootstrap.Container.GetInstance<INotificationService>();
 
             ViewModel = new AdicionarCredencialDialogViewModel();
@@ -53,13 +55,10 @@ namespace Presentation.Views
         #region Eventos
         private void ContentDialog_Loaded(object sender, RoutedEventArgs e)
         {
-            ViewModel.Categoria = credencialAppService.ObterCategoriasObservableCollection();
-
-            var gSCategoria = ViewModel.Categoria.FirstOrDefault();
-            ViewModel.SelecionarCategoria(gSCategoria.PK_GSCategoria);
-
+            BindingCategoria();
             modoEdicao = ModoEdicao.Nenhum;
         }
+
         private async void btnConfigCategoria_Click(object sender, RoutedEventArgs e)
         {
             bool isVisible = CategoriaExpander.Visibility == Visibility.Visible;
@@ -81,32 +80,6 @@ namespace Presentation.Views
         {
             if (ViewModel.CategoriaSelecionada != null && txtCategoria != null)
                 txtCategoria.Text = ViewModel.CategoriaSelecionada.Categoria;
-        }
-        private async void btnConfigCredencial_Click(object sender, RoutedEventArgs e)
-        {
-            bool isVisible = CredencialExpander.Visibility == Visibility.Visible;
-
-            CredencialExpander.Visibility = isVisible ? Visibility.Collapsed : Visibility.Visible;
-
-            if (btnConfigCredencial.Content is FontIcon icon)
-                icon.Glyph = ObterIconeCampoExpandido(isVisible);
-
-            await Task.Delay(50);
-
-            MoverScrollParaAreaExpandida(spCredencial.TransformToVisual(MainScrollViewer));
-        }
-        private async void btnConfigSenha_Click(object sender, RoutedEventArgs e)
-        {
-            bool isVisible = SenhaExpander.Visibility == Visibility.Visible;
-
-            SenhaExpander.Visibility = isVisible ? Visibility.Collapsed : Visibility.Visible;
-
-            if (btnConfigSenha.Content is FontIcon icon)
-                icon.Glyph = ObterIconeCampoExpandido(isVisible);
-
-            await Task.Delay(50);
-
-            MoverScrollParaAreaExpandida(btnGerarSenha.TransformToVisual(MainScrollViewer));
         }
         private void btnExcluirCategoria_Click(object sender, RoutedEventArgs e)
         {
@@ -132,27 +105,66 @@ namespace Presentation.Views
             cboCategoria.Focus(FocusState.Keyboard);
             cboCategoria_SelectionChanged(null, null);
         }
-
         private void btnSalvarCategoria_Click(object sender, RoutedEventArgs e)
         {
-            switch (modoEdicao)
+            try
             {
-                case ModoEdicao.Nenhum:
-                    break;
-                case ModoEdicao.Novo:
-                    break;
-                case ModoEdicao.Editar:
-                    break;
-                case ModoEdicao.Excluir:
-                    break;
-                default:
-                    break;
-            }
+                switch (modoEdicao)
+                {
+                    case ModoEdicao.Nenhum:
+                        break;
+                    case ModoEdicao.Novo:
+                        break;
+                    case ModoEdicao.Editar:
+                        break;
+                    case ModoEdicao.Excluir:
 
-            modoEdicao = ModoEdicao.Nenhum;
-            AlternarModoEdicao(false);
-            cboCategoria.Focus(FocusState.Keyboard);
-            cboCategoria_SelectionChanged(null, null);
+                        if (ViewModel.CategoriaSelecionada == null)
+                        {
+                            notificationService.EnviarNotificacao("Não foi possível identificar a categoria selecionada.");
+                            return;
+                        }
+
+                        var ret = categoriaAppService.DeletarCategoria(ViewModel.CategoriaSelecionada.PK_GSCategoria);
+
+                        if (!ret)
+                        {
+                            notificationService.EnviarNotificacao("Não foi possível deletar a categoria selecionada.");
+                            return;
+                        }
+
+                        notificationService.EnviarNotificacao($"Categoria {ViewModel.CategoriaSelecionada.Categoria} deletada com sucesso.");
+                        BindingCategoria();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                notificationService.EnviarNotificacao(ex.Message);
+            }
+            finally
+            {
+                modoEdicao = ModoEdicao.Nenhum;
+                AlternarModoEdicao(false);
+                cboCategoria.Focus(FocusState.Keyboard);
+                cboCategoria_SelectionChanged(null, null);
+            }
+        }
+        
+        private async void btnConfigCredencial_Click(object sender, RoutedEventArgs e)
+        {
+            bool isVisible = CredencialExpander.Visibility == Visibility.Visible;
+
+            CredencialExpander.Visibility = isVisible ? Visibility.Collapsed : Visibility.Visible;
+
+            if (btnConfigCredencial.Content is FontIcon icon)
+                icon.Glyph = ObterIconeCampoExpandido(isVisible);
+
+            await Task.Delay(50);
+
+            MoverScrollParaAreaExpandida(spCredencial.TransformToVisual(MainScrollViewer));
         }
         private void btnGerarCredencial_Click(object sender, RoutedEventArgs e)
         {
@@ -203,19 +215,27 @@ namespace Presentation.Views
                 notificationService.EnviarNotificacao("Erro", ex.Message);
             }
         }
-        private void nbQuantidadeMaximaCredencial_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
+        private void CheckCredencial_Checked(object sender, RoutedEventArgs e)
         {
-            if (double.IsNaN(sender.Value))
-            {
-                sender.Value = sender.Minimum;
-            }
+            HabilitarBtnGerarCredencial();
         }
-        private void nbQuantidadeMinimaCredencial_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
+        private void CheckCredencial_Unchecked(object sender, RoutedEventArgs e)
         {
-            if (double.IsNaN(sender.Value))
-            {
-                sender.Value = sender.Minimum;
-            }
+            HabilitarBtnGerarCredencial();
+        }
+
+        private async void btnConfigSenha_Click(object sender, RoutedEventArgs e)
+        {
+            bool isVisible = SenhaExpander.Visibility == Visibility.Visible;
+
+            SenhaExpander.Visibility = isVisible ? Visibility.Collapsed : Visibility.Visible;
+
+            if (btnConfigSenha.Content is FontIcon icon)
+                icon.Glyph = ObterIconeCampoExpandido(isVisible);
+
+            await Task.Delay(50);
+
+            MoverScrollParaAreaExpandida(btnGerarSenha.TransformToVisual(MainScrollViewer));
         }
         private void btnGerarSenha_Click(object sender, RoutedEventArgs e)
         {
@@ -266,6 +286,29 @@ namespace Presentation.Views
                 notificationService.EnviarNotificacao("Erro", ex.Message);
             }
         }
+        private void CheckSenha_Checked(object sender, RoutedEventArgs e)
+        {
+            HabilitarBtnGerarSenha();
+        }
+        private void CheckSenha_Unchecked(object sender, RoutedEventArgs e)
+        {
+            HabilitarBtnGerarSenha();
+        }
+
+        private void QuantidadeMaxima_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
+        {
+            if (double.IsNaN(sender.Value))
+            {
+                sender.Value = sender.Minimum;
+            }
+        }
+        private void QuantidadeMinima_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
+        {
+            if (double.IsNaN(sender.Value))
+            {
+                sender.Value = sender.Minimum;
+            }
+        }
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             var categoria = ViewModel.CategoriaSelecionada;
@@ -287,22 +330,6 @@ namespace Presentation.Views
 
             }
         }
-        private void CheckCredencial_Checked(object sender, RoutedEventArgs e)
-        {
-            HabilitarBtnGerarCredencial();
-        }
-        private void CheckCredencial_Unchecked(object sender, RoutedEventArgs e)
-        {
-            HabilitarBtnGerarCredencial();
-        }
-        private void CheckSenha_Checked(object sender, RoutedEventArgs e)
-        {
-            HabilitarBtnGerarSenha();
-        }
-        private void CheckSenha_Unchecked(object sender, RoutedEventArgs e)
-        {
-            HabilitarBtnGerarSenha();
-        }
         #endregion
 
         #region Metodos
@@ -321,6 +348,7 @@ namespace Presentation.Views
         }
 
         // Gerar credencial e senha
+
         private string ObterLetras(bool minuscula)
         {
             string caracteres = "abcdefghijklmnopqrstuvwxyz";
@@ -382,7 +410,15 @@ namespace Presentation.Views
         {
             return (expandido) ? "\uE972" : "\uE971";
         }
-        #endregion
 
+        // Binding
+        private void BindingCategoria()
+        {
+            ViewModel.Categoria = categoriaAppService.ObterCategoriasObservableCollection();
+
+            var gSCategoria = ViewModel.Categoria.FirstOrDefault();
+            ViewModel.SelecionarCategoria(gSCategoria.PK_GSCategoria);
+        }
+        #endregion
     }
 }

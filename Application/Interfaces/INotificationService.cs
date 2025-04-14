@@ -10,6 +10,7 @@ namespace Application.Interfaces
     public interface INotificationService
     {
         Task ExibirErroAsync(string mensagem, XamlRoot xamlRoot);
+        void EnviarNotificacao(string titulo);
         void EnviarNotificacao(string titulo, string mensagem, bool duracaoRapida = true);
     }
 }

@@ -22,14 +22,13 @@ namespace Application.Services
     {
         #region Interface
         private readonly IGSCredencialRepository gSCredencialRepository;
-        private readonly IGSCategoriaRepository gSCategoriaRepository;
+        
         #endregion
 
         #region Construtor
         public CredencialAppService()
         {
             gSCredencialRepository = Bootstrap.Container.GetInstance<IGSCredencialRepository>();
-            gSCategoriaRepository = Bootstrap.Container.GetInstance<IGSCategoriaRepository>();
         }
         #endregion
 
@@ -114,20 +113,6 @@ namespace Application.Services
             return tipoDeOrdenacao;
         }
 
-        public IEnumerable<GSCategoria> ObterCategorias()
-        {
-            return gSCategoriaRepository.ObterLista();
-        }
-        public ObservableCollection<GSCategoria> ObterCategoriasObservableCollection()
-        {
-            var gSCategoria = gSCategoriaRepository.ObterLista().OrderBy(i => i.Categoria);
-            var gSCategoriaObservableCollection = new ObservableCollection<GSCategoria>();
-
-            foreach (var item in gSCategoria)
-                gSCategoriaObservableCollection.Add(item);
-
-            return gSCategoriaObservableCollection;
-        }
 
         public int SalvarCredencial(GSCredencial gSCredencial)
         {

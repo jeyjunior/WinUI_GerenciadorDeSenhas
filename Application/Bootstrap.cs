@@ -42,6 +42,7 @@ namespace Application
 
                 // APP SERVICE
                 Container.Register<ICredencialAppService, CredencialAppService>(Lifestyle.Singleton);
+                Container.Register<ICategoriaAppService, CategoriaAppService>(Lifestyle.Singleton);
                 Container.Register<INotificationService, NotificationService>(Lifestyle.Singleton);
 
                 // VIEW MODELS
