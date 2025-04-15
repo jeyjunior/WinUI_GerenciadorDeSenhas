@@ -34,11 +34,13 @@ namespace Presentation.Views
 
         #region Propriedades
         private AdicionarCredencialDialogViewModel ViewModel;
-        private ModoEdicao modoEdicao;
+        private ModoEdicao modoEdicaoCategoria;
+        private ModoEdicao modoEdicaoTela;
+        private GSCredencial gSCredencialSelecionada;
         #endregion
 
         #region Construtor
-        public AdicionarCredencialDialog()
+        public AdicionarCredencialDialog(GSCredencial gSCredencial = null)
         {
             this.InitializeComponent();
 
@@ -46,8 +48,10 @@ namespace Presentation.Views
             categoriaAppService = Bootstrap.Container.GetInstance<ICategoriaAppService>();
             notificationService = Bootstrap.Container.GetInstance<INotificationService>();
 
+            this.modoEdicaoTela = (gSCredencial == null ? ModoEdicao.Novo : ModoEdicao.Editar);
+            this.gSCredencialSelecionada = gSCredencial;
+            
             ViewModel = new AdicionarCredencialDialogViewModel();
-
             this.cboCategoria.DataContext = ViewModel;
         }
         #endregion
@@ -55,8 +59,8 @@ namespace Presentation.Views
         #region Eventos
         private void ContentDialog_Loaded(object sender, RoutedEventArgs e)
         {
-            BindingCategoria();
-            modoEdicao = ModoEdicao.Nenhum;
+            BindTela();
+            modoEdicaoCategoria = ModoEdicao.Nenhum;
         }
 
         private async void btnConfigCategoria_Click(object sender, RoutedEventArgs e)
@@ -83,24 +87,24 @@ namespace Presentation.Views
         }
         private void btnExcluirCategoria_Click(object sender, RoutedEventArgs e)
         {
-            modoEdicao = ModoEdicao.Excluir;
+            modoEdicaoCategoria = ModoEdicao.Excluir;
             AlternarModoEdicao(true);
             btnCancelarCategoria.Focus(FocusState.Keyboard);
         }
         private void btnAlterarCategoria_Click(object sender, RoutedEventArgs e)
         {
-            modoEdicao = ModoEdicao.Editar;
+            modoEdicaoCategoria = ModoEdicao.Editar;
             AlternarModoEdicao(true);
         }
         private void btnNovaCategoria_Click(object sender, RoutedEventArgs e)
         {
             txtCategoria.Text = "";
-            modoEdicao = ModoEdicao.Novo;
+            modoEdicaoCategoria = ModoEdicao.Novo;
             AlternarModoEdicao(true);
         }
         private void btnCancelarCategoria_Click(object sender, RoutedEventArgs e)
         {
-            modoEdicao = ModoEdicao.Nenhum;
+            modoEdicaoCategoria = ModoEdicao.Nenhum;
             AlternarModoEdicao(false);
             cboCategoria.Focus(FocusState.Keyboard);
             cboCategoria_SelectionChanged(null, null);
@@ -109,7 +113,7 @@ namespace Presentation.Views
         {
             try
             {
-                switch (modoEdicao)
+                switch (modoEdicaoCategoria)
                 {
                     case ModoEdicao.Nenhum:
                         break;
@@ -134,7 +138,7 @@ namespace Presentation.Views
                         }
 
                         notificationService.EnviarNotificacao($"Categoria {ViewModel.CategoriaSelecionada.Categoria} deletada com sucesso.");
-                        BindingCategoria();
+                        BindCategoria();
                         break;
                     default:
                         break;
@@ -146,7 +150,7 @@ namespace Presentation.Views
             }
             finally
             {
-                modoEdicao = ModoEdicao.Nenhum;
+                modoEdicaoCategoria = ModoEdicao.Nenhum;
                 AlternarModoEdicao(false);
                 cboCategoria.Focus(FocusState.Keyboard);
                 cboCategoria_SelectionChanged(null, null);
@@ -309,10 +313,10 @@ namespace Presentation.Views
                 sender.Value = sender.Minimum;
             }
         }
-        private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        
+        private void SalvarCredencial_Click(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             var categoria = ViewModel.CategoriaSelecionada;
-
             string credencial = txtCredencial.Text.ObterValorOuPadrao("").Trim();
             string senha = txtSenha.Text.ObterValorOuPadrao("").Trim();
 
@@ -321,13 +325,14 @@ namespace Presentation.Views
                 Credencial = credencial,
                 Senha = senha,
                 FK_GSCategoria = categoria.PK_GSCategoria,
+                DataCriacao = DateTime.Now,
             };
 
             var ret = credencialAppService.SalvarCredencial(gSCredencial);
 
             if ((int)ret > 0)
             {
-
+                notificationService.EnviarNotificacao("Credencial foi salva com sucesso.");
             }
         }
         #endregion
@@ -343,7 +348,7 @@ namespace Presentation.Views
             btnSalvarCategoria.Visibility = emEdicao ? Visibility.Visible : Visibility.Collapsed;
             btnCancelarCategoria.Visibility = emEdicao ? Visibility.Visible : Visibility.Collapsed;
 
-            txtCategoria.IsEnabled = (modoEdicao == ModoEdicao.Editar || modoEdicao == ModoEdicao.Novo);
+            txtCategoria.IsEnabled = (modoEdicaoCategoria == ModoEdicao.Editar || modoEdicaoCategoria == ModoEdicao.Novo);
             txtCategoria.Focus(FocusState.Keyboard);
         }
 
@@ -412,12 +417,34 @@ namespace Presentation.Views
         }
 
         // Binding
-        private void BindingCategoria()
+        private void BindTela()
+        {
+            BindCategoria();
+
+            if (modoEdicaoTela == ModoEdicao.Editar)
+            {
+                txtCredencial.Text = gSCredencialSelecionada.Credencial.ObterValorOuPadrao("");
+                txtSenha.Text = gSCredencialSelecionada.Senha.ObterValorOuPadrao("");
+            }
+            else
+            {
+                txtCredencial.Text = "";
+                txtSenha.Text = "";
+            }
+        }
+
+        private void BindCategoria()
         {
             ViewModel.Categoria = categoriaAppService.ObterCategoriasObservableCollection();
 
-            var gSCategoria = ViewModel.Categoria.FirstOrDefault();
-            ViewModel.SelecionarCategoria(gSCategoria.PK_GSCategoria);
+            if (modoEdicaoTela == ModoEdicao.Editar && gSCredencialSelecionada.FK_GSCategoria.ObterValorOuPadrao(0) != 0)
+            {
+                ViewModel.SelecionarCategoria(gSCredencialSelecionada.FK_GSCategoria.ObterValorOuPadrao(0));
+            }
+            else
+            {
+                ViewModel.SelecionarCategoriaPorIndice(0);
+            }
         }
         #endregion
     }

@@ -24,6 +24,7 @@ using Domain.Entidades;
 using Domain.Enumeradores;
 using Application;
 using Application.Interfaces;
+using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 
 namespace Presentation.Views
 {
@@ -31,6 +32,7 @@ namespace Presentation.Views
     {
         #region Interfaces
         private readonly ICredencialAppService credencialAppService;
+        private readonly INotificationService notificationService;
         #endregion
 
         #region Propriedades
@@ -45,6 +47,7 @@ namespace Presentation.Views
             this.InitializeComponent();
 
             credencialAppService = Bootstrap.Container.GetInstance<ICredencialAppService>();
+            notificationService = Bootstrap.Container.GetInstance<INotificationService>();
 
             ViewModel = new MainWindowViewModel();
 
@@ -70,7 +73,7 @@ namespace Presentation.Views
             }
             catch (Exception ex)
             {
-                await ExibirErro(ex.Message);
+                await notificationService.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
             }
         }
         private async void btnCopiarCredencial_Click(object sender, RoutedEventArgs e)
@@ -91,7 +94,7 @@ namespace Presentation.Views
             }
             catch (Exception ex)
             {
-                await ExibirErro(ex.Message);
+                await notificationService.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
             }
         }
         private async void btnExibirSenha_Click(object sender, RoutedEventArgs e)
@@ -127,14 +130,10 @@ namespace Presentation.Views
                     if (button.Content is FontIcon icon)
                         icon.Glyph = "\uE890";
                 }
-
-
-
-                //E890
             }
             catch (Exception ex)
             {
-                await ExibirErro(ex.Message);
+                await notificationService.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
             }
         }
         private async void btnCopiarSenha_Click(object sender, RoutedEventArgs e)
@@ -166,7 +165,7 @@ namespace Presentation.Views
             }
             catch (Exception ex)
             {
-                await ExibirErro(ex.Message);
+                await notificationService.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
             }
         }
         private async void btnExcluir_Click(object sender, RoutedEventArgs e)
@@ -191,7 +190,7 @@ namespace Presentation.Views
                 var credencial = ObterCredencialViewModel(sender);
                 if (credencial == null)
                 {
-                    await ExibirErro("Não foi possível encontrar credencial para excluir.");
+                    notificationService.EnviarNotificacao("Não foi possível encontrar credencial para excluir.");
                     return;
                 }
 
@@ -199,16 +198,16 @@ namespace Presentation.Views
 
                 if (!ret)
                 {
-                    await ExibirErro("Não foi possível deletar credencial.");
+                    notificationService.EnviarNotificacao("Não foi possível deletar credencial.");
                     return;
                 }
 
                 ViewModel.Credenciais.Remove(credencial);
-                EnviarNotificacao("Exclusão de credencial.", $"{credencial.Credencial} foi excluída com sucesso.");
+                notificationService.EnviarNotificacao($"{credencial.Credencial} foi excluída com sucesso.");
             }
             catch (Exception ex)
             {
-                await ExibirErro(ex.Message);
+                await notificationService.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
             }
             finally
             {
@@ -217,18 +216,11 @@ namespace Presentation.Views
         }
         private void btnAlterar_Click(object sender, RoutedEventArgs e)
         {
-
+            AbrirTelaAdicionarCredencial(sender);
         }
-
-        private async void btnAdicionar_Click(object sender, RoutedEventArgs e)
+        private void btnAdicionar_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new AdicionarCredencialDialog();
-            dialog.XamlRoot = this.Content.XamlRoot;
-
-            var result = await dialog.ShowAsync();
-
-            if (result == ContentDialogResult.Primary)
-                Pesquisar();
+            AbrirTelaAdicionarCredencial();
         }
         #endregion
 
@@ -267,7 +259,7 @@ namespace Presentation.Views
             }
             catch (Exception ex)
             {
-                await ExibirErro(ex.Message);
+                await notificationService.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
             }
         }
         private void BindPrincipal()
@@ -371,31 +363,21 @@ namespace Presentation.Views
 
             button.IsEnabled = true;
         }
-        private async Task ExibirErro(string mensagem)
+        
+        private async void AbrirTelaAdicionarCredencial(object credencial = null)
         {
-            ContentDialog dialog = new ContentDialog
-            {
-                Title = "Erro",
-                Content = mensagem,
-                CloseButtonText = "OK",
-                XamlRoot = this.Content.XamlRoot
-            };
+            AdicionarCredencialDialog dialog = null;
+            GSCredencial? gSCredencial = null;
 
+            var credencialViewModel = ObterCredencialViewModel(credencial);
+            if (credencialViewModel != null)
+                gSCredencial = credencialAppService.PesquisarPorID(credencialViewModel.PK_GSCredencial);
+
+            dialog = new AdicionarCredencialDialog(gSCredencial);
+            dialog.XamlRoot = this.Content.XamlRoot;
             await dialog.ShowAsync();
-        }
-        private void EnviarNotificacao(string titulo, string mensagem)
-        {
-            var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText02);
 
-            var toastElement = (Windows.Data.Xml.Dom.XmlElement)toastXml.SelectSingleNode("/toast");
-            toastElement.SetAttribute("duration", "short");
-
-            var toastTextElements = toastXml.GetElementsByTagName("text");
-            toastTextElements[0].AppendChild(toastXml.CreateTextNode(titulo));
-            toastTextElements[1].AppendChild(toastXml.CreateTextNode(mensagem));
-
-            var toast = new ToastNotification(toastXml);
-            ToastNotificationManager.CreateToastNotifier().Show(toast);
+            Pesquisar();
         }
         #endregion
     }

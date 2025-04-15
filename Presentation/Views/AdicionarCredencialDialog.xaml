@@ -10,7 +10,7 @@
     PrimaryButtonText="Salvar"
     SecondaryButtonText="Cancelar"
     DefaultButton="Primary"
-    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    PrimaryButtonClick="SalvarCredencial_Click"
     SecondaryButtonStyle="{StaticResource DefaultButtonStyle}" Loaded="ContentDialog_Loaded">
 
         <ScrollViewer x:Name="MainScrollViewer" VerticalScrollBarVisibility="Auto" Padding="0">

@@ -16,7 +16,6 @@ using Domain.Entidades;
 using InfraData.Repository;
 using Application.Services;
 using Application.Interfaces;
-using Microsoft.UI.Xaml.Controls;
 
 
 namespace Application
@@ -165,7 +164,6 @@ namespace Application
                 throw new Exception("Erro inesperado ao inserir informações iniciais", ex);
             }
         }
-
         #region Teste
         public static void InserirInformacoesTeste()
         {

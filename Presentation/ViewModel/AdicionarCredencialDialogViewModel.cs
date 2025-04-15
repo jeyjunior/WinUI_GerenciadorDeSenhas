@@ -51,6 +51,15 @@ namespace Presentation.ViewModel
 
             return true;
         }
+
+        public bool SelecionarCategoriaPorIndice(int indice)
+        {
+            if (indice < 0 || indice >= Categoria.Count)
+                return false;
+
+            CategoriaSelecionada = Categoria[indice];
+            return true;
+        }
         #endregion
 
         #region Metodos
