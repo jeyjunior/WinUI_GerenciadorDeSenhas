@@ -39,7 +39,10 @@ namespace Application.Services
         }
         public ObservableCollection<GSCategoria> ObterCategoriasObservableCollection()
         {
-            var gSCategoria = gSCategoriaRepository.ObterLista().OrderBy(i => i.Categoria);
+            List<GSCategoria> gSCategoria = gSCategoriaRepository.ObterLista().ToList();
+            gSCategoria.Add(new GSCategoria { PK_GSCategoria = 0, Categoria = "" });
+            gSCategoria = gSCategoria.OrderBy(i => i.Categoria).ToList();
+
             var gSCategoriaObservableCollection = new ObservableCollection<GSCategoria>();
 
             foreach (var item in gSCategoria)
@@ -74,7 +77,6 @@ namespace Application.Services
 
             return ret;
         }
-
         public int SalvarCategoria(GSCategoria gSCategoria)
         {
             if (gSCategoria == null)

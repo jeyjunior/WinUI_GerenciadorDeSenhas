@@ -44,6 +44,7 @@
                                           ItemsSource="{Binding Categoria}" 
                                           SelectedItem="{Binding CategoriaSelecionada, Mode=TwoWay}" 
                                           MinWidth="417" 
+                                          MaxWidth="417"
                                           HorizontalAlignment="Stretch"/>
                                 
                                 <Button x:Name="btnConfigCategoria" Click="btnConfigCategoria_Click" Grid.Column="1" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DefaultButtonStyle}">
@@ -53,7 +54,7 @@
 
                             <StackPanel x:Name="CategoriaExpander" Grid.Row="1" Spacing="8" Orientation="Vertical" Visibility="Collapsed" Padding="20" Background="{StaticResource Cinza11Transp50}" CornerRadius="10">
                                 <TextBlock Text="Editar categoria" HorizontalAlignment="Stretch"/>
-                                <TextBox x:Name="txtCategoria" Text="" HorizontalAlignment="Stretch" IsEnabled="False"/>
+                                <TextBox x:Name="txtCategoria" Text="" MaxLength="40" HorizontalAlignment="Stretch" IsEnabled="False"/>
 
                                 <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
                                     <Button x:Name="btnExcluirCategoria" Click="btnExcluirCategoria_Click" Padding="0" Width="32" Height="32" ToolTipService.ToolTip="Excluir Categoria" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
@@ -95,7 +96,7 @@
                                     <ColumnDefinition Width="32"/>
                                 </Grid.ColumnDefinitions>
 
-                                <TextBox x:Name="txtCredencial" MinWidth="417" MaxWidth="417" HorizontalAlignment="Stretch" />
+                                <TextBox x:Name="txtCredencial" MinWidth="417" MaxWidth="417" MaxLength="128" HorizontalAlignment="Stretch" />
                                 <Button x:Name="btnConfigCredencial" Click="btnConfigCredencial_Click" Grid.Column="1" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DefaultButtonStyle}">
                                     <FontIcon Glyph="&#xE972;" FontFamily="Segoe Fluent Icons" FontSize="16"/>
                                 </Button>
@@ -150,7 +151,7 @@
                                     <ColumnDefinition Width="32"/>
                                 </Grid.ColumnDefinitions>
 
-                                <TextBox x:Name="txtSenha" MinWidth="417" MaxWidth="417" HorizontalAlignment="Stretch" />
+                                <TextBox x:Name="txtSenha" MinWidth="417" MaxWidth="417" MaxLength="128" HorizontalAlignment="Stretch" />
                                 <Button x:Name="btnConfigSenha" Click="btnConfigSenha_Click" Grid.Column="1" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DefaultButtonStyle}">
                                     <FontIcon Glyph="&#xE972;" FontFamily="Segoe Fluent Icons" FontSize="16"/>
                                 </Button>
@@ -190,5 +191,4 @@
 
             </StackPanel>
         </ScrollViewer>
-
 </ContentDialog>

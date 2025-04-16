@@ -24,7 +24,6 @@ using Domain.Entidades;
 using Domain.Enumeradores;
 using Application;
 using Application.Interfaces;
-using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 
 namespace Presentation.Views
 {
@@ -54,7 +53,6 @@ namespace Presentation.Views
             this.cboTipoDeOrdenacao.DataContext = ViewModel;
             this.cboTipoDePesquisa.DataContext = ViewModel;
             this.listaCredenciais.DataContext = ViewModel;
-
             Load();
         }
         #endregion
@@ -203,8 +201,7 @@ namespace Presentation.Views
                 }
 
                 ViewModel.Credenciais.Remove(credencial);
-                notificationService.EnviarNotificacao($"{credencial.Credencial} foi excluída com sucesso.");
-            }
+}
             catch (Exception ex)
             {
                 await notificationService.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
@@ -222,6 +219,11 @@ namespace Presentation.Views
         {
             AbrirTelaAdicionarCredencial();
         }
+        private void txtPesquisa_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.Enter)
+                btnPesquisar_Click(null, null);
+        }
         #endregion
 
         #region Metodos
@@ -234,6 +236,8 @@ namespace Presentation.Views
             ViewModel.SelecionarTipoDePesquisa(0);
 
             Pesquisar();
+
+            txtPesquisa.Focus(FocusState.Keyboard);
         }
         private async void Pesquisar()
         {
@@ -363,7 +367,6 @@ namespace Presentation.Views
 
             button.IsEnabled = true;
         }
-        
         private async void AbrirTelaAdicionarCredencial(object credencial = null)
         {
             AdicionarCredencialDialog dialog = null;

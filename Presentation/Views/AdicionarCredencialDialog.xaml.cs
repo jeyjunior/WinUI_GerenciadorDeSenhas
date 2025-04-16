@@ -75,37 +75,49 @@ namespace Presentation.Views
             if (ViewModel.CategoriaSelecionada != null)
                 txtCategoria.Text = ViewModel.CategoriaSelecionada.Categoria;
 
-            AlternarModoEdicao(false);
+            AlternarModoEdicaoCategoria(false);
 
             await Task.Delay(50);
             MoverScrollParaAreaExpandida(spPrincipal.TransformToVisual(MainScrollViewer));
         }
         private void cboCategoria_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            txtCategoria.Text = "";
+
             if (ViewModel.CategoriaSelecionada != null && txtCategoria != null)
                 txtCategoria.Text = ViewModel.CategoriaSelecionada.Categoria;
+
+            if (CategoriaExpander.Visibility == Visibility.Visible)
+            {
+                modoEdicaoCategoria = ModoEdicao.Nenhum;
+                AlternarModoEdicaoCategoria(false);
+                cboCategoria.Focus(FocusState.Keyboard);
+            }
         }
         private void btnExcluirCategoria_Click(object sender, RoutedEventArgs e)
         {
+            if (ViewModel.CategoriaSelecionada == null)
+                return;
+
             modoEdicaoCategoria = ModoEdicao.Excluir;
-            AlternarModoEdicao(true);
+            AlternarModoEdicaoCategoria(true);
             btnCancelarCategoria.Focus(FocusState.Keyboard);
         }
         private void btnAlterarCategoria_Click(object sender, RoutedEventArgs e)
         {
             modoEdicaoCategoria = ModoEdicao.Editar;
-            AlternarModoEdicao(true);
+            AlternarModoEdicaoCategoria(true);
         }
         private void btnNovaCategoria_Click(object sender, RoutedEventArgs e)
         {
             txtCategoria.Text = "";
             modoEdicaoCategoria = ModoEdicao.Novo;
-            AlternarModoEdicao(true);
+            AlternarModoEdicaoCategoria(true);
         }
         private void btnCancelarCategoria_Click(object sender, RoutedEventArgs e)
         {
             modoEdicaoCategoria = ModoEdicao.Nenhum;
-            AlternarModoEdicao(false);
+            AlternarModoEdicaoCategoria(false);
             cboCategoria.Focus(FocusState.Keyboard);
             cboCategoria_SelectionChanged(null, null);
         }
@@ -118,17 +130,40 @@ namespace Presentation.Views
                     case ModoEdicao.Nenhum:
                         break;
                     case ModoEdicao.Novo:
-                        break;
-                    case ModoEdicao.Editar:
-                        break;
-                    case ModoEdicao.Excluir:
-
-                        if (ViewModel.CategoriaSelecionada == null)
+                        var gSCategoriaNovo = new GSCategoria
                         {
-                            notificationService.EnviarNotificacao("Não foi possível identificar a categoria selecionada.");
+                            PK_GSCategoria = 0,
+                            Categoria = txtCategoria.Text.ObterValorOuPadrao("").Trim(),
+                        };
+
+                        int pK_GSCategoria = categoriaAppService.SalvarCategoria(gSCategoriaNovo);
+                        if (pK_GSCategoria <= 0)
+                        {
+                            BindCategoria();
+                            notificationService.EnviarNotificacao("Não foi possível adicionar uma nova categoria.");
                             return;
                         }
 
+                        BindCategoria(pK_GSCategoria);
+                        break;
+                    case ModoEdicao.Editar:
+                        var gSCategoriaAtualizar = new GSCategoria
+                        {
+                            PK_GSCategoria = ViewModel.CategoriaSelecionada.PK_GSCategoria,
+                            Categoria = txtCategoria.Text.ObterValorOuPadrao("").Trim(),
+                        };
+
+                        int categoriaAtualizada = categoriaAppService.SalvarCategoria(gSCategoriaAtualizar);
+
+                        if (categoriaAtualizada <= 0)
+                        {
+                            notificationService.EnviarNotificacao("Não foi possível atualizar a categoria selecionada.");
+                            return;
+                        }
+
+                        BindCategoria(gSCategoriaAtualizar.PK_GSCategoria);
+                        break;
+                    case ModoEdicao.Excluir:
                         var ret = categoriaAppService.DeletarCategoria(ViewModel.CategoriaSelecionada.PK_GSCategoria);
 
                         if (!ret)
@@ -136,8 +171,6 @@ namespace Presentation.Views
                             notificationService.EnviarNotificacao("Não foi possível deletar a categoria selecionada.");
                             return;
                         }
-
-                        notificationService.EnviarNotificacao($"Categoria {ViewModel.CategoriaSelecionada.Categoria} deletada com sucesso.");
                         BindCategoria();
                         break;
                     default:
@@ -151,7 +184,7 @@ namespace Presentation.Views
             finally
             {
                 modoEdicaoCategoria = ModoEdicao.Nenhum;
-                AlternarModoEdicao(false);
+                AlternarModoEdicaoCategoria(false);
                 cboCategoria.Focus(FocusState.Keyboard);
                 cboCategoria_SelectionChanged(null, null);
             }
@@ -324,9 +357,15 @@ namespace Presentation.Views
             {
                 Credencial = credencial,
                 Senha = senha,
-                FK_GSCategoria = categoria.PK_GSCategoria,
+                FK_GSCategoria = categoria?.PK_GSCategoria,
                 DataCriacao = DateTime.Now,
             };
+
+            if (modoEdicaoTela == ModoEdicao.Editar)
+            {
+                gSCredencial.PK_GSCredencial = gSCredencialSelecionada.PK_GSCredencial;
+                gSCredencial.DataCriacao = gSCredencialSelecionada.DataCriacao;
+            }
 
             var ret = credencialAppService.SalvarCredencial(gSCredencial);
 
@@ -339,8 +378,31 @@ namespace Presentation.Views
 
         #region Metodos
         // operações categoria
-        private void AlternarModoEdicao(bool emEdicao)
+        private void AlternarModoEdicaoCategoria(bool emEdicao)
         {
+            btnNovaCategoria.Visibility = Visibility.Visible;
+            btnAlterarCategoria.Visibility = Visibility.Visible;
+            btnExcluirCategoria.Visibility = Visibility.Visible;
+
+            btnSalvarCategoria.Visibility = Visibility.Collapsed;
+            btnCancelarCategoria.Visibility = Visibility.Collapsed;
+            btnNovaCategoria.IsEnabled = true;
+
+            if (ViewModel.CategoriaSelecionada != null && modoEdicaoCategoria != ModoEdicao.Novo)
+            {
+                if (ViewModel.CategoriaSelecionada.PK_GSCategoria <= 0)
+                {
+                    btnAlterarCategoria.IsEnabled = false;
+                    btnExcluirCategoria.IsEnabled = false;
+                    return;
+                }
+                else
+                {
+                    btnAlterarCategoria.IsEnabled = true;
+                    btnExcluirCategoria.IsEnabled = true;
+                }
+            }
+
             btnNovaCategoria.Visibility = emEdicao ? Visibility.Collapsed : Visibility.Visible;
             btnAlterarCategoria.Visibility = emEdicao ? Visibility.Collapsed : Visibility.Visible;
             btnExcluirCategoria.Visibility = emEdicao ? Visibility.Collapsed : Visibility.Visible;
@@ -353,7 +415,6 @@ namespace Presentation.Views
         }
 
         // Gerar credencial e senha
-
         private string ObterLetras(bool minuscula)
         {
             string caracteres = "abcdefghijklmnopqrstuvwxyz";
@@ -424,7 +485,7 @@ namespace Presentation.Views
             if (modoEdicaoTela == ModoEdicao.Editar)
             {
                 txtCredencial.Text = gSCredencialSelecionada.Credencial.ObterValorOuPadrao("");
-                txtSenha.Text = gSCredencialSelecionada.Senha.ObterValorOuPadrao("");
+                txtSenha.Text = credencialAppService.Descriptografar(gSCredencialSelecionada.Senha, gSCredencialSelecionada.IVSenha);
             }
             else
             {
@@ -432,7 +493,6 @@ namespace Presentation.Views
                 txtSenha.Text = "";
             }
         }
-
         private void BindCategoria()
         {
             ViewModel.Categoria = categoriaAppService.ObterCategoriasObservableCollection();
@@ -445,6 +505,11 @@ namespace Presentation.Views
             {
                 ViewModel.SelecionarCategoriaPorIndice(0);
             }
+        }
+        private void BindCategoria(int pK_GSCategoria)
+        {
+            ViewModel.Categoria = categoriaAppService.ObterCategoriasObservableCollection();
+            ViewModel.SelecionarCategoria(pK_GSCategoria);
         }
         #endregion
     }

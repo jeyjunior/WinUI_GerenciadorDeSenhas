@@ -45,7 +45,6 @@ namespace Application
                 Container.Register<INotificationService, NotificationService>(Lifestyle.Singleton);
 
                 // VIEW MODELS
-
                 Container = Bootstrap.Container;
                 Container.Verify();
 
@@ -69,8 +68,8 @@ namespace Application
             var uow = Container.GetInstance<IUnitOfWork>();
 
             CriarTabelas(uow);
-            InserirInformacoesIniciais(uow);
-            //InserirInformacoesTeste();
+            // InserirInformacoesIniciais(uow);
+            // InserirInformacoesTeste();
         }
         private static void CriarTabelas(IUnitOfWork uow)
         {
@@ -164,6 +163,7 @@ namespace Application
                 throw new Exception("Erro inesperado ao inserir informações iniciais", ex);
             }
         }
+
         #region Teste
         public static void InserirInformacoesTeste()
         {

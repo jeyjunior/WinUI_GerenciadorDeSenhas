@@ -15,7 +15,7 @@
   <mp:PhoneIdentity PhoneProductId="cb954ba2-1742-4aec-be51-07dd614a0ff0" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>Presentation</DisplayName>
+    <DisplayName>Gerenciador de Senhas</DisplayName>
     <PublisherDisplayName>jeyjr</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>

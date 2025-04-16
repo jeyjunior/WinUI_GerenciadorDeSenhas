@@ -113,7 +113,6 @@ namespace Application.Services
             return tipoDeOrdenacao;
         }
 
-
         public int SalvarCredencial(GSCredencial gSCredencial)
         {
             if (gSCredencial == null)
@@ -143,7 +142,7 @@ namespace Application.Services
                 DataModificacao = (atualizarRegistro) ? DateTime.Now : gSCredencial.DataCriacao,
             };
 
-            if (gSCredencial.FK_GSCategoria != null)
+            if (gSCredencial.FK_GSCategoria != null && gSCredencial.FK_GSCategoria > 0)
                 credencial.FK_GSCategoria = gSCredencial.FK_GSCategoria;
 
             var criptografarRequest = new JJ.NET.Cryptography.CriptografiaRequest
