@@ -28,7 +28,7 @@ namespace Application
             try
             {
                 string caminhoDestino = AppDomain.CurrentDomain.BaseDirectory;
-                ConfiguracaoBancoDados.IniciarConfiguracao(Conexao.SQLite, "Gerenciador de Senhas", caminhoDestino);
+                ConfiguracaoBancoDados.IniciarConfiguracao(Conexao.SQLite, caminhoDestino);
 
                 Container = new Container();
                 Container.Options.DefaultLifestyle = Lifestyle.Scoped;
@@ -75,9 +75,11 @@ namespace Application
         {
             bool gSCategoria = false;
             bool gSCredencial = false;
+            bool gSUsuario = false;
 
             try
             {
+                gSUsuario = uow.Connection.VerificarTabelaExistente<GSUsuario>();
                 gSCategoria = uow.Connection.VerificarTabelaExistente<GSCategoria>();
                 gSCredencial = uow.Connection.VerificarTabelaExistente<GSCredencial>();
             }
@@ -86,12 +88,15 @@ namespace Application
                 throw new Exception("Erro ao verificar a existência das tabelas", ex);
             }
 
-            if (gSCategoria && gSCredencial)
+            if (gSUsuario && gSCategoria && gSCredencial)
                 return;
 
             try
             {
                 uow.Begin();
+
+                if (!gSUsuario)
+                    uow.Connection.CriarTabela<GSUsuario>(uow.Transaction);
 
                 if (!gSCategoria)
                     uow.Connection.CriarTabela<GSCategoria>(uow.Transaction);

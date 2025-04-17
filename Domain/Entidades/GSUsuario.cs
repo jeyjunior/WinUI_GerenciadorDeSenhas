@@ -8,16 +8,16 @@ using JJ.NET.CrossData.Atributo;
 
 namespace Domain.Entidades
 {
-    public class GSCategoria
+    public class GSUsuario
     {
         [ChavePrimaria, Obrigatorio]
-        public int PK_GSCategoria { get; set; }
+        public int PK_GSUsuario { get; set; }
 
         [Obrigatorio]
-        public string Categoria { get; set; }
+        public string Usuario { get; set; }
 
         [Obrigatorio]
-        public int FK_GSUsuario { get; set; } // Chave estrangeira
+        public string Senha { get; set; }
 
         [Editavel(false)]
         public ValidarResultado ValidarResultado { get; set; } = new ValidarResultado();

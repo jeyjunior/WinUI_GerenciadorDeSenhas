@@ -25,6 +25,9 @@ namespace Domain.Entidades
         public int? FK_GSCategoria { get; set; }
 
         [Obrigatorio]
+        public int FK_GSUsuario { get; set; } 
+
+        [Obrigatorio]
         public DateTime DataCriacao { get; set; }
         public DateTime? DataModificacao { get; set; }
 
