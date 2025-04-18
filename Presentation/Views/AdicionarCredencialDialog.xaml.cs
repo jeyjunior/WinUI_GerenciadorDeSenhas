@@ -134,6 +134,7 @@ namespace Presentation.Views
                         {
                             PK_GSCategoria = 0,
                             Categoria = txtCategoria.Text.ObterValorOuPadrao("").Trim(),
+                            FK_GSUsuario = App.PK_GESUsuarioAtivo
                         };
 
                         int pK_GSCategoria = categoriaAppService.SalvarCategoria(gSCategoriaNovo);
@@ -151,6 +152,7 @@ namespace Presentation.Views
                         {
                             PK_GSCategoria = ViewModel.CategoriaSelecionada.PK_GSCategoria,
                             Categoria = txtCategoria.Text.ObterValorOuPadrao("").Trim(),
+                            FK_GSUsuario = App.PK_GESUsuarioAtivo
                         };
 
                         int categoriaAtualizada = categoriaAppService.SalvarCategoria(gSCategoriaAtualizar);
@@ -359,6 +361,7 @@ namespace Presentation.Views
                 Senha = senha,
                 FK_GSCategoria = categoria?.PK_GSCategoria,
                 DataCriacao = DateTime.Now,
+                FK_GSUsuario = App.PK_GESUsuarioAtivo
             };
 
             if (modoEdicaoTela == ModoEdicao.Editar)

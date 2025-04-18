@@ -6,16 +6,28 @@
     xmlns:local="using:Presentation.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    mc:Ignorable="d">
 
-    <Grid Background="{StaticResource Cinza12}" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="20" CornerRadius="5">
+    <Grid Background="{StaticResource Cinza12}" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="20" CornerRadius="5" RowSpacing="24">
         <Grid.RowDefinitions>
-            <RowDefinition Height="70"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Button x:Name="btnLoginGoogle" Content="Login Google" Click="btnLoginGoogle_Click"/>
+        <StackPanel Grid.Row="0" Spacing="4">
+            <TextBlock Text="Usuário" Foreground="{StaticResource Cinza1}"/>
+            <TextBox x:Name="txtUsuario" Width="300"/>
+        </StackPanel>
 
+        <StackPanel Grid.Row="1" Spacing="4">
+            <TextBlock Text="Senha" Foreground="{StaticResource Cinza1}"/>
+            <PasswordBox x:Name="passBoxSenha" Width="300"/>
+        </StackPanel>
 
+        <StackPanel Grid.Row="2" Spacing="8">
+            <Button x:Name="btnEntrar" Click="btnEntrar_Click" Content="Entrar" HorizontalAlignment="Stretch" Style="{StaticResource AccentButtonStyle}"/>
+            <Button x:Name="btnRegistrar" Click="btnRegistrar_Click" Content="Registrar" HorizontalAlignment="Stretch"/>
+        </StackPanel>
     </Grid>
 </Page>

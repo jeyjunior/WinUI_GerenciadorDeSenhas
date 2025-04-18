@@ -24,6 +24,8 @@ namespace Presentation
     /// </summary>
     public partial class App : Microsoft.UI.Xaml.Application
     {
+        public static int PK_GESUsuarioAtivo { get; set; }
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().

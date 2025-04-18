@@ -34,7 +34,7 @@ namespace Presentation
             this.InitializeComponent();
 
             NavigationService.MainFrame = this.MainFrame;
-            NavigationService.NavegarPara(typeof(Principal));
+            NavigationService.NavegarPara(typeof(Login));
         }
     }
 }

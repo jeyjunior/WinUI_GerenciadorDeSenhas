@@ -15,11 +15,21 @@ namespace Domain.Entidades
 
         [Obrigatorio]
         public string Usuario { get; set; }
-
+        [Obrigatorio]
+        public string Nome { get; set; }
         [Obrigatorio]
         public string Senha { get; set; }
-
+        [Obrigatorio]
+        public string IVSenha { get; set; }
         [Editavel(false)]
+        public ValidarResultado ValidarResultado { get; set; } = new ValidarResultado();
+    }
+
+    public class GSUsuarioRequest
+    {
+        public string Usuario { get; set; }
+        public string Nome { get; set; }
+        public string Senha { get; set; }
         public ValidarResultado ValidarResultado { get; set; } = new ValidarResultado();
     }
 }

@@ -36,13 +36,15 @@ namespace Application
                 Container.Register<IUnitOfWork>(() => new UnitOfWork(ConfiguracaoBancoDados.ObterConexao()), Lifestyle.Singleton);
 
                 // REPOSITORIOS
+                Container.Register<IGSUsuarioRepository, GSUsuarioRepository>(Lifestyle.Singleton);
                 Container.Register<IGSCategoriaRepository, GSCategoriaRepository>(Lifestyle.Singleton);
                 Container.Register<IGSCredencialRepository, GSCredencialRepository>(Lifestyle.Singleton);
 
                 // APP SERVICE
+                Container.Register<ILoginService, LoginService>(Lifestyle.Singleton);
+                Container.Register<INotificationService, NotificationService>(Lifestyle.Singleton);
                 Container.Register<ICredencialAppService, CredencialAppService>(Lifestyle.Singleton);
                 Container.Register<ICategoriaAppService, CategoriaAppService>(Lifestyle.Singleton);
-                Container.Register<INotificationService, NotificationService>(Lifestyle.Singleton);
 
                 // VIEW MODELS
                 Container = Bootstrap.Container;

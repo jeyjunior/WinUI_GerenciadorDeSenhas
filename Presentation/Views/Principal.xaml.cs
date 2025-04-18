@@ -53,6 +53,7 @@ namespace Presentation.Views
             this.cboTipoDeOrdenacao.DataContext = ViewModel;
             this.cboTipoDePesquisa.DataContext = ViewModel;
             this.listaCredenciais.DataContext = ViewModel;
+
             Load();
         }
         #endregion
