@@ -38,15 +38,6 @@ namespace Application.Services
         #region Metodos
         public IEnumerable<GSCredencial> Pesquisar(GSCredencialPesquisaRequest requisicao)
         {
-            try
-            {
-
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
             if (requisicao == null)
                 return new List<GSCredencial>();
 
@@ -59,18 +50,20 @@ namespace Application.Services
             switch (requisicao.TipoDePesquisa)
             {
                 case TipoDePesquisa.Todos:
-                    condicao = $" GSCategoria.Categoria COLLATE NOCASE LIKE '%{valor}%'   OR \n" +
-                               $" GSCredencial.Credencial COLLATE NOCASE LIKE '%{valor}%' \n";
+                    condicao = $" (GSCategoria.Categoria COLLATE NOCASE LIKE '%{valor}%'   OR \n" +
+                                $" GSCredencial.Credencial COLLATE NOCASE LIKE '%{valor}%') AND \n";
                     break;
                 case TipoDePesquisa.Categoria:
-                    condicao = $" GSCategoria.Categoria COLLATE NOCASE LIKE '%{valor}%' ";
+                    condicao = $" (GSCategoria.Categoria COLLATE NOCASE LIKE '%{valor}%') AND \n";
                     break;
                 case TipoDePesquisa.Credencial:
-                    condicao = $" GSCredencial.Credencial COLLATE NOCASE LIKE '%{valor}%' ";
+                    condicao = $" (GSCredencial.Credencial COLLATE NOCASE LIKE '%{valor}%') AND \n";
                     break;
                 default:
                     break;
             }
+            
+            condicao += $" GSCredencial.FK_GSUsuario = {requisicao.FK_GSUsuario} ";
 
             switch (requisicao.TipoDeOrdenacao)
             {
@@ -140,6 +133,7 @@ namespace Application.Services
                 Credencial = gSCredencial.Credencial,
                 DataCriacao = gSCredencial.DataCriacao,
                 DataModificacao = (atualizarRegistro) ? DateTime.Now : gSCredencial.DataCriacao,
+                FK_GSUsuario = gSCredencial.FK_GSUsuario
             };
 
             if (gSCredencial.FK_GSCategoria != null && gSCredencial.FK_GSCategoria > 0)

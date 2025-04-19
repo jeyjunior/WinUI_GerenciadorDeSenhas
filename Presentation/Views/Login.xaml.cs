@@ -44,52 +44,95 @@ namespace Presentation.Views
 
         private void btnEntrar_Click(object sender, RoutedEventArgs e)
         {
-            var gSUsuarioRequest = new GSUsuarioRequest
+            try
             {
-                Usuario = txtUsuario.Text.ObterValorOuPadrao("").Trim(),
-                Senha = passBoxSenha.Password.ObterValorOuPadrao("").Trim()
-            };
+                var gSUsuarioRequest = new GSUsuarioRequest
+                {
+                    Usuario = txtUsuario.Text.ObterValorOuPadrao("").Trim(),
+                    Senha = passBoxSenha.Password.ObterValorOuPadrao("").Trim()
+                };
 
-            int PK_GSUsuario = loginService.Entrar(gSUsuarioRequest);
+                int PK_GSUsuario = loginService.Entrar(gSUsuarioRequest);
 
-            if (!gSUsuarioRequest.ValidarResultado.EhValido)
-            {
-                notificationService.EnviarNotificacao(gSUsuarioRequest.ValidarResultado.ObterPrimeiroErro());
-                return;
+                if (!gSUsuarioRequest.ValidarResultado.EhValido)
+                {
+                    notificationService.EnviarNotificacao(gSUsuarioRequest.ValidarResultado.ObterPrimeiroErro());
+                    return;
+                }
+                else if (PK_GSUsuario <= 0)
+                {
+                    notificationService.EnviarNotificacao("Não foi possível logar.");
+                    return;
+                }
+
+                App.PK_GESUsuarioAtivo = PK_GSUsuario;
+                NavigationService.NavegarPara(typeof(Principal));
             }
-            else if (PK_GSUsuario <= 0)
+            catch (Exception ex)
             {
-                notificationService.EnviarNotificacao("Não foi possível logar.");
-                return;
+                notificationService.EnviarNotificacao(ex.Message);
             }
-
-            App.PK_GESUsuarioAtivo = PK_GSUsuario;
-            NavigationService.NavegarPara(typeof(Principal));
         }
 
         private void btnRegistrar_Click(object sender, RoutedEventArgs e)
         {
-            var gSUsuarioRequest = new GSUsuarioRequest
+            try
             {
-                Nome = "José Junior",
-                Senha = "Teste@123",
-                Usuario = "jeyjunior"
-            };
+                var gSUsuarioRequest = new GSUsuarioRequest
+                {
+                    Nome = "José Junior",
+                    Senha = "Teste@123",
+                    Usuario = "jose.junior"
+                };
 
-            var ret = loginService.Registrar(gSUsuarioRequest);
+                var ret = loginService.Registrar(gSUsuarioRequest);
 
-            if (!gSUsuarioRequest.ValidarResultado.EhValido)
-            {
-                notificationService.EnviarNotificacao(gSUsuarioRequest.ValidarResultado.ObterPrimeiroErro());
-                return;
+                if (!gSUsuarioRequest.ValidarResultado.EhValido)
+                {
+                    notificationService.EnviarNotificacao(gSUsuarioRequest.ValidarResultado.ObterPrimeiroErro());
+                    return;
+                }
+                else if (!ret)
+                {
+                    notificationService.EnviarNotificacao("Não foi possível registrar.");
+                    return;
+                }
+
+                notificationService.EnviarNotificacao("Usuário registrado com sucesso.");
             }
-            else if (!ret)
+            catch (Exception ex)
             {
-                notificationService.EnviarNotificacao("Não foi possível registrar.");
-                return;
+                notificationService.EnviarNotificacao(ex.Message);
             }
 
-            notificationService.EnviarNotificacao("Usuário registrado com sucesso.");
+            try
+            {
+                var gSUsuarioRequest = new GSUsuarioRequest
+                {
+                    Nome = "José Junior",
+                    Senha = "Teste@123",
+                    Usuario = "jeyjunior"
+                };
+
+                var ret = loginService.Registrar(gSUsuarioRequest);
+
+                if (!gSUsuarioRequest.ValidarResultado.EhValido)
+                {
+                    notificationService.EnviarNotificacao(gSUsuarioRequest.ValidarResultado.ObterPrimeiroErro());
+                    return;
+                }
+                else if (!ret)
+                {
+                    notificationService.EnviarNotificacao("Não foi possível registrar.");
+                    return;
+                }
+
+                notificationService.EnviarNotificacao("Usuário registrado com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                notificationService.EnviarNotificacao(ex.Message);
+            }
         }
     }
 }

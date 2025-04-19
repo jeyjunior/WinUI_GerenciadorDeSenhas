@@ -17,7 +17,7 @@ namespace Domain.Entidades
         public string Categoria { get; set; }
 
         [Obrigatorio]
-        public int FK_GSUsuario { get; set; } // Chave estrangeira
+        public int FK_GSUsuario { get; set; } 
 
         [Editavel(false)]
         public ValidarResultado ValidarResultado { get; set; } = new ValidarResultado();

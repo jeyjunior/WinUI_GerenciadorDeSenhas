@@ -44,7 +44,7 @@ namespace Domain.Entidades
         public string Valor { get; set; }
         public TipoDePesquisa TipoDePesquisa { get; set; }
         public TipoDeOrdenacao TipoDeOrdenacao { get; set; }
-
+        public int FK_GSUsuario { get; set; }
         public ValidarResultado ValidarResultado { get; set; }
     }
 }

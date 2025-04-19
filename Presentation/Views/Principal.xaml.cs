@@ -251,7 +251,8 @@ namespace Presentation.Views
                 {
                     Valor = txtPesquisa.Text.ObterValorOuPadrao(""),
                     TipoDePesquisa = (TipoDePesquisa)tipoDePesquisa.ID.ConverterParaInt32(0),
-                    TipoDeOrdenacao = (TipoDeOrdenacao)tipoDeOrdenacao.ID.ConverterParaInt32(0)
+                    TipoDeOrdenacao = (TipoDeOrdenacao)tipoDeOrdenacao.ID.ConverterParaInt32(0),
+                    FK_GSUsuario = App.PK_GESUsuarioAtivo
                 };
 
                 gSCredencials = credencialAppService.Pesquisar(requisicao).ToList();
@@ -264,7 +265,7 @@ namespace Presentation.Views
             }
             catch (Exception ex)
             {
-                await notificationService.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
+                notificationService.EnviarNotificacao(ex.Message);
             }
         }
         private void BindPrincipal()

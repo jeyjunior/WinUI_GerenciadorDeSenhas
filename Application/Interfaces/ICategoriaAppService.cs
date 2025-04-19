@@ -10,8 +10,8 @@ namespace Application.Interfaces
 {
     public interface ICategoriaAppService
     {
-        IEnumerable<GSCategoria> ObterCategorias();
-        ObservableCollection<GSCategoria> ObterCategoriasObservableCollection();
+        IEnumerable<GSCategoria> ObterCategorias(int FK_GSUsuario);
+        ObservableCollection<GSCategoria> ObterCategoriasObservableCollection(int FK_GSUsuario);
         bool DeletarCategoria(int PK_GSCategoria);
         int SalvarCategoria(GSCategoria gSCategoria);
     }

@@ -481,6 +481,7 @@ namespace Presentation.Views
         }
 
         // Binding
+
         private void BindTela()
         {
             BindCategoria();
@@ -498,7 +499,7 @@ namespace Presentation.Views
         }
         private void BindCategoria()
         {
-            ViewModel.Categoria = categoriaAppService.ObterCategoriasObservableCollection();
+            ViewModel.Categoria = categoriaAppService.ObterCategoriasObservableCollection(App.PK_GESUsuarioAtivo);
 
             if (modoEdicaoTela == ModoEdicao.Editar && gSCredencialSelecionada.FK_GSCategoria.ObterValorOuPadrao(0) != 0)
             {
@@ -511,7 +512,7 @@ namespace Presentation.Views
         }
         private void BindCategoria(int pK_GSCategoria)
         {
-            ViewModel.Categoria = categoriaAppService.ObterCategoriasObservableCollection();
+            ViewModel.Categoria = categoriaAppService.ObterCategoriasObservableCollection(App.PK_GESUsuarioAtivo);
             ViewModel.SelecionarCategoria(pK_GSCategoria);
         }
         #endregion

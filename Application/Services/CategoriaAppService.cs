@@ -33,13 +33,13 @@ namespace Application.Services
         #endregion
 
         #region Metodos
-        public IEnumerable<GSCategoria> ObterCategorias()
+        public IEnumerable<GSCategoria> ObterCategorias(int FK_GSUsuario)
         {
-            return gSCategoriaRepository.ObterLista();
+            return gSCategoriaRepository.ObterLista("FK_GSUsuario = @FK_GSUsuario", new { FK_GSUsuario  = FK_GSUsuario });
         }
-        public ObservableCollection<GSCategoria> ObterCategoriasObservableCollection()
+        public ObservableCollection<GSCategoria> ObterCategoriasObservableCollection(int FK_GSUsuario)
         {
-            List<GSCategoria> gSCategoria = gSCategoriaRepository.ObterLista().ToList();
+            List<GSCategoria> gSCategoria = ObterCategorias(FK_GSUsuario).ToList();
             gSCategoria.Add(new GSCategoria { PK_GSCategoria = 0, Categoria = "" });
             gSCategoria = gSCategoria.OrderBy(i => i.Categoria).ToList();
 
@@ -95,7 +95,8 @@ namespace Application.Services
             var categoria = new GSCategoria
             {
                 PK_GSCategoria = gSCategoria.PK_GSCategoria,
-                Categoria = gSCategoria.Categoria
+                Categoria = gSCategoria.Categoria,
+                FK_GSUsuario = gSCategoria.FK_GSUsuario
             };
 
             int PK_GSCategoria = -1;
