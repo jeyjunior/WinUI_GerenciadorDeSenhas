@@ -1,8 +1,3 @@
-using Application;
-using Application.Interfaces;
-using Application.Services;
-using Domain.Entidades;
-using JJ.NET.Core.Extensoes;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -17,6 +12,11 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using JJ.NET.Core.Extensoes;
+using Domain.Entidades;
+using Application;
+using Application.Interfaces;
+using Application.Services;
 
 namespace Presentation.Views
 {
@@ -37,11 +37,6 @@ namespace Presentation.Views
         }
         #endregion
 
-        private void btnLoginGoogle_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void btnEntrar_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -56,11 +51,13 @@ namespace Presentation.Views
 
                 if (!gSUsuarioRequest.ValidarResultado.EhValido)
                 {
+                    txtUsuario.Focus(FocusState.Keyboard);
                     notificationService.EnviarNotificacao(gSUsuarioRequest.ValidarResultado.ObterPrimeiroErro());
                     return;
                 }
                 else if (PK_GSUsuario <= 0)
                 {
+                    txtUsuario.Focus(FocusState.Keyboard);
                     notificationService.EnviarNotificacao("Não foi possível logar.");
                     return;
                 }
@@ -74,60 +71,19 @@ namespace Presentation.Views
             }
         }
 
-        private void btnRegistrar_Click(object sender, RoutedEventArgs e)
+        private void passBoxSenha_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.Enter)
+                btnEntrar_Click(null, null);
+        }
+
+        private async void btnRegistrar_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                var gSUsuarioRequest = new GSUsuarioRequest
-                {
-                    Nome = "José Junior",
-                    Senha = "Teste@123",
-                    Usuario = "jose.junior"
-                };
-
-                var ret = loginService.Registrar(gSUsuarioRequest);
-
-                if (!gSUsuarioRequest.ValidarResultado.EhValido)
-                {
-                    notificationService.EnviarNotificacao(gSUsuarioRequest.ValidarResultado.ObterPrimeiroErro());
-                    return;
-                }
-                else if (!ret)
-                {
-                    notificationService.EnviarNotificacao("Não foi possível registrar.");
-                    return;
-                }
-
-                notificationService.EnviarNotificacao("Usuário registrado com sucesso.");
-            }
-            catch (Exception ex)
-            {
-                notificationService.EnviarNotificacao(ex.Message);
-            }
-
-            try
-            {
-                var gSUsuarioRequest = new GSUsuarioRequest
-                {
-                    Nome = "José Junior",
-                    Senha = "Teste@123",
-                    Usuario = "jeyjunior"
-                };
-
-                var ret = loginService.Registrar(gSUsuarioRequest);
-
-                if (!gSUsuarioRequest.ValidarResultado.EhValido)
-                {
-                    notificationService.EnviarNotificacao(gSUsuarioRequest.ValidarResultado.ObterPrimeiroErro());
-                    return;
-                }
-                else if (!ret)
-                {
-                    notificationService.EnviarNotificacao("Não foi possível registrar.");
-                    return;
-                }
-
-                notificationService.EnviarNotificacao("Usuário registrado com sucesso.");
+                var dialog = new RegistrarLoginDialog();
+                dialog.XamlRoot = this.Content.XamlRoot;
+                await dialog.ShowAsync();
             }
             catch (Exception ex)
             {

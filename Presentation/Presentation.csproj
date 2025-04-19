@@ -17,6 +17,7 @@
     <None Remove="Views\AdicionarCredencialDialog.xaml" />
     <None Remove="Views\Login.xaml" />
     <None Remove="Views\Principal.xaml" />
+    <None Remove="Views\RegistrarLoginDialog.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -58,6 +59,11 @@
     <Reference Include="JJ.NET.Core">
       <HintPath>..\DLL\JJ.NET.Core.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\RegistrarLoginDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\Login.xaml">

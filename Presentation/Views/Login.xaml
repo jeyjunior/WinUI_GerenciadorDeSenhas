@@ -22,7 +22,7 @@
 
         <StackPanel Grid.Row="1" Spacing="4">
             <TextBlock Text="Senha" Foreground="{StaticResource Cinza1}"/>
-            <PasswordBox x:Name="passBoxSenha" Width="300"/>
+            <PasswordBox x:Name="passBoxSenha" Width="300" KeyDown="passBoxSenha_KeyDown"/>
         </StackPanel>
 
         <StackPanel Grid.Row="2" Spacing="8">

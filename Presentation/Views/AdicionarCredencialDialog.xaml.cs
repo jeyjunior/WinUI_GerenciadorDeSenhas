@@ -481,7 +481,6 @@ namespace Presentation.Views
         }
 
         // Binding
-
         private void BindTela()
         {
             BindCategoria();
