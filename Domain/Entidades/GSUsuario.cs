@@ -32,4 +32,9 @@ namespace Domain.Entidades
         public string Senha { get; set; }
         public ValidarResultado ValidarResultado { get; set; } = new ValidarResultado();
     }
+
+    public class GSUsuarioLembrar
+    {
+        public string Usuario { get; set; }
+    }
 }

@@ -62,6 +62,11 @@ namespace Presentation.Views
                     return;
                 }
 
+                loginService.DeletarUsuarioLembrado();
+
+                if (chkLembrarUsuario.IsChecked == true)
+                    loginService.SalvarUsuarioLembrado(gSUsuarioRequest.Usuario);
+
                 App.PK_GESUsuarioAtivo = PK_GSUsuario;
                 NavigationService.NavegarPara(typeof(Principal));
             }
@@ -70,13 +75,11 @@ namespace Presentation.Views
                 notificationService.EnviarNotificacao(ex.Message);
             }
         }
-
         private void passBoxSenha_KeyDown(object sender, KeyRoutedEventArgs e)
         {
             if (e.Key == Windows.System.VirtualKey.Enter)
                 btnEntrar_Click(null, null);
         }
-
         private async void btnRegistrar_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -88,6 +91,17 @@ namespace Presentation.Views
             catch (Exception ex)
             {
                 notificationService.EnviarNotificacao(ex.Message);
+            }
+        }
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            var usuario = await loginService.ObterUsuarioLembrado();
+
+            if (usuario.ObterValorOuPadrao("").Trim() != "")
+            {
+                txtUsuario.Text = usuario;
+                txtUsuario.SelectAll();
+                chkLembrarUsuario.IsChecked = true;
             }
         }
     }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Application.Interfaces;
 using Domain.Entidades;
@@ -12,7 +14,7 @@ using JJ.NET.Core.Validador;
 using JJ.NET.CrossData;
 using JJ.NET.Cryptography;
 using JJ.NET.Data;
-using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
+using Windows.Storage;
 
 namespace Application.Services
 {
@@ -20,6 +22,8 @@ namespace Application.Services
     {
         private readonly ICredencialAppService credencialAppService;
         private readonly IGSUsuarioRepository gSUsuarioRepository;
+
+        public object App { get; private set; }
 
         public LoginService()
         {
@@ -148,6 +152,51 @@ namespace Application.Services
                     uow.Rollback();
                     throw new Exception(ex.Message);
                 }
+            }
+        }
+    
+        public void DeletarUsuarioLembrado()
+        {
+            try
+            {
+                string localPath = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
+                var arquivo = Path.Combine(localPath, "lembrarUsuario.json");
+                File.Delete(arquivo);
+            }
+            catch
+            {
+            }
+        }
+        public async void SalvarUsuarioLembrado(string usuario)
+        {
+            try
+            {
+                var json = JsonSerializer.Serialize(new GSUsuarioLembrar { Usuario = usuario });
+                string localPath = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
+                var arquivo = Path.Combine(localPath, "lembrarUsuario.json");
+                await File.WriteAllTextAsync(arquivo, json);
+            }
+            catch
+            {
+            }
+        }
+
+        public async Task<string> ObterUsuarioLembrado()
+        {
+            try
+            {
+                string localPath = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
+                var arquivo = Path.Combine(localPath, "lembrarUsuario.json");
+                if (!File.Exists(arquivo))
+                    return null;
+
+                var json = await File.ReadAllTextAsync(arquivo);
+                var obj = JsonSerializer.Deserialize<GSUsuarioLembrar>(json);
+                return obj?.Usuario;
+            }
+            catch
+            {
+                return "";
             }
         }
     }

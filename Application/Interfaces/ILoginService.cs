@@ -11,5 +11,8 @@ namespace Application.Interfaces
     {
         int Entrar(GSUsuarioRequest gSUsuario);
         bool Registrar(GSUsuarioRequest gSUsuarioRequest);
+        void DeletarUsuarioLembrado();
+        void SalvarUsuarioLembrado(string usuario);
+        Task<string> ObterUsuarioLembrado();
     }
 }

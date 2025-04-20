@@ -6,6 +6,7 @@
     xmlns:local="using:Presentation.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Loaded="Page_Loaded"
     mc:Ignorable="d">
 
     <Grid Background="{StaticResource Cinza12}" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="20" CornerRadius="5" RowSpacing="24">
@@ -26,6 +27,7 @@
         </StackPanel>
 
         <StackPanel Grid.Row="2" Spacing="8">
+            <CheckBox x:Name="chkLembrarUsuario" IsChecked="False" Content="Lembrar usuário"/>
             <Button x:Name="btnEntrar" Click="btnEntrar_Click" Content="Entrar" HorizontalAlignment="Stretch" Style="{StaticResource AccentButtonStyle}"/>
             <Button x:Name="btnRegistrar" Click="btnRegistrar_Click" Content="Registrar" HorizontalAlignment="Stretch"/>
         </StackPanel>
