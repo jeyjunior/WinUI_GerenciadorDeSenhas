@@ -75,7 +75,7 @@ namespace Presentation.Views
             if (ViewModel.CategoriaSelecionada != null)
                 txtCategoria.Text = ViewModel.CategoriaSelecionada.Categoria;
 
-            AlternarModoEdicaoCategoria(false);
+            HabilitarEdicaoCategoria(false);
 
             await Task.Delay(50);
             MoverScrollParaAreaExpandida(spPrincipal.TransformToVisual(MainScrollViewer));
@@ -90,7 +90,7 @@ namespace Presentation.Views
             if (CategoriaExpander.Visibility == Visibility.Visible)
             {
                 modoEdicaoCategoria = ModoEdicao.Nenhum;
-                AlternarModoEdicaoCategoria(false);
+                HabilitarEdicaoCategoria(false);
                 cboCategoria.Focus(FocusState.Keyboard);
             }
         }
@@ -100,24 +100,24 @@ namespace Presentation.Views
                 return;
 
             modoEdicaoCategoria = ModoEdicao.Excluir;
-            AlternarModoEdicaoCategoria(true);
+            HabilitarEdicaoCategoria(true);
             btnCancelarCategoria.Focus(FocusState.Keyboard);
         }
         private void btnAlterarCategoria_Click(object sender, RoutedEventArgs e)
         {
             modoEdicaoCategoria = ModoEdicao.Editar;
-            AlternarModoEdicaoCategoria(true);
+            HabilitarEdicaoCategoria(true);
         }
         private void btnNovaCategoria_Click(object sender, RoutedEventArgs e)
         {
             txtCategoria.Text = "";
             modoEdicaoCategoria = ModoEdicao.Novo;
-            AlternarModoEdicaoCategoria(true);
+            HabilitarEdicaoCategoria(true);
         }
         private void btnCancelarCategoria_Click(object sender, RoutedEventArgs e)
         {
             modoEdicaoCategoria = ModoEdicao.Nenhum;
-            AlternarModoEdicaoCategoria(false);
+            HabilitarEdicaoCategoria(false);
             cboCategoria.Focus(FocusState.Keyboard);
             cboCategoria_SelectionChanged(null, null);
         }
@@ -186,7 +186,7 @@ namespace Presentation.Views
             finally
             {
                 modoEdicaoCategoria = ModoEdicao.Nenhum;
-                AlternarModoEdicaoCategoria(false);
+                HabilitarEdicaoCategoria(false);
                 cboCategoria.Focus(FocusState.Keyboard);
                 cboCategoria_SelectionChanged(null, null);
             }
@@ -381,7 +381,7 @@ namespace Presentation.Views
 
         #region Metodos
         // operações categoria
-        private void AlternarModoEdicaoCategoria(bool emEdicao)
+        private void HabilitarEdicaoCategoria(bool habilitar)
         {
             btnNovaCategoria.Visibility = Visibility.Visible;
             btnAlterarCategoria.Visibility = Visibility.Visible;
@@ -406,12 +406,12 @@ namespace Presentation.Views
                 }
             }
 
-            btnNovaCategoria.Visibility = emEdicao ? Visibility.Collapsed : Visibility.Visible;
-            btnAlterarCategoria.Visibility = emEdicao ? Visibility.Collapsed : Visibility.Visible;
-            btnExcluirCategoria.Visibility = emEdicao ? Visibility.Collapsed : Visibility.Visible;
+            btnNovaCategoria.Visibility = habilitar ? Visibility.Collapsed : Visibility.Visible;
+            btnAlterarCategoria.Visibility = habilitar ? Visibility.Collapsed : Visibility.Visible;
+            btnExcluirCategoria.Visibility = habilitar ? Visibility.Collapsed : Visibility.Visible;
 
-            btnSalvarCategoria.Visibility = emEdicao ? Visibility.Visible : Visibility.Collapsed;
-            btnCancelarCategoria.Visibility = emEdicao ? Visibility.Visible : Visibility.Collapsed;
+            btnSalvarCategoria.Visibility = habilitar ? Visibility.Visible : Visibility.Collapsed;
+            btnCancelarCategoria.Visibility = habilitar ? Visibility.Visible : Visibility.Collapsed;
 
             txtCategoria.IsEnabled = (modoEdicaoCategoria == ModoEdicao.Editar || modoEdicaoCategoria == ModoEdicao.Novo);
             txtCategoria.Focus(FocusState.Keyboard);

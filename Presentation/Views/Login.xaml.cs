@@ -17,6 +17,7 @@ using Domain.Entidades;
 using Application;
 using Application.Interfaces;
 using Application.Services;
+using Windows.ApplicationModel.Store;
 
 namespace Presentation.Views
 {

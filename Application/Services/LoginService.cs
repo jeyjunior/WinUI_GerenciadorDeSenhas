@@ -65,7 +65,6 @@ namespace Application.Services
             gSUsuarioRequest.ValidarResultado.Adicionar("Usuário ou senha inválido.");
             return -1;
         }
-
         public bool Registrar(GSUsuarioRequest gSUsuarioRequest)
         {
             if (gSUsuarioRequest == null)
@@ -142,7 +141,6 @@ namespace Application.Services
                 }
             }
         }
-    
         public void DeletarUsuarioLembrado()
         {
             try
@@ -168,7 +166,6 @@ namespace Application.Services
             {
             }
         }
-
         public async Task<string> ObterUsuarioLembrado()
         {
             try
@@ -186,6 +183,11 @@ namespace Application.Services
             {
                 return "";
             }
+        }
+
+        public GSUsuario ObterUsuario(int pK_GSUsuario)
+        {
+            return gSUsuarioRepository.Obter(pK_GSUsuario);
         }
     }
 }

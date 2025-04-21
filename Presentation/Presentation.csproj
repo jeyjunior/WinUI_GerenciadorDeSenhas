@@ -15,9 +15,13 @@
   <ItemGroup>
     <None Remove="Themes\Colors.xaml" />
     <None Remove="Views\AdicionarCredencialDialog.xaml" />
+    <None Remove="Views\ConfiguracaoDialog.xaml" />
     <None Remove="Views\Login.xaml" />
     <None Remove="Views\Principal.xaml" />
     <None Remove="Views\RegistrarLoginDialog.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Remove="Themes\Generic.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,6 +63,14 @@
     <Reference Include="JJ.NET.Core">
       <HintPath>..\DLL\JJ.NET.Core.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <Page Update="Views\ConfiguracaoDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\RegistrarLoginDialog.xaml">

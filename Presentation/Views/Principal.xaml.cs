@@ -225,6 +225,12 @@ namespace Presentation.Views
             if (e.Key == Windows.System.VirtualKey.Enter)
                 btnPesquisar_Click(null, null);
         }
+        private async void btnConfigurar_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new ConfiguracaoDialog();
+            dialog.XamlRoot = this.Content.XamlRoot;
+            await dialog.ShowAsync();
+        }
         #endregion
 
         #region Metodos
