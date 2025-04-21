@@ -38,21 +38,9 @@ namespace Application.Services
 
             gSUsuarioRequest.ValidarResultado = new ValidarResultado();
 
-            if (gSUsuarioRequest.Usuario.ObterValorOuPadrao("").Trim() == "")
-            {
-                gSUsuarioRequest.ValidarResultado.Adicionar("Usuário inválido.");
-                return -1;
-            }
-
-            if (gSUsuarioRequest.Senha.ObterValorOuPadrao("").Trim() == "")
-            {
-                gSUsuarioRequest.ValidarResultado.Adicionar("Senha inválida.");
-                return -1;
-            }
-
             try
             {
-                var gSUsuarios = gSUsuarioRepository.ObterLista("Usuario = @Usuario", new { Usuario = gSUsuarioRequest.Usuario }).ToList();
+                var gSUsuarios = gSUsuarioRepository.ObterLista("Usuario = @Usuario", new { Usuario = gSUsuarioRequest.Usuario.ObterValorOuPadrao("").Trim() }).ToList();
 
                 if (gSUsuarios == null || gSUsuarios.Count <= 0)
                     return -1;

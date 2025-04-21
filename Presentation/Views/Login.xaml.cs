@@ -41,6 +41,19 @@ namespace Presentation.Views
         {
             try
             {
+                if (txtUsuario.Text.ObterValorOuPadrao("").Trim() == "")
+                {
+                    txtUsuario.Focus(FocusState.Keyboard);
+                    notificationService.EnviarNotificacao("Usuário inválido.");
+                    return;
+                }
+                else if (passBoxSenha.Password.ObterValorOuPadrao("").Trim() == "")
+                {
+                    passBoxSenha.Focus(FocusState.Keyboard);
+                    notificationService.EnviarNotificacao("Senha inválida.");
+                    return;
+                }
+
                 var gSUsuarioRequest = new GSUsuarioRequest
                 {
                     Usuario = txtUsuario.Text.ObterValorOuPadrao("").Trim(),
