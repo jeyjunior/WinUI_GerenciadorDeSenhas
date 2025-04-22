@@ -18,8 +18,5 @@ namespace Application.Interfaces
 
         int SalvarCredencial(GSCredencial gSCredencial);
         bool DeletarCredencial(int PK_GSCredencial);
-
-        string Descriptografar(string valor, string iv);
-        string Criptografar(string valor, string iv);
     }
 }

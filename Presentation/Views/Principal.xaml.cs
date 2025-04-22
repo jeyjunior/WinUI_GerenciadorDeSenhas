@@ -32,6 +32,7 @@ namespace Presentation.Views
         #region Interfaces
         private readonly ICredencialAppService credencialAppService;
         private readonly INotificationService notificationService;
+        private readonly IConfigAppService configAppService;
         #endregion
 
         #region Propriedades
@@ -47,6 +48,7 @@ namespace Presentation.Views
 
             credencialAppService = Bootstrap.Container.GetInstance<ICredencialAppService>();
             notificationService = Bootstrap.Container.GetInstance<INotificationService>();
+            configAppService = Bootstrap.Container.GetInstance<IConfigAppService>();
 
             ViewModel = new MainWindowViewModel();
 
@@ -115,7 +117,9 @@ namespace Presentation.Views
 
                 if (credencialViewModel.ExibirSenha)
                 {
-                    credencialViewModel.Senha = credencialAppService.Descriptografar(credencial.Senha, credencial.IVSenha);
+                    var criptografiaResult = configAppService.Descriptografar(credencial.Senha, credencial.IVSenha);
+
+                    credencialViewModel.Senha = criptografiaResult.Valor;
                     credencialViewModel.BotaoStyle = (Style)App.Current.Resources["DefaultButtonStyle"];
 
                     if (button.Content is FontIcon icon)
@@ -153,12 +157,15 @@ namespace Presentation.Views
                 if (gSCredencials == null)
                     return;
 
-                var senha = credencialAppService.Descriptografar(gSCredencial.Senha, gSCredencial.IVSenha);
+                var criptografiaResult = configAppService.Descriptografar(gSCredencial.Senha, gSCredencial.IVSenha);
 
-                if (senha.ObterValorOuPadrao("").Trim() == "")
+                if (criptografiaResult.Erro.ObterValorOuPadrao("").Trim() != "")
+                {
+                    notificationService.EnviarNotificacao(criptografiaResult.Erro);
                     return;
+                }
 
-                CopiarParaClipboard(senha);
+                CopiarParaClipboard(criptografiaResult.Valor);
 
                 await AlterarIconeBtn("\uE73E", "\uE8C8", button);
             }
@@ -297,7 +304,8 @@ namespace Presentation.Views
         }
         private string OcultarSenha(string senha, string iv)
         {
-            return credencialAppService.Descriptografar(senha, iv).Trim().Ocultar();
+            var criptografiaResult = configAppService.Descriptografar(senha, iv);
+            return criptografiaResult.Valor.Trim().Ocultar();
         }
         private void OrdenarLista()
         {

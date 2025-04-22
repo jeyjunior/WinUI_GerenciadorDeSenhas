@@ -22,13 +22,14 @@ namespace Application.Services
     {
         #region Interface
         private readonly IGSCredencialRepository gSCredencialRepository;
-        
+        private readonly IConfigAppService configAppService;
         #endregion
 
         #region Construtor
         public CredencialAppService()
         {
             gSCredencialRepository = Bootstrap.Container.GetInstance<IGSCredencialRepository>();
+            configAppService = Bootstrap.Container.GetInstance<IConfigAppService>();
         }
         #endregion
 
@@ -105,7 +106,6 @@ namespace Application.Services
 
             return tipoDeOrdenacao;
         }
-
         public int SalvarCredencial(GSCredencial gSCredencial)
         {
             if (gSCredencial == null)
@@ -215,42 +215,6 @@ namespace Application.Services
             }
 
             return ret;
-        }
-        public string Descriptografar(string valor, string iv)
-        {
-            string ret = "";
-
-            var criptografiaRequest = new JJ.NET.Cryptography.CriptografiaRequest
-            {
-                IV = iv.ObterValorOuPadrao("").Trim(),
-                Valor = valor.ObterValorOuPadrao("").Trim(),
-                TipoCriptografia = JJ.NET.Cryptography.Enumerador.TipoCriptografia.AES,
-            };
-
-            var result = Criptografia.Descriptografar(criptografiaRequest);
-
-            if (result.Erro.ObterValorOuPadrao("").Trim() != "")
-                return ret;
-
-            return result.Valor.ObterValorOuPadrao("").Trim();
-        }
-        public string Criptografar(string valor, string iv)
-        {
-            string ret = "";
-
-            var criptografiaRequest = new JJ.NET.Cryptography.CriptografiaRequest
-            {
-                IV = iv.ObterValorOuPadrao("").Trim(),
-                Valor = valor.ObterValorOuPadrao("").Trim(),
-                TipoCriptografia = JJ.NET.Cryptography.Enumerador.TipoCriptografia.AES,
-            };
-
-            var result = Criptografia.Descriptografar(criptografiaRequest);
-
-            if (result.Erro.ObterValorOuPadrao("").Trim() != "")
-                return ret;
-
-            return result.Valor.ObterValorOuPadrao("").Trim();
         }
         #endregion
     }

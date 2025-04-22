@@ -17,6 +17,7 @@ using Application.Interfaces;
 using Domain.Interfaces;
 using Domain.Entidades;
 using Application.Services;
+using JJ.NET.Core.Extensoes;
 
 
 namespace Presentation.Views
@@ -26,6 +27,7 @@ namespace Presentation.Views
         #region Interfaces
         private readonly ILoginService loginService;
         private readonly INotificationService notificationService;
+        private readonly IConfigAppService configAppService;
         #endregion
 
         #region Propriedades
@@ -39,6 +41,7 @@ namespace Presentation.Views
 
             loginService = Bootstrap.Container.GetInstance<ILoginService>();
             notificationService = Bootstrap.Container.GetInstance<INotificationService>();
+            configAppService = Bootstrap.Container.GetInstance<IConfigAppService>();
         }
         #endregion
         #region Eventos
@@ -61,17 +64,34 @@ namespace Presentation.Views
 
             HabilitarEdicaoNome(true);
         }
-
         private void btnCancelarNome_Click(object sender, RoutedEventArgs e)
         {
             HabilitarEdicaoNome(false);
+            txtNome.Text = gSUsuarioAtivo.Nome;
         }
-
         private void btnSalvarNome_Click(object sender, RoutedEventArgs e)
         {
-            HabilitarEdicaoNome(false);
-        }
+            if (txtNome.Text.ObterValorOuPadrao("").Trim() == "")
+                return;
 
+            try
+            {
+                GSUsuario gSUsuario = gSUsuarioAtivo.DeepCopy();
+                gSUsuario.Nome = txtNome.Text.ObterValorOuPadrao("").Trim();
+                
+                loginService.AtualizarUsuario(gSUsuario);
+                
+                if (!gSUsuario.ValidarResultado.EhValido)
+                    notificationService.EnviarNotificacao(gSUsuario.ValidarResultado.ObterPrimeiroErro());
+                
+                HabilitarEdicaoNome(false);
+                Pesquisar();
+            }
+            catch (Exception ex)
+            {
+                notificationService.EnviarNotificacao(ex.Message);
+            }
+        }
         private void btnAlterarUsuario_Click(object sender, RoutedEventArgs e)
         {
             HabilitarEdicaoNome(false);
@@ -79,17 +99,34 @@ namespace Presentation.Views
 
             HabilitarEdicaoUsuario(true);
         }
-
         private void btnCancelarUsuario_Click(object sender, RoutedEventArgs e)
         {
             HabilitarEdicaoUsuario(false);
+            txtUsuario.Text = gSUsuarioAtivo.Usuario;
         }
-
         private void btnSalvarUsuario_Click(object sender, RoutedEventArgs e)
         {
-            HabilitarEdicaoUsuario(false);
-        }
+            if (txtUsuario.Text.ObterValorOuPadrao("").Trim() == "")
+                return;
 
+            try
+            {
+                GSUsuario gSUsuario = gSUsuarioAtivo.DeepCopy();
+                gSUsuario.Usuario = txtUsuario.Text.ObterValorOuPadrao("").Trim();
+
+                loginService.AtualizarUsuario(gSUsuario);
+
+                if (!gSUsuario.ValidarResultado.EhValido)
+                    notificationService.EnviarNotificacao(gSUsuario.ValidarResultado.ObterPrimeiroErro());
+
+                HabilitarEdicaoUsuario(false);
+                Pesquisar();
+            }
+            catch (Exception ex)
+            {
+                notificationService.EnviarNotificacao(ex.Message);
+            }
+        }
         private void btnAlterarSenha_Click(object sender, RoutedEventArgs e)
         {
             HabilitarEdicaoNome(false);
@@ -97,15 +134,47 @@ namespace Presentation.Views
 
             HabilitarEdicaoSenha(true);
         }
-
         private void btnCancelarSenha_Click(object sender, RoutedEventArgs e)
         {
             HabilitarEdicaoSenha(false);
-        }
 
+            var criptografiaResult = configAppService.Descriptografar(gSUsuarioAtivo.Senha, gSUsuarioAtivo.IVSenha);
+            passSenha.Password = criptografiaResult.Valor;
+        }
         private void btnSalvarSenha_Click(object sender, RoutedEventArgs e)
         {
-            HabilitarEdicaoSenha(false);
+            if (passSenha.Password.ObterValorOuPadrao("").Trim() == "")
+                return;
+
+            try
+            {
+                GSUsuario gSUsuario = gSUsuarioAtivo.DeepCopy();
+                gSUsuario.Senha = passSenha.Password.ObterValorOuPadrao("").Trim();
+                gSUsuario.IVSenha = "";
+
+                var criptografiaResult = configAppService.Criptografar(gSUsuario.Senha, gSUsuario.IVSenha);
+
+                if (criptografiaResult.Erro.ObterValorOuPadrao("").Trim() != "")
+                {
+                    notificationService.EnviarNotificacao(criptografiaResult.Erro);
+                    return;
+                }
+
+                gSUsuario.Senha = criptografiaResult.Valor;
+                gSUsuario.IVSenha = criptografiaResult.IV;
+
+                loginService.AtualizarUsuario(gSUsuario);
+
+                if (!gSUsuario.ValidarResultado.EhValido)
+                    notificationService.EnviarNotificacao(gSUsuario.ValidarResultado.ObterPrimeiroErro());
+
+                HabilitarEdicaoSenha(false);
+                Pesquisar();
+            }
+            catch (Exception ex)
+            {
+                notificationService.EnviarNotificacao(ex.Message);
+            }
         }
         #endregion
 
@@ -118,7 +187,6 @@ namespace Presentation.Views
 
             txtNome.IsEnabled = habilitar;
         }
-
         private void HabilitarEdicaoUsuario(bool habilitar)
         {
             btnAlterarUsuario.Visibility = (habilitar ? Visibility.Collapsed : Visibility.Visible);
@@ -127,7 +195,6 @@ namespace Presentation.Views
 
             txtUsuario.IsEnabled = habilitar;
         }
-
         private void HabilitarEdicaoSenha(bool habilitar)
         {
             btnAlterarSenha.Visibility = (habilitar ? Visibility.Collapsed : Visibility.Visible);
@@ -136,7 +203,6 @@ namespace Presentation.Views
 
             passSenha.IsEnabled = habilitar;
         }
-
         private void Pesquisar()
         {
             try
@@ -156,12 +222,13 @@ namespace Presentation.Views
                 notificationService.EnviarNotificacao(ex.Message);
             }
         }
-
         private void BindPrincipal()
         {
             txtNome.Text = gSUsuarioAtivo.Nome;
             txtUsuario.Text = gSUsuarioAtivo.Usuario;
-            passSenha.Password = gSUsuarioAtivo.Senha;
+
+            var criptografiaResult = configAppService.Descriptografar(gSUsuarioAtivo.Senha, gSUsuarioAtivo.IVSenha);
+            passSenha.Password = criptografiaResult.Valor;
         }
         #endregion
     }

@@ -15,5 +15,6 @@ namespace Application.Interfaces
         void SalvarUsuarioLembrado(string usuario);
         Task<string> ObterUsuarioLembrado();
         GSUsuario ObterUsuario(int pK_GSUsuario);
+        bool AtualizarUsuario(GSUsuario gSUsuario);
     }
 }

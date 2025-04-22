@@ -20,17 +20,29 @@ namespace Application.Services
 {
     public class LoginService : ILoginService
     {
+        #region Interfaces
         private readonly ICredencialAppService credencialAppService;
         private readonly IGSUsuarioRepository gSUsuarioRepository;
+        private readonly IConfigAppService configAppService;
+        #endregion
 
+        #region Propriedades
         public object App { get; private set; }
+        #endregion
 
+        #region Construtor
         public LoginService()
         {
             credencialAppService = Bootstrap.Container.GetInstance<ICredencialAppService>();
             gSUsuarioRepository = Bootstrap.Container.GetInstance<IGSUsuarioRepository>();
+            configAppService = Bootstrap.Container.GetInstance<IConfigAppService>();
         }
+        #endregion
 
+        #region Eventos
+        #endregion
+
+        #region Metodos
         public int Entrar(GSUsuarioRequest gSUsuarioRequest)
         {
             if (gSUsuarioRequest == null)
@@ -47,12 +59,12 @@ namespace Application.Services
 
                 foreach (var item in gSUsuarios)
                 {
-                    string valor = credencialAppService.Descriptografar(item.Senha, item.IVSenha);
+                    var criptografiaResult = configAppService.Descriptografar(item.Senha, item.IVSenha);
 
-                    if (valor.ObterValorOuPadrao("").Trim() == "")
+                    if (criptografiaResult.Erro.ObterValorOuPadrao("").Trim() != "")
                         continue;
 
-                    if (gSUsuarioRequest.Senha == valor)
+                    if (gSUsuarioRequest.Senha == criptografiaResult.Valor)
                         return item.PK_GSUsuario;
                 }
             }
@@ -184,10 +196,33 @@ namespace Application.Services
                 return "";
             }
         }
-
         public GSUsuario ObterUsuario(int pK_GSUsuario)
         {
             return gSUsuarioRepository.Obter(pK_GSUsuario);
         }
+
+        public bool AtualizarUsuario(GSUsuario gSUsuario)
+        {
+            if (gSUsuario == null)
+                return false;
+
+            gSUsuario.ValidarResultado = new ValidarResultado();
+
+            if (gSUsuario.PK_GSUsuario <= 0)
+            {
+                gSUsuario.ValidarResultado.Adicionar("Não foi possível identificar o usuário para atualizar.");
+                return false;
+            }
+             
+            if (gSUsuario.Nome.ObterValorOuPadrao("").Trim() == "" || gSUsuario.Usuario.ObterValorOuPadrao("").Trim() == "" || gSUsuario.Senha.ObterValorOuPadrao("").Trim() == "" || gSUsuario.IVSenha.ObterValorOuPadrao("").Trim() == "")
+            {
+                gSUsuario.ValidarResultado.Adicionar("É necessário informar todos os dados do usuário (Nome, Usuário e Senha).");
+                return false;
+            }
+
+            var ret = gSUsuarioRepository.Atualizar(gSUsuario);
+            return ret > 0;
+        }
+        #endregion
     }
 }

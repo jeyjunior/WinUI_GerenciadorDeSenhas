@@ -23,6 +23,19 @@ namespace Domain.Entidades
         public string IVSenha { get; set; }
         [Editavel(false)]
         public ValidarResultado ValidarResultado { get; set; } = new ValidarResultado();
+
+        public GSUsuario DeepCopy()
+        {
+            return new GSUsuario
+            {
+                PK_GSUsuario = this.PK_GSUsuario,
+                Usuario = this.Usuario,
+                Nome = this.Nome,
+                Senha = this.Senha,
+                IVSenha = this.IVSenha,
+                ValidarResultado = new ValidarResultado(),
+            };
+        }
     }
 
     public class GSUsuarioRequest

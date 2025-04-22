@@ -63,6 +63,9 @@
     <Reference Include="JJ.NET.Core">
       <HintPath>..\DLL\JJ.NET.Core.dll</HintPath>
     </Reference>
+    <Reference Include="JJ.NET.Cryptography">
+      <HintPath>..\DLL\JJ.NET.Cryptography.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Update="Themes\Generic.xaml">

@@ -30,6 +30,7 @@ namespace Presentation.Views
         private readonly ICredencialAppService credencialAppService;
         private readonly ICategoriaAppService categoriaAppService;
         private readonly INotificationService notificationService;
+        private readonly IConfigAppService configAppService;
         #endregion
 
         #region Propriedades
@@ -47,6 +48,7 @@ namespace Presentation.Views
             credencialAppService = Bootstrap.Container.GetInstance<ICredencialAppService>();
             categoriaAppService = Bootstrap.Container.GetInstance<ICategoriaAppService>();
             notificationService = Bootstrap.Container.GetInstance<INotificationService>();
+            configAppService = Bootstrap.Container.GetInstance<IConfigAppService>();
 
             this.modoEdicaoTela = (gSCredencial == null ? ModoEdicao.Novo : ModoEdicao.Editar);
             this.gSCredencialSelecionada = gSCredencial;
@@ -488,7 +490,9 @@ namespace Presentation.Views
             if (modoEdicaoTela == ModoEdicao.Editar)
             {
                 txtCredencial.Text = gSCredencialSelecionada.Credencial.ObterValorOuPadrao("");
-                txtSenha.Text = credencialAppService.Descriptografar(gSCredencialSelecionada.Senha, gSCredencialSelecionada.IVSenha);
+                
+                var criptografiaResult = configAppService.Descriptografar(gSCredencialSelecionada.Senha, gSCredencialSelecionada.IVSenha);
+                txtSenha.Text = criptografiaResult.Valor;
             }
             else
             {

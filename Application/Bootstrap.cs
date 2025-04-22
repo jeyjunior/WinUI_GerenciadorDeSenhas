@@ -45,6 +45,7 @@ namespace Application
                 Container.Register<INotificationService, NotificationService>(Lifestyle.Singleton);
                 Container.Register<ICredencialAppService, CredencialAppService>(Lifestyle.Singleton);
                 Container.Register<ICategoriaAppService, CategoriaAppService>(Lifestyle.Singleton);
+                Container.Register<IConfigAppService, ConfigAppService>(Lifestyle.Singleton);
 
                 // VIEW MODELS
                 Container = Bootstrap.Container;
