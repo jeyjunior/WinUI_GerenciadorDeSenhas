@@ -42,6 +42,7 @@ namespace Application.Services
                 return new CriptografiaResult { Valor = "", IV = "", Erro = criptografiaResult.Erro };
 
             return criptografiaResult;
+
         }
     }
 }
