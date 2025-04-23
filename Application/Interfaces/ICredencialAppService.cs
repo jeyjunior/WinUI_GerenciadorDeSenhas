@@ -18,5 +18,6 @@ namespace Application.Interfaces
 
         int SalvarCredencial(GSCredencial gSCredencial);
         bool DeletarCredencial(int PK_GSCredencial);
+        bool DeletarCredencialPorUsuario(int PK_GSUsuario);
     }
 }

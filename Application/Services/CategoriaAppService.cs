@@ -77,6 +77,33 @@ namespace Application.Services
 
             return ret;
         }
+        public bool DeletarCategoriaPorUsuario(int PK_GSUsuario)
+        {
+            bool ret = false;
+
+            using (var uow = new UnitOfWork(ConfiguracaoBancoDados.ObterConexao()))
+            {
+                var _gSCategoriaRepository = new GSCategoriaRepository(uow);
+                try
+                {
+                    uow.Begin();
+
+                    var result = _gSCategoriaRepository.Deletar(" GSCategoria.FK_GSUsuario = @PK_GSUsuario", new { PK_GSUsuario  = PK_GSUsuario });
+
+                    uow.Commit();
+
+                    if (result > 0)
+                        ret = true;
+                }
+                catch (Exception ex)
+                {
+                    uow.Rollback();
+                    throw new Exception(ex.Message);
+                }
+            }
+
+            return ret;
+        }
         public int SalvarCategoria(GSCategoria gSCategoria)
         {
             if (gSCategoria == null)

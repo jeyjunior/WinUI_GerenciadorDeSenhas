@@ -18,11 +18,12 @@ using Domain.Interfaces;
 using Domain.Entidades;
 using Application.Services;
 using JJ.NET.Core.Extensoes;
+using System.Threading.Tasks;
 
 
 namespace Presentation.Views
 {
-    public sealed partial class ConfiguracaoDialog : ContentDialog
+    public sealed partial class ConfiguracaoDialog : ContentDialog, IDisposable
     {
         #region Interfaces
         private readonly ILoginService loginService;
@@ -178,9 +179,7 @@ namespace Presentation.Views
         }
         private void btnDesconectar_Click(object sender, RoutedEventArgs e)
         {
-            (loginService as IDisposable)?.Dispose();
-            (notificationService as IDisposable)?.Dispose();
-            (configAppService as IDisposable)?.Dispose();
+            Dispose();
             this.Hide();
 
             NavigationService.NavegarPara(typeof(Login));
@@ -239,6 +238,59 @@ namespace Presentation.Views
             var criptografiaResult = configAppService.Descriptografar(gSUsuarioAtivo.Senha, gSUsuarioAtivo.IVSenha);
             passSenha.Password = criptografiaResult.Valor;
         }
+        public void Dispose()
+        {
+            (loginService as IDisposable)?.Dispose();
+            (notificationService as IDisposable)?.Dispose();
+            (configAppService as IDisposable)?.Dispose();
+        }
         #endregion
+
+        private async void btnDeletarConta_Click(object sender, RoutedEventArgs e)
+        {
+            spConfirmacaoContaDelete.Visibility = spConfirmacaoContaDelete.Visibility == Visibility.Visible
+                ? Visibility.Collapsed
+                : Visibility.Visible;
+
+            if (spConfirmacaoContaDelete.Visibility == Visibility.Visible)
+            {
+                txtConfirmarContaUsuario.Text =
+                    $"Essa operação não poderá ser desfeita.\n" +
+                    $"Todos os dados vinculados à sua conta serão permanentemente excluídos.\n" +
+                    $"Para confirmar, digite seu nome de usuário: {gSUsuarioAtivo.Usuario}";
+            }
+
+            await Task.Delay(50);
+            MoverScrollParaAreaExpandida(btnDeletarConta.TransformToVisual(MainScrollViewer));
+        }
+        private void MoverScrollParaAreaExpandida(GeneralTransform transform)
+        {
+            Point position = transform.TransformPoint(new Point(0, 0));
+
+            MainScrollViewer.ChangeView(null, position.Y, null, true);
+        }
+        private void txtUsuarioContaConfirmacao_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            btnConfirmarContaExclusao.IsEnabled = (txtUsuarioContaConfirmacao.Text.ObterValorOuPadrao("").Trim() != "");
+        }
+        private void btnConfirmarContaExclusao_Click(object sender, RoutedEventArgs e)
+        {
+            if (txtUsuarioContaConfirmacao.Text.ObterValorOuPadrao("").Trim() != gSUsuarioAtivo.Usuario.Trim())
+            {
+                notificationService.EnviarNotificacao("Usuário inválido.");
+                return;
+            }
+
+            var ret = configAppService.DeletarContaUsuarioLogado(gSUsuarioAtivo.PK_GSUsuario);
+
+            if (ret)
+            {
+                notificationService.EnviarNotificacao("Conta do usuário deletada com sucesso.");
+                btnDesconectar_Click(null, null);
+                return;
+            }
+
+            notificationService.EnviarNotificacao("Não foi possível deletar a conta do usuário ativo.", "Tente fechar e abrir novamente o programa.");
+        }
     }
 }

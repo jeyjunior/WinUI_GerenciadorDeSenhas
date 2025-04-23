@@ -200,7 +200,6 @@ namespace Application.Services
         {
             return gSUsuarioRepository.Obter(pK_GSUsuario);
         }
-
         public bool AtualizarUsuario(GSUsuario gSUsuario)
         {
             if (gSUsuario == null)

@@ -216,6 +216,33 @@ namespace Application.Services
 
             return ret;
         }
+        public bool DeletarCredencialPorUsuario(int PK_GSUsuario)
+        {
+            bool ret = false;
+
+            using (var uow = new UnitOfWork(ConfiguracaoBancoDados.ObterConexao()))
+            {
+                var _gSCredencialRepository = new GSCredencialRepository(uow);
+                try
+                {
+                    uow.Begin();
+
+                    var result = _gSCredencialRepository.Deletar(" GSCredencial.FK_GSUsuario = @PK_GSUsuario ", new { PK_GSUsuario = PK_GSUsuario });
+
+                    uow.Commit();
+
+                    if (result > 0)
+                        ret = true;
+                }
+                catch (Exception ex)
+                {
+                    uow.Rollback();
+                    throw new Exception(ex.Message);
+                }
+            }
+
+            return ret;
+        }
         #endregion
     }
 }

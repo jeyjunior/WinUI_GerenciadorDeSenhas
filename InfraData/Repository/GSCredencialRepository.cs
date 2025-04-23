@@ -74,5 +74,20 @@ namespace InfraData.Repository
 
             return resultado;
         }
+
+        public int Deletar(string condition = "", object parameters = null)
+        {
+            string query = "DELETE FROM GSCredencial";
+
+            if (condition.ObterValorOuPadrao("").Trim() != "")
+                query += " WHERE " + condition + "\n";
+
+            var resultado = unitOfWork.Connection.Execute(
+                sql: query.ToSQL(),
+                param: parameters,
+                transaction: unitOfWork.Transaction);
+
+            return resultado;
+        }
     }
 }

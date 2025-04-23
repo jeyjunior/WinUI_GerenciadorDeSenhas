@@ -11,5 +11,6 @@ namespace Application.Interfaces
     {
         CriptografiaResult Descriptografar(string valor, string iv);
         CriptografiaResult Criptografar(string valor, string iv);
+        bool DeletarContaUsuarioLogado(int PK_GSUsuario);
     }
 }

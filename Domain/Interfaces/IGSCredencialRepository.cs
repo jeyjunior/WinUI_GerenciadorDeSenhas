@@ -11,5 +11,6 @@ namespace Domain.Interfaces
     public interface IGSCredencialRepository : IRepository<GSCredencial>
     {
         IEnumerable<GSCredencial> ObterLista(string condition = "", string orderBy = "", object parameters = null);
+        int Deletar(string condition = "", object parameters = null);
     }
 }

@@ -10,5 +10,6 @@ namespace Domain.Interfaces
 {
     public interface IGSCategoriaRepository : IRepository<GSCategoria>
     {
+        int Deletar(string condition = "", object parameters = null);
     }
 }

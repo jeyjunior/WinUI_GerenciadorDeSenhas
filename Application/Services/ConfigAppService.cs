@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Application.Interfaces;
+using InfraData.Repository;
 using JJ.NET.Core.Extensoes;
+using JJ.NET.CrossData;
 using JJ.NET.Cryptography;
+using JJ.NET.Data;
 
 namespace Application.Services
 {
@@ -42,6 +45,37 @@ namespace Application.Services
                 return new CriptografiaResult { Valor = "", IV = "", Erro = criptografiaResult.Erro };
 
             return criptografiaResult;
+        }
+
+        public bool DeletarContaUsuarioLogado(int PK_GSUsuario)
+        {
+            bool ret = false;
+
+            using (var uow = new UnitOfWork(ConfiguracaoBancoDados.ObterConexao()))
+            {
+                var _gSCategoriaRepository = new GSCategoriaRepository(uow);
+                var _gSCredencialRepository = new GSCredencialRepository(uow);
+                var _gSUsuarioRepository = new GSUsuarioRepository(uow);
+                try
+                {
+                    uow.Begin();
+
+                    var categoriaDeletada = _gSCategoriaRepository.Deletar(" GSCategoria.FK_GSUsuario = @PK_GSUsuario", new { PK_GSUsuario = PK_GSUsuario });
+                    var credencialDeletado = _gSCredencialRepository.Deletar(" GSCredencial.FK_GSUsuario = @PK_GSUsuario", new { PK_GSUsuario = PK_GSUsuario });
+                    var usuarioDeletado = _gSUsuarioRepository.Deletar(PK_GSUsuario);
+                    uow.Commit();
+
+                    if (categoriaDeletada > 0 || credencialDeletado > 0 || usuarioDeletado > 0) 
+                        ret = true;
+                }
+                catch (Exception ex)
+                {
+                    uow.Rollback();
+                    throw new Exception(ex.Message);
+                }
+            }
+
+            return ret;
         }
     }
 }
