@@ -220,8 +220,25 @@ namespace Application.Services
                 return false;
             }
 
-            var ret = gSUsuarioRepository.Atualizar(gSUsuario);
-            return ret > 0;
+            using (var uow = new UnitOfWork(ConfiguracaoBancoDados.ObterConexao()))
+            {
+                var _gSUsuarioRepository = new GSUsuarioRepository(uow);
+                try
+                {
+                    uow.Begin();
+
+                    int PK_GSUsuario = _gSUsuarioRepository.Atualizar(gSUsuario);
+
+                    uow.Commit();
+
+                    return PK_GSUsuario > 0;
+                }
+                catch (Exception ex)
+                {
+                    uow.Rollback();
+                    throw new Exception(ex.Message);
+                }
+            }
         }
         #endregion
     }

@@ -86,6 +86,12 @@
                 </StackPanel>
             </StackPanel>
 
+            <Border Height="1" Width="Auto" Background="{StaticResource Cinza8}"/>
+            
+            <StackPanel>
+                <Button x:Name="btnDesconectar" Click="btnDesconectar_Click" Content="Desconectar" HorizontalAlignment="Stretch"/>
+            </StackPanel>
+
             <!-- Backup enviar para  -->
             <!-- Importar backup arquivo  -->
             <!-- Deletar todos os dados -->

@@ -176,6 +176,15 @@ namespace Presentation.Views
                 notificationService.EnviarNotificacao(ex.Message);
             }
         }
+        private void btnDesconectar_Click(object sender, RoutedEventArgs e)
+        {
+            (loginService as IDisposable)?.Dispose();
+            (notificationService as IDisposable)?.Dispose();
+            (configAppService as IDisposable)?.Dispose();
+            this.Hide();
+
+            NavigationService.NavegarPara(typeof(Login));
+        }
         #endregion
 
         #region Metodos
