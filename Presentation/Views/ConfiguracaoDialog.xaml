@@ -93,6 +93,48 @@
 
             <Border Height="1" Width="Auto" Background="{StaticResource Cinza8}"/>
             <TextBlock Text="Danger Zone" Foreground="{StaticResource Vermelho1}" FontSize="14" VerticalAlignment="Center"/>
+
+            <StackPanel x:Name="spDeletarCategoria" Spacing="12">
+                <Button x:Name="btnDeletarCategoria" 
+                        Content="Deletar Categorias" 
+                        Click="btnDeletarCategoria_Click" 
+                        HorizontalAlignment="Stretch" />
+
+                <StackPanel x:Name="spConfirmacaoCategoriaDelete" Visibility="Collapsed" Spacing="8">
+                    <TextBlock x:Name="txtConfirmarCategoriaUsuario" Text="" 
+                               TextWrapping="Wrap" 
+                               Foreground="{StaticResource Branco}" 
+                               FontWeight="Normal" 
+                               TextAlignment="Center"/>
+
+                    <TextBox x:Name="txtUsuarioCategoriaConfirmacao" TextChanged="txtUsuarioCategoriaConfirmacao_TextChanged" PlaceholderText=""/>
+
+                    <Button x:Name="btnConfirmarCategoriaExclusao" 
+                            Content="Excluir" 
+                            Click="btnConfirmarCategoriaExclusao_Click" Background="{StaticResource Vermelho1}" FontWeight="Bold" Foreground="White" HorizontalAlignment="Stretch" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel x:Name="spDeletarCredencial" Spacing="12">
+                <Button x:Name="btnDeletarCredencial" 
+                        Content="Deletar Credenciais" 
+                        Click="btnDeletarCredencial_Click" 
+                        HorizontalAlignment="Stretch" />
+
+                <StackPanel x:Name="spConfirmacaoCredencialDelete" Visibility="Collapsed" Spacing="8">
+                    <TextBlock x:Name="txtConfirmarCredencialUsuario" Text="" 
+                               TextWrapping="Wrap" 
+                               Foreground="{StaticResource Branco}" 
+                               FontWeight="Normal" 
+                               TextAlignment="Center"/>
+
+                    <TextBox x:Name="txtUsuarioCredencialConfirmacao" TextChanged="txtUsuarioCredencialConfirmacao_TextChanged" PlaceholderText=""/>
+
+                    <Button x:Name="btnConfirmarCredencialExclusao" 
+                            Content="Excluir" 
+                            Click="btnConfirmarCredencialExclusao_Click" Background="{StaticResource Vermelho1}" FontWeight="Bold" Foreground="White" HorizontalAlignment="Stretch" />
+                </StackPanel>
+            </StackPanel>
             
             <StackPanel x:Name="spDeletarConta" Spacing="12">
                 <Button x:Name="btnDeletarConta" 
@@ -114,10 +156,28 @@
                             Click="btnConfirmarContaExclusao_Click" Background="{StaticResource Vermelho1}" FontWeight="Bold" Foreground="White" HorizontalAlignment="Stretch" />
                 </StackPanel>
             </StackPanel>
-            
-            <!-- Backup enviar para  -->
-            <!-- Importar backup arquivo  -->
-            <!-- Deletar todos os dados -->
+
+            <StackPanel x:Name="spDeletarBaseDados" Spacing="12">
+                <Button x:Name="btnDeletarBaseDados" 
+                        Content="Deletar Tudo" 
+                        Click="btnDeletarBaseDados_Click" 
+                        HorizontalAlignment="Stretch" />
+
+                <StackPanel x:Name="spConfirmacaoBaseDadosDelete" Visibility="Collapsed" Spacing="8">
+                    <TextBlock x:Name="txtConfirmarBaseDadosUsuario" Text="" 
+                               TextWrapping="Wrap" 
+                               Foreground="{StaticResource Branco}" 
+                               FontWeight="Normal" 
+                               TextAlignment="Center"/>
+
+                    <TextBox x:Name="txtUsuarioBaseDadosConfirmacao" TextChanged="txtUsuarioBaseDadosConfirmacao_TextChanged" PlaceholderText=""/>
+
+                    <Button x:Name="btnConfirmarBaseDadosExclusao" 
+                            Content="Excluir" 
+                            Click="btnConfirmarBaseDadosExclusao_Click" Background="{StaticResource Vermelho1}" FontWeight="Bold" Foreground="White" HorizontalAlignment="Stretch" />
+                </StackPanel>
+            </StackPanel>
+
         </StackPanel>
     </ScrollViewer>
 </ContentDialog>

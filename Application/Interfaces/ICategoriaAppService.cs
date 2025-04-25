@@ -13,6 +13,7 @@ namespace Application.Interfaces
         IEnumerable<GSCategoria> ObterCategorias(int FK_GSUsuario);
         ObservableCollection<GSCategoria> ObterCategoriasObservableCollection(int FK_GSUsuario);
         bool DeletarCategoria(int PK_GSCategoria);
+        bool DeletarCategoriaPorUsuario(int PK_GSUsuario);
         int SalvarCategoria(GSCategoria gSCategoria);
     }
 }
