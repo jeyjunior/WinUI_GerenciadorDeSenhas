@@ -259,30 +259,16 @@ namespace Presentation.Views
 
         private async void btnDeletarConta_Click(object sender, RoutedEventArgs e)
         {
-            FecharPanels();
-
-            spConfirmacaoContaDelete.Visibility = spConfirmacaoContaDelete.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-
-            if (spConfirmacaoContaDelete.Visibility == Visibility.Visible)
-                txtConfirmarContaUsuario.Text = $"Essa operação não poderá ser desfeita.\n" +
-                    $"Todos os dados vinculados à sua conta serão permanentemente excluídos.\n" +
-                    $"Para confirmar, digite seu nome de usuário: {gSUsuarioAtivo.Usuario}";
-
-            await Task.Delay(50);
-            MoverScrollParaAreaExpandida(btnDeletarConta.TransformToVisual(MainScrollViewer));
+            await AlternarPainelComConfirmacao(spConfirmacaoContaDelete, txtConfirmarContaUsuario, btnDeletarConta, MensagemConfirmacao("Conta"));
         }
-
         private void txtUsuarioContaConfirmacao_TextChanged(object sender, TextChangedEventArgs e)
         {
             btnConfirmarContaExclusao.IsEnabled = (txtUsuarioContaConfirmacao.Text.ObterValorOuPadrao("").Trim() != "");
         }
         private void btnConfirmarContaExclusao_Click(object sender, RoutedEventArgs e)
         {
-            if (txtUsuarioContaConfirmacao.Text.ObterValorOuPadrao("").Trim() != gSUsuarioAtivo.Usuario.Trim())
-            {
-                notificationService.EnviarNotificacao("Usuário inválido.");
+            if (!UsuarioValido(txtUsuarioContaConfirmacao.Text))
                 return;
-            }
 
             var ret = configAppService.DeletarContaUsuarioLogado(gSUsuarioAtivo.PK_GSUsuario);
 
@@ -295,34 +281,18 @@ namespace Presentation.Views
 
             notificationService.EnviarNotificacao("Não foi possível deletar a conta do usuário ativo.", "Tente fechar e abrir novamente o programa.");
         }
-
         private async void btnDeletarCategoria_Click(object sender, RoutedEventArgs e)
         {
-            FecharPanels();
-
-            spConfirmacaoCategoriaDelete.Visibility = spConfirmacaoCategoriaDelete.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-
-            if (spConfirmacaoCategoriaDelete.Visibility == Visibility.Visible)
-                txtConfirmarCategoriaUsuario.Text = $"Essa operação não poderá ser desfeita.\n" +
-                    $"Todos os dados vinculados à sua conta serão permanentemente excluídos.\n" +
-                    $"Para confirmar, digite seu nome de usuário: {gSUsuarioAtivo.Usuario}";
-
-            await Task.Delay(50);
-            MoverScrollParaAreaExpandida(btnDeletarCategoria.TransformToVisual(MainScrollViewer));
+            await AlternarPainelComConfirmacao(spConfirmacaoCategoriaDelete, txtConfirmarCategoriaUsuario, btnDeletarCategoria, MensagemConfirmacao("Categoria"));
         }
-
         private void txtUsuarioCategoriaConfirmacao_TextChanged(object sender, TextChangedEventArgs e)
         {
             btnConfirmarCategoriaExclusao.IsEnabled = (txtUsuarioCategoriaConfirmacao.Text.ObterValorOuPadrao("").Trim() != "");
         }
-
         private void btnConfirmarCategoriaExclusao_Click(object sender, RoutedEventArgs e)
         {
-            if (txtUsuarioCategoriaConfirmacao.Text.ObterValorOuPadrao("").Trim() != gSUsuarioAtivo.Usuario.Trim())
-            {
-                notificationService.EnviarNotificacao("Usuário inválido.");
+            if (!UsuarioValido(txtUsuarioCategoriaConfirmacao.Text))
                 return;
-            }
 
             var ret = categoriaAppService.DeletarCategoriaPorUsuario(gSUsuarioAtivo.PK_GSUsuario);
 
@@ -338,31 +308,16 @@ namespace Presentation.Views
 
         private async void btnDeletarCredencial_Click(object sender, RoutedEventArgs e)
         {
-            FecharPanels();
-
-            spConfirmacaoCredencialDelete.Visibility = spConfirmacaoCredencialDelete.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-
-            if (spConfirmacaoCredencialDelete.Visibility == Visibility.Visible)
-                txtConfirmarCredencialUsuario.Text = $"Essa operação não poderá ser desfeita.\n" +
-                    $"Todos os dados vinculados à sua conta serão permanentemente excluídos.\n" +
-                    $"Para confirmar, digite seu nome de usuário: {gSUsuarioAtivo.Usuario}";
-
-            await Task.Delay(50);
-            MoverScrollParaAreaExpandida(btnDeletarCredencial.TransformToVisual(MainScrollViewer));
+            await AlternarPainelComConfirmacao(spConfirmacaoCredencialDelete,txtConfirmarCredencialUsuario,btnDeletarCredencial,MensagemConfirmacao("Credencial"));
         }
-
         private void txtUsuarioCredencialConfirmacao_TextChanged(object sender, TextChangedEventArgs e)
         {
             btnConfirmarCredencialExclusao.IsEnabled = (txtUsuarioCredencialConfirmacao.Text.ObterValorOuPadrao("").Trim() != "");
         }
-
         private void btnConfirmarCredencialExclusao_Click(object sender, RoutedEventArgs e)
         {
-            if (txtUsuarioCredencialConfirmacao.Text.ObterValorOuPadrao("").Trim() != gSUsuarioAtivo.Usuario.Trim())
-            {
-                notificationService.EnviarNotificacao("Usuário inválido.");
+            if (!UsuarioValido(txtUsuarioCredencialConfirmacao.Text))
                 return;
-            }
 
             var ret = credencialAppService.DeletarCredencialPorUsuario(gSUsuarioAtivo.PK_GSUsuario);
 
@@ -374,32 +329,54 @@ namespace Presentation.Views
 
             notificationService.EnviarNotificacao("Não foi possível deletar as credenciais do usuário ativo.", "Tente fechar e abrir novamente o programa.");
         }
-
         private async void btnDeletarBaseDados_Click(object sender, RoutedEventArgs e)
         {
-            FecharPanels();
-            
-            spConfirmacaoBaseDadosDelete.Visibility = spConfirmacaoBaseDadosDelete.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-
-            if (spConfirmacaoBaseDadosDelete.Visibility == Visibility.Visible)
-                txtConfirmarBaseDadosUsuario.Text = $"Essa operação não poderá ser desfeita.\n" +
-                    $"Todos os dados serão permanentemente excluídos.\n" +
-                    $"Para confirmar, digite seu nome de usuário: {gSUsuarioAtivo.Usuario}";
-
-            await Task.Delay(50);
-            MoverScrollParaAreaExpandida(btnDeletarBaseDados.TransformToVisual(MainScrollViewer));
+            await AlternarPainelComConfirmacao(spConfirmacaoBaseDadosDelete, txtConfirmarBaseDadosUsuario, btnDeletarBaseDados,MensagemConfirmacao("BaseDados"));
         }
+
 
         private void txtUsuarioBaseDadosConfirmacao_TextChanged(object sender, TextChangedEventArgs e)
         {
             btnConfirmarBaseDadosExclusao.IsEnabled = (txtUsuarioBaseDadosConfirmacao.Text.ObterValorOuPadrao("").Trim() != "");
         }
-
         private void btnConfirmarBaseDadosExclusao_Click(object sender, RoutedEventArgs e)
         {
 
         }
+        private async Task AlternarPainelComConfirmacao(StackPanel painel, TextBlock campoTextoConfirmacao, UIElement botaoDeReferencia, string mensagem)
+        {
+            bool estavaVisivel = painel.Visibility == Visibility.Visible;
+            FecharPanels();
 
+            if (!estavaVisivel)
+            {
+                painel.Visibility = Visibility.Visible;
+                campoTextoConfirmacao.Text = $"{mensagem}\nPara confirmar, digite seu nome de usuário: {gSUsuarioAtivo.Usuario.Trim()}";
+            }
+
+            await Task.Delay(50);
+            MoverScrollParaAreaExpandida(botaoDeReferencia.TransformToVisual(MainScrollViewer));
+        }
+        private string MensagemConfirmacao(string contexto)
+        {
+            string inicio = "Essa operação não poderá ser desfeita.\n";
+            string detalhe = contexto switch
+            {
+                "BaseDados" => "Todos os dados serão permanentemente excluídos.",
+                _ => "Todos os dados vinculados à sua conta serão permanentemente excluídos."
+            };
+            return $"{inicio}{detalhe}";
+        }
+        private bool UsuarioValido(string textoDigitado)
+        {
+            if (textoDigitado.ObterValorOuPadrao("").Trim() != gSUsuarioAtivo.Usuario.Trim())
+            {
+                notificationService.EnviarNotificacao("Usuário inválido.");
+                return false;
+            }
+
+            return true;
+        }
         private void FecharPanels()
         {
             spConfirmacaoCredencialDelete.Visibility = Visibility.Collapsed;
