@@ -46,7 +46,6 @@ namespace Application.Services
 
             return criptografiaResult;
         }
-
         public bool DeletarContaUsuarioLogado(int PK_GSUsuario)
         {
             bool ret = false;

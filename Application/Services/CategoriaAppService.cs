@@ -65,8 +65,7 @@ namespace Application.Services
 
                     uow.Commit();
 
-                    if (result > 0)
-                        ret = true;
+                    ret = true;
                 }
                 catch (Exception ex)
                 {
@@ -92,8 +91,7 @@ namespace Application.Services
 
                     uow.Commit();
 
-                    if (result > 0)
-                        ret = true;
+                    ret = true;
                 }
                 catch (Exception ex)
                 {

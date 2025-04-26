@@ -237,6 +237,8 @@ namespace Presentation.Views
             var dialog = new ConfiguracaoDialog();
             dialog.XamlRoot = this.Content.XamlRoot;
             await dialog.ShowAsync();
+
+            Pesquisar();
         }
         #endregion
 

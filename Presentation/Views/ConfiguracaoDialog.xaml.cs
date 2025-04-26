@@ -189,6 +189,92 @@ namespace Presentation.Views
 
             NavigationService.NavegarPara(typeof(Login));
         }
+        
+        private async void btnDeletarConta_Click(object sender, RoutedEventArgs e)
+        {
+            await AlternarPainelComConfirmacao(
+                spConfirmacaoContaDelete,
+                txtUsuarioContaConfirmacao,
+                txtConfirmarContaUsuario, 
+                btnDeletarConta, 
+                MensagemConfirmacao("Conta"));
+        }
+        private void txtUsuarioContaConfirmacao_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            btnConfirmarContaExclusao.IsEnabled = (txtUsuarioContaConfirmacao.Text.ObterValorOuPadrao("").Trim() != "");
+        }
+        private void btnConfirmarContaExclusao_Click(object sender, RoutedEventArgs e)
+        {
+            if (!UsuarioValido(txtUsuarioContaConfirmacao.Text))
+                return;
+
+            var ret = configAppService.DeletarContaUsuarioLogado(gSUsuarioAtivo.PK_GSUsuario);
+
+            if (ret)
+            {
+                notificationService.EnviarNotificacao("Conta do usuário deletada com sucesso.");
+                btnDesconectar_Click(null, null);
+                return;
+            }
+
+            notificationService.EnviarNotificacao("Não foi possível deletar a conta do usuário ativo.", "Tente fechar e abrir novamente o programa.");
+        }
+        private async void btnDeletarCategoria_Click(object sender, RoutedEventArgs e)
+        {
+            await AlternarPainelComConfirmacao(
+                spConfirmacaoCategoriaDelete, 
+                txtUsuarioCategoriaConfirmacao, 
+                txtConfirmarCategoriaUsuario, 
+                btnDeletarCategoria, 
+                MensagemConfirmacao("Categoria"));
+        }
+        private void txtUsuarioCategoriaConfirmacao_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            btnConfirmarCategoriaExclusao.IsEnabled = (txtUsuarioCategoriaConfirmacao.Text.ObterValorOuPadrao("").Trim() != "");
+        }
+        private void btnConfirmarCategoriaExclusao_Click(object sender, RoutedEventArgs e)
+        {
+            if (!UsuarioValido(txtUsuarioCategoriaConfirmacao.Text))
+                return;
+
+            var ret = categoriaAppService.DeletarCategoriaPorUsuario(gSUsuarioAtivo.PK_GSUsuario);
+
+            if (ret)
+            {
+                notificationService.EnviarNotificacao("Categorias deletadas com sucesso.");
+                return;
+            }
+
+            notificationService.EnviarNotificacao("Não foi possível deletar as categorias do usuário ativo.", "Tente fechar e abrir novamente o programa.");
+        }
+        private async void btnDeletarCredencial_Click(object sender, RoutedEventArgs e)
+        {
+            await AlternarPainelComConfirmacao(
+                spConfirmacaoCredencialDelete,
+                txtUsuarioCredencialConfirmacao,
+                txtConfirmarCredencialUsuario, 
+                btnDeletarCredencial, 
+                MensagemConfirmacao("Credencial"));
+        }
+        private void txtUsuarioCredencialConfirmacao_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            btnConfirmarCredencialExclusao.IsEnabled = (txtUsuarioCredencialConfirmacao.Text.ObterValorOuPadrao("").Trim() != "");
+        }
+        private void btnConfirmarCredencialExclusao_Click(object sender, RoutedEventArgs e)
+        {
+            if (!UsuarioValido(txtUsuarioCredencialConfirmacao.Text))
+                return;
+
+            var ret = credencialAppService.DeletarCredencialPorUsuario(gSUsuarioAtivo.PK_GSUsuario);
+
+            if (ret)
+            {
+                notificationService.EnviarNotificacao("Credenciais deletadas com sucesso.");
+                return;
+            }
+
+            notificationService.EnviarNotificacao("Não foi possível deletar as credenciais do usuário ativo.", "Tente fechar e abrir novamente o programa.");
+        }
         #endregion
 
         #region Metodos
@@ -243,110 +329,18 @@ namespace Presentation.Views
             var criptografiaResult = configAppService.Descriptografar(gSUsuarioAtivo.Senha, gSUsuarioAtivo.IVSenha);
             passSenha.Password = criptografiaResult.Valor;
         }
-        public void Dispose()
-        {
-            (loginService as IDisposable)?.Dispose();
-            (notificationService as IDisposable)?.Dispose();
-            (configAppService as IDisposable)?.Dispose();
-        }
         private void MoverScrollParaAreaExpandida(GeneralTransform transform)
         {
             Point position = transform.TransformPoint(new Point(0, 0));
 
             MainScrollViewer.ChangeView(null, position.Y, null, true);
         }
-        #endregion
-
-        private async void btnDeletarConta_Click(object sender, RoutedEventArgs e)
-        {
-            await AlternarPainelComConfirmacao(spConfirmacaoContaDelete, txtConfirmarContaUsuario, btnDeletarConta, MensagemConfirmacao("Conta"));
-        }
-        private void txtUsuarioContaConfirmacao_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            btnConfirmarContaExclusao.IsEnabled = (txtUsuarioContaConfirmacao.Text.ObterValorOuPadrao("").Trim() != "");
-        }
-        private void btnConfirmarContaExclusao_Click(object sender, RoutedEventArgs e)
-        {
-            if (!UsuarioValido(txtUsuarioContaConfirmacao.Text))
-                return;
-
-            var ret = configAppService.DeletarContaUsuarioLogado(gSUsuarioAtivo.PK_GSUsuario);
-
-            if (ret)
-            {
-                notificationService.EnviarNotificacao("Conta do usuário deletada com sucesso.");
-                btnDesconectar_Click(null, null);
-                return;
-            }
-
-            notificationService.EnviarNotificacao("Não foi possível deletar a conta do usuário ativo.", "Tente fechar e abrir novamente o programa.");
-        }
-        private async void btnDeletarCategoria_Click(object sender, RoutedEventArgs e)
-        {
-            await AlternarPainelComConfirmacao(spConfirmacaoCategoriaDelete, txtConfirmarCategoriaUsuario, btnDeletarCategoria, MensagemConfirmacao("Categoria"));
-        }
-        private void txtUsuarioCategoriaConfirmacao_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            btnConfirmarCategoriaExclusao.IsEnabled = (txtUsuarioCategoriaConfirmacao.Text.ObterValorOuPadrao("").Trim() != "");
-        }
-        private void btnConfirmarCategoriaExclusao_Click(object sender, RoutedEventArgs e)
-        {
-            if (!UsuarioValido(txtUsuarioCategoriaConfirmacao.Text))
-                return;
-
-            var ret = categoriaAppService.DeletarCategoriaPorUsuario(gSUsuarioAtivo.PK_GSUsuario);
-
-            if (ret)
-            {
-                notificationService.EnviarNotificacao("Categorias deletadas com sucesso.");
-                return;
-            }
-
-            notificationService.EnviarNotificacao("Não foi possível deletar as categorias do usuário ativo.", "Tente fechar e abrir novamente o programa.");
-        }
-
-
-        private async void btnDeletarCredencial_Click(object sender, RoutedEventArgs e)
-        {
-            await AlternarPainelComConfirmacao(spConfirmacaoCredencialDelete,txtConfirmarCredencialUsuario,btnDeletarCredencial,MensagemConfirmacao("Credencial"));
-        }
-        private void txtUsuarioCredencialConfirmacao_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            btnConfirmarCredencialExclusao.IsEnabled = (txtUsuarioCredencialConfirmacao.Text.ObterValorOuPadrao("").Trim() != "");
-        }
-        private void btnConfirmarCredencialExclusao_Click(object sender, RoutedEventArgs e)
-        {
-            if (!UsuarioValido(txtUsuarioCredencialConfirmacao.Text))
-                return;
-
-            var ret = credencialAppService.DeletarCredencialPorUsuario(gSUsuarioAtivo.PK_GSUsuario);
-
-            if (ret)
-            {
-                notificationService.EnviarNotificacao("Credenciais deletadas com sucesso.");
-                return;
-            }
-
-            notificationService.EnviarNotificacao("Não foi possível deletar as credenciais do usuário ativo.", "Tente fechar e abrir novamente o programa.");
-        }
-        private async void btnDeletarBaseDados_Click(object sender, RoutedEventArgs e)
-        {
-            await AlternarPainelComConfirmacao(spConfirmacaoBaseDadosDelete, txtConfirmarBaseDadosUsuario, btnDeletarBaseDados,MensagemConfirmacao("BaseDados"));
-        }
-
-
-        private void txtUsuarioBaseDadosConfirmacao_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            btnConfirmarBaseDadosExclusao.IsEnabled = (txtUsuarioBaseDadosConfirmacao.Text.ObterValorOuPadrao("").Trim() != "");
-        }
-        private void btnConfirmarBaseDadosExclusao_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-        private async Task AlternarPainelComConfirmacao(StackPanel painel, TextBlock campoTextoConfirmacao, UIElement botaoDeReferencia, string mensagem)
+        private async Task AlternarPainelComConfirmacao(StackPanel painel, TextBox textBox, TextBlock campoTextoConfirmacao, UIElement botaoDeReferencia, string mensagem)
         {
             bool estavaVisivel = painel.Visibility == Visibility.Visible;
             FecharPanels();
+
+            textBox.Text = "";
 
             if (!estavaVisivel)
             {
@@ -379,10 +373,20 @@ namespace Presentation.Views
         }
         private void FecharPanels()
         {
+            txtUsuarioCredencialConfirmacao.Text = "";
+            txtUsuarioCategoriaConfirmacao.Text = "";
+            txtUsuarioContaConfirmacao.Text = "";
+
             spConfirmacaoCredencialDelete.Visibility = Visibility.Collapsed;
             spConfirmacaoCategoriaDelete.Visibility = Visibility.Collapsed;
             spConfirmacaoContaDelete.Visibility = Visibility.Collapsed;
-            spConfirmacaoBaseDadosDelete.Visibility = Visibility.Collapsed;
         }
+        public void Dispose()
+        {
+            (loginService as IDisposable)?.Dispose();
+            (notificationService as IDisposable)?.Dispose();
+            (configAppService as IDisposable)?.Dispose();
+        }
+        #endregion
     }
 }
