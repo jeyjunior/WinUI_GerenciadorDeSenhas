@@ -26,4 +26,12 @@ namespace GSDomain.Enumeradores
         Crescente = 1,
         Decrescente = 2
     }
+
+    public enum TipoDeAviso
+    {
+        Informacao,
+        Sucesso,
+        Erro,
+        Alerta,
+    }
 }

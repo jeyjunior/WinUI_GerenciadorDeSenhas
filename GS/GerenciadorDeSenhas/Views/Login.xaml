@@ -16,6 +16,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <Popup Width="300" Height="40"/>
+
         <StackPanel Grid.Row="0" Spacing="4">
             <TextBlock Text="Usuário" Foreground="{StaticResource Cinza1}"/>
             <TextBox x:Name="txtUsuario" Width="300" MaxLength="128"/>

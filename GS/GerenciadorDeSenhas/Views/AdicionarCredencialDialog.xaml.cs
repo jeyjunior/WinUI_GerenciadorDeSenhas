@@ -23,6 +23,7 @@ using GSApplication.Services;
 using GSDomain.Entidades;
 using GSDomain.Enumeradores;
 using GerenciadorDeSenhas.ViewModel;
+using GerenciadorDeSenhas.Controls;
 
 namespace GerenciadorDeSenhas.Views
 {
@@ -31,7 +32,6 @@ namespace GerenciadorDeSenhas.Views
         #region Interfaces
         private readonly ICredencialAppService credencialAppService;
         private readonly ICategoriaAppService categoriaAppService;
-        private readonly INotificationService notificationService;
         private readonly IConfigAppService configAppService;
         #endregion
 
@@ -49,7 +49,6 @@ namespace GerenciadorDeSenhas.Views
 
             credencialAppService = Bootstrap.Container.GetInstance<ICredencialAppService>();
             categoriaAppService = Bootstrap.Container.GetInstance<ICategoriaAppService>();
-            notificationService = Bootstrap.Container.GetInstance<INotificationService>();
             configAppService = Bootstrap.Container.GetInstance<IConfigAppService>();
 
             this.modoEdicaoTela = (gSCredencial == null ? ModoEdicao.Novo : ModoEdicao.Editar);
@@ -125,7 +124,7 @@ namespace GerenciadorDeSenhas.Views
             cboCategoria.Focus(FocusState.Keyboard);
             cboCategoria_SelectionChanged(null, null);
         }
-        private void btnSalvarCategoria_Click(object sender, RoutedEventArgs e)
+        private async void btnSalvarCategoria_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -145,7 +144,7 @@ namespace GerenciadorDeSenhas.Views
                         if (pK_GSCategoria <= 0)
                         {
                             BindCategoria();
-                            notificationService.EnviarNotificacao("Não foi possível adicionar uma nova categoria.");
+                            await Mensagem.AvisoAsync("Não foi possível adicionar uma nova categoria.", this.XamlRoot);
                             return;
                         }
 
@@ -163,7 +162,7 @@ namespace GerenciadorDeSenhas.Views
 
                         if (categoriaAtualizada <= 0)
                         {
-                            notificationService.EnviarNotificacao("Não foi possível atualizar a categoria selecionada.");
+                            await Mensagem.AvisoAsync("Não foi possível atualizar a categoria selecionada.", this.XamlRoot);
                             return;
                         }
 
@@ -174,7 +173,7 @@ namespace GerenciadorDeSenhas.Views
 
                         if (!ret)
                         {
-                            notificationService.EnviarNotificacao("Não foi possível deletar a categoria selecionada.");
+                            await Mensagem.AvisoAsync("Não foi possível deletar a categoria selecionada.", this.XamlRoot);
                             return;
                         }
                         BindCategoria();
@@ -185,7 +184,7 @@ namespace GerenciadorDeSenhas.Views
             }
             catch (Exception ex)
             {
-                notificationService.EnviarNotificacao(ex.Message);
+                await Mensagem.ErroAsync(ex.Message, this.XamlRoot);
             }
             finally
             {
@@ -209,7 +208,7 @@ namespace GerenciadorDeSenhas.Views
 
             MoverScrollParaAreaExpandida(spCredencial.TransformToVisual(MainScrollViewer));
         }
-        private void btnGerarCredencial_Click(object sender, RoutedEventArgs e)
+        private async void btnGerarCredencial_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -234,7 +233,7 @@ namespace GerenciadorDeSenhas.Views
 
                 if (caracteres.ObterValorOuPadrao("").Trim() == "")
                 {
-                    notificationService.EnviarNotificacao("É necessário marcar alguma das opções para gerar credencial.", "");
+                    await Mensagem.InformacaoAsync("É necessário marcar alguma das opções para gerar credencial.", this.XamlRoot);
                     return;
                 }
 
@@ -255,7 +254,7 @@ namespace GerenciadorDeSenhas.Views
             }
             catch (Exception ex)
             {
-                notificationService.EnviarNotificacao("Erro", ex.Message);
+                await Mensagem.ErroAsync(ex.Message, this.XamlRoot);
             }
         }
         private void CheckCredencial_Checked(object sender, RoutedEventArgs e)
@@ -280,7 +279,7 @@ namespace GerenciadorDeSenhas.Views
 
             MoverScrollParaAreaExpandida(btnGerarSenha.TransformToVisual(MainScrollViewer));
         }
-        private void btnGerarSenha_Click(object sender, RoutedEventArgs e)
+        private async void btnGerarSenha_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -305,7 +304,7 @@ namespace GerenciadorDeSenhas.Views
 
                 if (caracteres.ObterValorOuPadrao("").Trim() == "")
                 {
-                    notificationService.EnviarNotificacao("É necessário marcar alguma das opções para gerar uma senha.", "");
+                    await Mensagem.InformacaoAsync("É necessário marcar alguma das opções para gerar uma senha.", this.XamlRoot);
                     return;
                 }
 
@@ -326,7 +325,7 @@ namespace GerenciadorDeSenhas.Views
             }
             catch (Exception ex)
             {
-                notificationService.EnviarNotificacao("Erro", ex.Message);
+                await Mensagem.ErroAsync(ex.Message, this.XamlRoot);
             }
         }
         private void CheckSenha_Checked(object sender, RoutedEventArgs e)
@@ -353,7 +352,7 @@ namespace GerenciadorDeSenhas.Views
             }
         }
 
-        private void SalvarCredencial_Click(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        private async void SalvarCredencial_Click(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             var categoria = ViewModel.CategoriaSelecionada;
             string credencial = txtCredencial.Text.ObterValorOuPadrao("").Trim();
@@ -377,9 +376,7 @@ namespace GerenciadorDeSenhas.Views
             var ret = credencialAppService.SalvarCredencial(gSCredencial);
 
             if ((int)ret > 0)
-            {
-                notificationService.EnviarNotificacao("Credencial foi salva com sucesso.");
-            }
+                await Mensagem.SucessoAsync("Credencial foi salva com sucesso.", this.XamlRoot);
         }
         #endregion
 

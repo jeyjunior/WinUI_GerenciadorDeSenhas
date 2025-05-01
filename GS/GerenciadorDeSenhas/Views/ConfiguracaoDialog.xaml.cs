@@ -23,6 +23,7 @@ using GSApplication.Services;
 using GSDomain.Entidades;
 using GSDomain.Enumeradores;
 using GerenciadorDeSenhas.ViewModel;
+using GerenciadorDeSenhas.Controls;
 
 namespace GerenciadorDeSenhas.Views
 {
@@ -30,7 +31,6 @@ namespace GerenciadorDeSenhas.Views
     {
         #region Interfaces
         private readonly ILoginService loginService;
-        private readonly INotificationService notificationService;
         private readonly IConfigAppService configAppService;
         private readonly ICategoriaAppService categoriaAppService;
         private readonly ICredencialAppService credencialAppService;
@@ -46,7 +46,6 @@ namespace GerenciadorDeSenhas.Views
             this.InitializeComponent();
 
             loginService = Bootstrap.Container.GetInstance<ILoginService>();
-            notificationService = Bootstrap.Container.GetInstance<INotificationService>();
             configAppService = Bootstrap.Container.GetInstance<IConfigAppService>();
             categoriaAppService = Bootstrap.Container.GetInstance<ICategoriaAppService>();
             credencialAppService = Bootstrap.Container.GetInstance<ICredencialAppService>();
@@ -77,7 +76,7 @@ namespace GerenciadorDeSenhas.Views
             HabilitarEdicaoNome(false);
             txtNome.Text = gSUsuarioAtivo.Nome;
         }
-        private void btnSalvarNome_Click(object sender, RoutedEventArgs e)
+        private async void btnSalvarNome_Click(object sender, RoutedEventArgs e)
         {
             if (txtNome.Text.ObterValorOuPadrao("").Trim() == "")
                 return;
@@ -90,14 +89,14 @@ namespace GerenciadorDeSenhas.Views
                 loginService.AtualizarUsuario(gSUsuario);
 
                 if (!gSUsuario.ValidarResultado.EhValido)
-                    notificationService.EnviarNotificacao(gSUsuario.ValidarResultado.ObterPrimeiroErro());
+                    await Mensagem.AvisoAsync(gSUsuario.ValidarResultado.ObterPrimeiroErro(), this.XamlRoot);
 
                 HabilitarEdicaoNome(false);
                 Pesquisar();
             }
             catch (Exception ex)
             {
-                notificationService.EnviarNotificacao(ex.Message);
+                await Mensagem.ErroAsync(ex.Message, this.XamlRoot);
             }
         }
         private void btnAlterarUsuario_Click(object sender, RoutedEventArgs e)
@@ -112,7 +111,7 @@ namespace GerenciadorDeSenhas.Views
             HabilitarEdicaoUsuario(false);
             txtUsuario.Text = gSUsuarioAtivo.Usuario;
         }
-        private void btnSalvarUsuario_Click(object sender, RoutedEventArgs e)
+        private async void btnSalvarUsuario_Click(object sender, RoutedEventArgs e)
         {
             if (txtUsuario.Text.ObterValorOuPadrao("").Trim() == "")
                 return;
@@ -125,14 +124,14 @@ namespace GerenciadorDeSenhas.Views
                 loginService.AtualizarUsuario(gSUsuario);
 
                 if (!gSUsuario.ValidarResultado.EhValido)
-                    notificationService.EnviarNotificacao(gSUsuario.ValidarResultado.ObterPrimeiroErro());
+                    await Mensagem.AvisoAsync(gSUsuario.ValidarResultado.ObterPrimeiroErro(), this.XamlRoot);
 
                 HabilitarEdicaoUsuario(false);
                 Pesquisar();
             }
             catch (Exception ex)
             {
-                notificationService.EnviarNotificacao(ex.Message);
+                await Mensagem.ErroAsync(ex.Message, this.XamlRoot);
             }
         }
         private void btnAlterarSenha_Click(object sender, RoutedEventArgs e)
@@ -149,7 +148,7 @@ namespace GerenciadorDeSenhas.Views
             var criptografiaResult = configAppService.Descriptografar(gSUsuarioAtivo.Senha, gSUsuarioAtivo.IVSenha);
             passSenha.Password = criptografiaResult.Valor;
         }
-        private void btnSalvarSenha_Click(object sender, RoutedEventArgs e)
+        private async void btnSalvarSenha_Click(object sender, RoutedEventArgs e)
         {
             if (passSenha.Password.ObterValorOuPadrao("").Trim() == "")
                 return;
@@ -164,7 +163,7 @@ namespace GerenciadorDeSenhas.Views
 
                 if (criptografiaResult.Erro.ObterValorOuPadrao("").Trim() != "")
                 {
-                    notificationService.EnviarNotificacao(criptografiaResult.Erro);
+                    await Mensagem.ErroAsync(criptografiaResult.Erro, this.XamlRoot);
                     return;
                 }
 
@@ -174,14 +173,14 @@ namespace GerenciadorDeSenhas.Views
                 loginService.AtualizarUsuario(gSUsuario);
 
                 if (!gSUsuario.ValidarResultado.EhValido)
-                    notificationService.EnviarNotificacao(gSUsuario.ValidarResultado.ObterPrimeiroErro());
+                    await Mensagem.AvisoAsync(gSUsuario.ValidarResultado.ObterPrimeiroErro(), this.XamlRoot);
 
                 HabilitarEdicaoSenha(false);
                 Pesquisar();
             }
             catch (Exception ex)
             {
-                notificationService.EnviarNotificacao(ex.Message);
+                await Mensagem.ErroAsync(ex.Message, this.XamlRoot);
             }
         }
         private void btnDesconectar_Click(object sender, RoutedEventArgs e)
@@ -205,21 +204,21 @@ namespace GerenciadorDeSenhas.Views
         {
             btnConfirmarContaExclusao.IsEnabled = (txtUsuarioContaConfirmacao.Text.ObterValorOuPadrao("").Trim() != "");
         }
-        private void btnConfirmarContaExclusao_Click(object sender, RoutedEventArgs e)
+        private async void btnConfirmarContaExclusao_Click(object sender, RoutedEventArgs e)
         {
-            if (!UsuarioValido(txtUsuarioContaConfirmacao.Text))
+            if (!UsuarioValido(txtUsuarioContaConfirmacao.Text).Result)
                 return;
 
             var ret = configAppService.DeletarContaUsuarioLogado(gSUsuarioAtivo.PK_GSUsuario);
 
             if (ret)
             {
-                notificationService.EnviarNotificacao("Conta do usuário deletada com sucesso.");
+                await Mensagem.SucessoAsync("Conta do usuário deletada com sucesso.", this.XamlRoot);
                 btnDesconectar_Click(null, null);
                 return;
             }
 
-            notificationService.EnviarNotificacao("Não foi possível deletar a conta do usuário ativo.", "Tente fechar e abrir novamente o programa.");
+            await Mensagem.ErroAsync("Não foi possível deletar a conta do usuário ativo.", this.XamlRoot);
         }
         private async void btnDeletarCategoria_Click(object sender, RoutedEventArgs e)
         {
@@ -234,20 +233,20 @@ namespace GerenciadorDeSenhas.Views
         {
             btnConfirmarCategoriaExclusao.IsEnabled = (txtUsuarioCategoriaConfirmacao.Text.ObterValorOuPadrao("").Trim() != "");
         }
-        private void btnConfirmarCategoriaExclusao_Click(object sender, RoutedEventArgs e)
+        private async void btnConfirmarCategoriaExclusao_Click(object sender, RoutedEventArgs e)
         {
-            if (!UsuarioValido(txtUsuarioCategoriaConfirmacao.Text))
+            if (!UsuarioValido(txtUsuarioCategoriaConfirmacao.Text).Result)
                 return;
 
             var ret = categoriaAppService.DeletarCategoriaPorUsuario(gSUsuarioAtivo.PK_GSUsuario);
 
             if (ret)
             {
-                notificationService.EnviarNotificacao("Categorias deletadas com sucesso.");
+                await Mensagem.SucessoAsync("Categorias deletadas com sucesso.", this.XamlRoot);
                 return;
             }
 
-            notificationService.EnviarNotificacao("Não foi possível deletar as categorias do usuário ativo.", "Tente fechar e abrir novamente o programa.");
+            await Mensagem.ErroAsync("Não foi possível deletar as categorias do usuário ativo.", this.XamlRoot);
         }
         private async void btnDeletarCredencial_Click(object sender, RoutedEventArgs e)
         {
@@ -262,20 +261,20 @@ namespace GerenciadorDeSenhas.Views
         {
             btnConfirmarCredencialExclusao.IsEnabled = (txtUsuarioCredencialConfirmacao.Text.ObterValorOuPadrao("").Trim() != "");
         }
-        private void btnConfirmarCredencialExclusao_Click(object sender, RoutedEventArgs e)
+        private async void btnConfirmarCredencialExclusao_Click(object sender, RoutedEventArgs e)
         {
-            if (!UsuarioValido(txtUsuarioCredencialConfirmacao.Text))
+            if (!UsuarioValido(txtUsuarioCredencialConfirmacao.Text).Result)
                 return;
 
             var ret = credencialAppService.DeletarCredencialPorUsuario(gSUsuarioAtivo.PK_GSUsuario);
 
             if (ret)
             {
-                notificationService.EnviarNotificacao("Credenciais deletadas com sucesso.");
+                await Mensagem.SucessoAsync("Credenciais deletadas com sucesso.", this.XamlRoot);
                 return;
             }
 
-            notificationService.EnviarNotificacao("Não foi possível deletar as credenciais do usuário ativo.", "Tente fechar e abrir novamente o programa.");
+            await Mensagem.AvisoAsync("Não foi possível deletar as credenciais do usuário ativo.", this.XamlRoot);
         }
         #endregion
 
@@ -304,7 +303,7 @@ namespace GerenciadorDeSenhas.Views
 
             passSenha.IsEnabled = habilitar;
         }
-        private void Pesquisar()
+        private async void Pesquisar()
         {
             try
             {
@@ -312,7 +311,7 @@ namespace GerenciadorDeSenhas.Views
 
                 if (gSUsuarioAtivo == null)
                 {
-                    notificationService.EnviarNotificacao("Não foi possível identificar o usuário ativo.");
+                    await Mensagem.InformacaoAsync("Não foi possível identificar o usuário ativo.", this.XamlRoot);
                     this.Hide();
                 }
 
@@ -320,7 +319,7 @@ namespace GerenciadorDeSenhas.Views
             }
             catch (Exception ex)
             {
-                notificationService.EnviarNotificacao(ex.Message);
+                await Mensagem.ErroAsync(ex.Message, this.XamlRoot);
             }
         }
         private void BindPrincipal()
@@ -363,11 +362,11 @@ namespace GerenciadorDeSenhas.Views
             };
             return $"{inicio}{detalhe}";
         }
-        private bool UsuarioValido(string textoDigitado)
+        private async Task<bool> UsuarioValido(string textoDigitado)
         {
             if (textoDigitado.ObterValorOuPadrao("").Trim() != gSUsuarioAtivo.Usuario.Trim())
             {
-                notificationService.EnviarNotificacao("Usuário inválido.");
+                await Mensagem.AvisoAsync("Usuário inválido.", this.XamlRoot);
                 return false;
             }
 
@@ -386,7 +385,6 @@ namespace GerenciadorDeSenhas.Views
         public void Dispose()
         {
             (loginService as IDisposable)?.Dispose();
-            (notificationService as IDisposable)?.Dispose();
             (configAppService as IDisposable)?.Dispose();
         }
         #endregion

@@ -18,6 +18,7 @@ using GSApplication;
 using GSApplication.Interfaces;
 using GSApplication.Services;
 using GSDomain.Entidades;
+using GerenciadorDeSenhas.Controls;
 
 namespace GerenciadorDeSenhas.Views
 {
@@ -25,7 +26,6 @@ namespace GerenciadorDeSenhas.Views
     {
         #region Interfaces
         private readonly ILoginService loginService;
-        private readonly INotificationService notificationService;
         #endregion
 
         #region Construtor
@@ -34,24 +34,23 @@ namespace GerenciadorDeSenhas.Views
             this.InitializeComponent();
 
             loginService = Bootstrap.Container.GetInstance<ILoginService>();
-            notificationService = Bootstrap.Container.GetInstance<INotificationService>();
         }
         #endregion
 
-        private void btnEntrar_Click(object sender, RoutedEventArgs e)
+        private async void btnEntrar_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 if (txtUsuario.Text.ObterValorOuPadrao("").Trim() == "")
                 {
                     txtUsuario.Focus(FocusState.Keyboard);
-                    notificationService.EnviarNotificacao("Usuário inválido.");
+                    await Mensagem.AvisoAsync("Usuário inválido.", this.XamlRoot);
                     return;
                 }
                 else if (passBoxSenha.Password.ObterValorOuPadrao("").Trim() == "")
                 {
                     passBoxSenha.Focus(FocusState.Keyboard);
-                    notificationService.EnviarNotificacao("Senha inválida.");
+                    await Mensagem.AvisoAsync("Senha inválida.", this.XamlRoot);
                     return;
                 }
 
@@ -66,13 +65,13 @@ namespace GerenciadorDeSenhas.Views
                 if (!gSUsuarioRequest.ValidarResultado.EhValido)
                 {
                     txtUsuario.Focus(FocusState.Keyboard);
-                    notificationService.EnviarNotificacao(gSUsuarioRequest.ValidarResultado.ObterPrimeiroErro());
+                    await Mensagem.ErroAsync(gSUsuarioRequest.ValidarResultado.ObterPrimeiroErro(), this.XamlRoot);
                     return;
                 }
                 else if (PK_GSUsuario <= 0)
                 {
                     txtUsuario.Focus(FocusState.Keyboard);
-                    notificationService.EnviarNotificacao("Não foi possível logar.");
+                    await Mensagem.AvisoAsync("Não foi possível logar.", this.XamlRoot);
                     return;
                 }
 
@@ -86,7 +85,7 @@ namespace GerenciadorDeSenhas.Views
             }
             catch (Exception ex)
             {
-                notificationService.EnviarNotificacao(ex.Message);
+                await Mensagem.ErroAsync(ex.Message, this.XamlRoot);
             }
         }
         private void passBoxSenha_KeyDown(object sender, KeyRoutedEventArgs e)
@@ -104,7 +103,7 @@ namespace GerenciadorDeSenhas.Views
             }
             catch (Exception ex)
             {
-                notificationService.EnviarNotificacao(ex.Message);
+                await Mensagem.ErroAsync(ex.Message, this.XamlRoot);
             }
         }
         private async void Page_Loaded(object sender, RoutedEventArgs e)

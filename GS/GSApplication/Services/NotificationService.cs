@@ -7,6 +7,12 @@ using Windows.UI.Notifications;
 using GSApplication.Interfaces;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
+using GSDomain.Enumeradores;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
+using System.Drawing;
+using System.Reflection;
+using JJ.NET.Core.Extensoes;
 
 namespace GSApplication.Services
 {
@@ -47,5 +53,7 @@ namespace GSApplication.Services
             var toast = new ToastNotification(toastXml);
             ToastNotificationManager.CreateToastNotifier().Show(toast);
         }
+
+
     }
 }

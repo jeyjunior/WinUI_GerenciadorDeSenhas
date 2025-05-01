@@ -20,6 +20,7 @@ using GSApplication.Services;
 using GSDomain.Entidades;
 using GSDomain.Enumeradores;
 using GerenciadorDeSenhas.ViewModel;
+using GerenciadorDeSenhas.Controls;
 
 
 namespace GerenciadorDeSenhas.Views
@@ -28,7 +29,6 @@ namespace GerenciadorDeSenhas.Views
     {
         #region Interfaces
         private readonly ILoginService loginService;
-        private readonly INotificationService notificationService;
         #endregion
 
         #region Propriedades
@@ -43,7 +43,6 @@ namespace GerenciadorDeSenhas.Views
             this.InitializeComponent();
 
             loginService = Bootstrap.Container.GetInstance<ILoginService>();
-            notificationService = Bootstrap.Container.GetInstance<INotificationService>();
         }
         #endregion
 
@@ -52,33 +51,32 @@ namespace GerenciadorDeSenhas.Views
         {
 
         }
-
-        private void SalvarCredencial_Click(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        private async void SalvarCredencial_Click(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             try
             {
                 if (txtNome.Text.ObterValorOuPadrao("").Trim() == "" || txtNome.Text.Length < qtdMinimaNome)
                 {
+                    args.Cancel = true;
                     txtNome.Focus(FocusState.Keyboard);
                     AlterarIconeValidacao(true, fontIconNome);
-                    notificationService.EnviarNotificacao("Nome de usuário inválido.");
-                    args.Cancel = true;
+                    await Mensagem.AvisoAsync("Nome de usuário inválido.", this.XamlRoot);
                     return;
                 }
                 else if (txtUsuario.Text.ObterValorOuPadrao("").Trim() == "" || txtUsuario.Text.Length < qtdMinimaUsuario)
                 {
+                    args.Cancel = true;
                     txtUsuario.Focus(FocusState.Keyboard);
                     AlterarIconeValidacao(true, fontIconUsuario);
-                    notificationService.EnviarNotificacao("Usuário inválido.");
-                    args.Cancel = true;
+                    await Mensagem.AvisoAsync("Usuário inválido.", this.XamlRoot);
                     return;
                 }
                 else if (passBoxSenha.Password.ObterValorOuPadrao("").Trim() == "" || passBoxSenha.Password.Length < qtdMinimaSenha)
                 {
+                    args.Cancel = true;
                     passBoxSenha.Focus(FocusState.Keyboard);
                     AlterarIconeValidacao(true, fontIconSenha);
-                    notificationService.EnviarNotificacao("Senha inválido.");
-                    args.Cancel = true;
+                    await Mensagem.AvisoAsync("Senha inválido.", this.XamlRoot);
                     return;
                 }
 
@@ -93,30 +91,24 @@ namespace GerenciadorDeSenhas.Views
 
                 if (!gSUsuarioRequest.ValidarResultado.EhValido)
                 {
-                    notificationService.EnviarNotificacao(gSUsuarioRequest.ValidarResultado.ObterPrimeiroErro());
                     args.Cancel = true;
+                    await Mensagem.AvisoAsync(gSUsuarioRequest.ValidarResultado.ObterPrimeiroErro(), this.XamlRoot);
                     return;
                 }
                 else if (!ret)
                 {
-                    notificationService.EnviarNotificacao("Não foi possível registrar.");
                     args.Cancel = true;
+                    await Mensagem.AvisoAsync("Não foi possível registrar.", this.XamlRoot);
                     return;
                 }
 
-                notificationService.EnviarNotificacao("Usuário registrado com sucesso.");
+                await Mensagem.SucessoAsync("Usuário registrado com sucesso.", this.XamlRoot);
             }
             catch (Exception ex)
             {
-                notificationService.EnviarNotificacao(ex.Message);
+                await Mensagem.SucessoAsync(ex.Message, this.XamlRoot);
             }
         }
-        #endregion
-
-        #region Metodos
-
-        #endregion
-
         private void txtNome_TextChanged(object sender, TextChangedEventArgs e)
         {
             fontIconNome.Visibility = Visibility.Collapsed;
@@ -126,7 +118,6 @@ namespace GerenciadorDeSenhas.Views
 
             AlterarIconeValidacao((txtNome.Text.Length < qtdMinimaNome), fontIconNome);
         }
-
         private void txtUsuario_TextChanged(object sender, TextChangedEventArgs e)
         {
             fontIconUsuario.Visibility = Visibility.Collapsed;
@@ -136,7 +127,6 @@ namespace GerenciadorDeSenhas.Views
 
             AlterarIconeValidacao((txtUsuario.Text.Length < qtdMinimaUsuario), fontIconUsuario);
         }
-
         private void passBoxSenha_PasswordChanged(object sender, RoutedEventArgs e)
         {
             fontIconSenha.Visibility = Visibility.Collapsed;
@@ -146,7 +136,9 @@ namespace GerenciadorDeSenhas.Views
 
             AlterarIconeValidacao((passBoxSenha.Password.Length < qtdMinimaSenha), fontIconSenha);
         }
+        #endregion
 
+        #region Metodos
         private void AlterarIconeValidacao(bool exibirIconeAlerta, FontIcon fontIcon)
         {
             if (fontIcon == null)
@@ -165,5 +157,6 @@ namespace GerenciadorDeSenhas.Views
 
             fontIcon.Visibility = Visibility.Visible;
         }
+        #endregion
     }
 }

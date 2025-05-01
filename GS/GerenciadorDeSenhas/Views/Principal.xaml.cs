@@ -23,6 +23,8 @@ using GSApplication.Services;
 using GSDomain.Entidades;
 using GSDomain.Enumeradores;
 using GerenciadorDeSenhas.ViewModel;
+using GerenciadorDeSenhas.Controls;
+using JJ.NET.Cryptography;
 
 namespace GerenciadorDeSenhas.Views
 {
@@ -30,7 +32,6 @@ namespace GerenciadorDeSenhas.Views
     {
         #region Interfaces
         private readonly ICredencialAppService credencialAppService;
-        private readonly INotificationService notificationService;
         private readonly IConfigAppService configAppService;
         #endregion
 
@@ -46,7 +47,6 @@ namespace GerenciadorDeSenhas.Views
             this.InitializeComponent();
 
             credencialAppService = Bootstrap.Container.GetInstance<ICredencialAppService>();
-            notificationService = Bootstrap.Container.GetInstance<INotificationService>();
             configAppService = Bootstrap.Container.GetInstance<IConfigAppService>();
 
             ViewModel = new MainWindowViewModel();
@@ -73,7 +73,7 @@ namespace GerenciadorDeSenhas.Views
             }
             catch (Exception ex)
             {
-                await notificationService.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
+                await Mensagem.ErroAsync(ex.Message, this.XamlRoot);
             }
         }
         private async void btnCopiarCredencial_Click(object sender, RoutedEventArgs e)
@@ -94,7 +94,7 @@ namespace GerenciadorDeSenhas.Views
             }
             catch (Exception ex)
             {
-                await notificationService.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
+                await Mensagem.ErroAsync(ex.Message, this.XamlRoot);
             }
         }
         private async void btnExibirSenha_Click(object sender, RoutedEventArgs e)
@@ -135,7 +135,7 @@ namespace GerenciadorDeSenhas.Views
             }
             catch (Exception ex)
             {
-                await notificationService.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
+                await Mensagem.ErroAsync(ex.Message, this.XamlRoot);
             }
         }
         private async void btnCopiarSenha_Click(object sender, RoutedEventArgs e)
@@ -160,7 +160,7 @@ namespace GerenciadorDeSenhas.Views
 
                 if (criptografiaResult.Erro.ObterValorOuPadrao("").Trim() != "")
                 {
-                    notificationService.EnviarNotificacao(criptografiaResult.Erro);
+                    await Mensagem.ErroAsync(criptografiaResult.Erro, this.XamlRoot);
                     return;
                 }
 
@@ -170,7 +170,7 @@ namespace GerenciadorDeSenhas.Views
             }
             catch (Exception ex)
             {
-                await notificationService.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
+                await Mensagem.ErroAsync(ex.Message, this.XamlRoot);
             }
         }
         private async void btnExcluir_Click(object sender, RoutedEventArgs e)
@@ -195,7 +195,7 @@ namespace GerenciadorDeSenhas.Views
                 var credencial = ObterCredencialViewModel(sender);
                 if (credencial == null)
                 {
-                    notificationService.EnviarNotificacao("Não foi possível encontrar credencial para excluir.");
+                    await Mensagem.AvisoAsync("Não foi possível encontrar credencial para excluir.", this.XamlRoot);
                     return;
                 }
 
@@ -203,7 +203,7 @@ namespace GerenciadorDeSenhas.Views
 
                 if (!ret)
                 {
-                    notificationService.EnviarNotificacao("Não foi possível deletar credencial.");
+                    await Mensagem.AvisoAsync("Não foi possível deletar credencial.", this.XamlRoot);
                     return;
                 }
 
@@ -211,7 +211,7 @@ namespace GerenciadorDeSenhas.Views
             }
             catch (Exception ex)
             {
-                await notificationService.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
+                await Mensagem.ErroAsync(ex.Message, this.XamlRoot);
             }
             finally
             {
@@ -279,7 +279,7 @@ namespace GerenciadorDeSenhas.Views
             }
             catch (Exception ex)
             {
-                notificationService.EnviarNotificacao(ex.Message);
+                await Mensagem.ErroAsync(ex.Message, this.XamlRoot);
             }
         }
         private void BindPrincipal()
