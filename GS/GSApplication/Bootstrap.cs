@@ -23,7 +23,7 @@ namespace GSApplication
     public static class Bootstrap
     {
         public static Container Container { get; private set; }
-        public static void Inicializar()
+        public static async Task IniciarAsync()
         {
             try
             {
@@ -48,7 +48,7 @@ namespace GSApplication
                 Container.Register<ICategoriaAppService, CategoriaAppService>(Lifestyle.Singleton);
                 Container.Register<IConfigAppService, ConfigAppService>(Lifestyle.Singleton);
 
-                Container.Verify();
+                Container.Options.EnableAutoVerification = false;
 
                 IniciarBaseDeDados();
             }

@@ -25,45 +25,9 @@ namespace GerenciadorDeSenhas
         public MainWindow()
         {
             this.InitializeComponent();
-            Logar();
-        }
 
-        public async void Logar()
-        {
-            try
-            {
-                Bootstrap.Inicializar();
-
-                NavigationService.MainFrame = this.MainFrame;
-                NavigationService.NavegarPara(typeof(Login));
-            }
-            catch (Exception ex)
-            {
-                try
-                {
-                    // Gravar erro no arquivo
-                    string logPath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "error_log.txt");
-                    string logContent = $"[{DateTime.Now}] {ex}\n";
-
-                    File.AppendAllText(logPath, logContent);
-                }
-                catch
-                {
-                    // Se falhar o log, não podemos fazer nada
-                }
-
-                // Mostrar erro na tela
-                ContentDialog errorDialog = new ContentDialog()
-                {
-                    Title = "Erro",
-                    Content = ex.Message,
-                    CloseButtonText = "OK",
-                    XamlRoot = this.Content.XamlRoot,
-                };
-
-                await errorDialog.ShowAsync();
-            }
-
+            NavigationService.MainFrame = this.MainFrame;
+            NavigationService.NavegarPara(typeof(Login));
         }
     }
 }

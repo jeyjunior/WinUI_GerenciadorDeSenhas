@@ -8,15 +8,15 @@
   IgnorableNamespaces="uap rescap uap18">
 
   <Identity
-    Name="GerenciadorDeSenhas"
-    Publisher="CN=jeyjr"
+    Name="JeyJr.2016515123616"
+    Publisher="CN=53663670-79F2-45CB-8E00-C8EA1BF62707"
     Version="1.0.1.0" />
 
-  <mp:PhoneIdentity PhoneProductId="4e184925-0192-4b97-b4a4-9937abfb2a85" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="eda5924d-927e-4f6a-af2d-8bac468d13f8" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>GerenciadorDeSenhas</DisplayName>
-    <PublisherDisplayName>jeyjr</PublisherDisplayName>
+    <DisplayName>GerenciarCredenciais</DisplayName>
+    <PublisherDisplayName>JeyJr</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
