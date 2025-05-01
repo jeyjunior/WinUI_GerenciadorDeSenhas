@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    x:Class="GerenciadorDeSenhas.Views.ConfiguracaoDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GerenciadorDeSenhas.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Padding="0"
+    Margin="0"
+    Loaded="ContentDialog_Loaded">
+
+    <ScrollViewer x:Name="MainScrollViewer" VerticalScrollBarVisibility="Auto" Padding="20" Margin="0">
+        <StackPanel x:Name="spPrincipal" Padding="0" Margin="0" Spacing="18" MaxWidth="450" Width="450" MinWidth="450">
+            <Grid ColumnSpacing="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="32"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Configurações" FontSize="18" VerticalAlignment="Center" FontWeight="Bold" Foreground="{StaticResource Cinza2}"/>
+                <Button x:Name="btnCancelar" Click="btnCancelar_Click" Grid.Column="3" Style="{StaticResource AlternateCloseButtonStyle}" Padding="0" Width="32" Height="32">
+                    <FontIcon Glyph="&#xE711;" FontFamily="Segoe Fluent Icons" VerticalAlignment="Center" FontSize="16"/>
+                </Button>
+            </Grid>
+
+            <Border Height="1" Width="Auto" Background="{StaticResource Cinza8}"/>
+            <TextBlock Text="Configurações do Usuário" Foreground="{StaticResource Cinza3}" FontSize="16" VerticalAlignment="Center" Margin="0"/>
+            <StackPanel Background="{StaticResource Cinza11}" CornerRadius="5" Padding="15">
+
+                <StackPanel x:Name="spInfoUsuario">
+                    <StackPanel x:Name="spNome" Grid.Row="1" Spacing="8" Orientation="Vertical" Padding="0" Background="{StaticResource Nenhuma}" CornerRadius="10">
+                        <TextBlock Text="Nome do usuário" HorizontalAlignment="Stretch" Foreground="{StaticResource Cinza1}"/>
+                        <TextBox x:Name="txtNome" Text="José Junior" MaxLength="40" HorizontalAlignment="Stretch" IsEnabled="False" />
+
+                        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                            <Button x:Name="btnAlterarNome" Click="btnAlterarNome_Click" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" ToolTipService.ToolTip="Editar Nome" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                                <FontIcon Glyph="&#xEB7E;" FontFamily="Segoe Fluent Icons" FontSize="16"/>
+                            </Button>
+
+                            <Button x:Name="btnCancelarNome" Click="btnCancelarNome_Click" Padding="0" Width="32" Height="32" IsEnabled="True" Visibility="Visible" ToolTipService.ToolTip="Cancelar" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                                <FontIcon Glyph="&#xE711;" FontFamily="Segoe Fluent Icons" FontSize="16" Foreground="{StaticResource Laranja}"/>
+                            </Button>
+
+                            <Button x:Name="btnSalvarNome" Click="btnSalvarNome_Click" Padding="0" Width="32" Height="32" IsEnabled="True" Visibility="Visible" ToolTipService.ToolTip="Salvar" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                                <FontIcon Glyph="&#xE74E;" FontFamily="Segoe Fluent Icons" FontSize="16" Foreground="{StaticResource Verde2}"/>
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel x:Name="spUsuario" Grid.Row="1" Spacing="8" Orientation="Vertical" Padding="0" Background="{StaticResource Nenhuma}" CornerRadius="10">
+                        <TextBlock Text="Usuário" HorizontalAlignment="Stretch" Foreground="{StaticResource Cinza1}"/>
+                        <TextBox x:Name="txtUsuario" Text="José Junior" MaxLength="40" HorizontalAlignment="Stretch" IsEnabled="False" />
+
+                        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                            <Button x:Name="btnAlterarUsuario" Click="btnAlterarUsuario_Click" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" ToolTipService.ToolTip="Editar Nome" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                                <FontIcon Glyph="&#xEB7E;" FontFamily="Segoe Fluent Icons" FontSize="16"/>
+                            </Button>
+
+                            <Button x:Name="btnCancelarUsuario" Click="btnCancelarUsuario_Click" Padding="0" Width="32" Height="32" IsEnabled="True" Visibility="Visible" ToolTipService.ToolTip="Cancelar" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                                <FontIcon Glyph="&#xE711;" FontFamily="Segoe Fluent Icons" FontSize="16" Foreground="{StaticResource Laranja}"/>
+                            </Button>
+
+                            <Button x:Name="btnSalvarUsuario" Click="btnSalvarUsuario_Click" Padding="0" Width="32" Height="32" IsEnabled="True" Visibility="Visible" ToolTipService.ToolTip="Salvar" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                                <FontIcon Glyph="&#xE74E;" FontFamily="Segoe Fluent Icons" FontSize="16" Foreground="{StaticResource Verde2}"/>
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel x:Name="spSenha" Grid.Row="1" Spacing="8" Orientation="Vertical" Padding="0" Background="{StaticResource Nenhuma}" CornerRadius="10">
+                        <TextBlock Text="Senha" HorizontalAlignment="Stretch" Foreground="{StaticResource Cinza1}"/>
+                        <PasswordBox x:Name="passSenha" Password="1234567" MaxLength="40" HorizontalAlignment="Stretch" IsEnabled="False" />
+
+                        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                            <Button x:Name="btnAlterarSenha" Click="btnAlterarSenha_Click" Padding="0" Width="32" Height="32" HorizontalAlignment="Center" ToolTipService.ToolTip="Editar Nome" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                                <FontIcon Glyph="&#xEB7E;" FontFamily="Segoe Fluent Icons" FontSize="16"/>
+                            </Button>
+
+                            <Button x:Name="btnCancelarSenha" Click="btnCancelarSenha_Click" Padding="0" Width="32" Height="32" IsEnabled="True" Visibility="Visible" ToolTipService.ToolTip="Cancelar" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                                <FontIcon Glyph="&#xE711;" FontFamily="Segoe Fluent Icons" FontSize="16" Foreground="{StaticResource Laranja}"/>
+                            </Button>
+
+                            <Button x:Name="btnSalvarSenha" Click="btnSalvarSenha_Click" Padding="0" Width="32" Height="32" IsEnabled="True" Visibility="Visible" ToolTipService.ToolTip="Salvar" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                                <FontIcon Glyph="&#xE74E;" FontFamily="Segoe Fluent Icons" FontSize="16" Foreground="{StaticResource Verde2}"/>
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+                <Border Height="1" Width="Auto" Background="{StaticResource Cinza9}" Margin="0,20"/>
+                <Button x:Name="btnDesconectar" Click="btnDesconectar_Click" Content="Desconectar" Margin="0" HorizontalAlignment="Stretch" FontWeight="Normal"/>
+            </StackPanel>
+
+            <Border Height="1" Width="Auto" Background="{StaticResource Cinza8}"/>
+            <TextBlock Text="Danger Zone" Foreground="{StaticResource Vermelho1}" FontSize="14" VerticalAlignment="Center"/>
+
+            <StackPanel x:Name="spDeletarCategoria" Spacing="12">
+                <Button x:Name="btnDeletarCategoria" 
+                        Content="Deletar Categorias" 
+                        Click="btnDeletarCategoria_Click" 
+                        HorizontalAlignment="Stretch" />
+
+                <StackPanel x:Name="spConfirmacaoCategoriaDelete" Visibility="Collapsed" Spacing="8">
+                    <TextBlock x:Name="txtConfirmarCategoriaUsuario" Text="" 
+                               TextWrapping="Wrap" 
+                               Foreground="{StaticResource Branco}" 
+                               FontWeight="Normal" 
+                               TextAlignment="Center"/>
+
+                    <TextBox x:Name="txtUsuarioCategoriaConfirmacao" TextChanged="txtUsuarioCategoriaConfirmacao_TextChanged" PlaceholderText=""/>
+
+                    <Button x:Name="btnConfirmarCategoriaExclusao" 
+                            Content="Excluir" 
+                            IsEnabled="False"
+                            Click="btnConfirmarCategoriaExclusao_Click" Background="{StaticResource Vermelho1}" FontWeight="Bold" Foreground="White" HorizontalAlignment="Stretch" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel x:Name="spDeletarCredencial" Spacing="12">
+                <Button x:Name="btnDeletarCredencial" 
+                        Content="Deletar Credenciais" 
+                        Click="btnDeletarCredencial_Click" 
+                        HorizontalAlignment="Stretch" />
+
+                <StackPanel x:Name="spConfirmacaoCredencialDelete" Visibility="Collapsed" Spacing="8">
+                    <TextBlock x:Name="txtConfirmarCredencialUsuario" Text="" 
+                               TextWrapping="Wrap" 
+                               Foreground="{StaticResource Branco}" 
+                               FontWeight="Normal" 
+                               TextAlignment="Center"/>
+
+                    <TextBox x:Name="txtUsuarioCredencialConfirmacao" TextChanged="txtUsuarioCredencialConfirmacao_TextChanged" PlaceholderText=""/>
+
+                    <Button x:Name="btnConfirmarCredencialExclusao" 
+                            Content="Excluir" 
+                            IsEnabled="False"
+                            Click="btnConfirmarCredencialExclusao_Click" Background="{StaticResource Vermelho1}" FontWeight="Bold" Foreground="White" HorizontalAlignment="Stretch" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel x:Name="spDeletarConta" Spacing="12">
+                <Button x:Name="btnDeletarConta" 
+                        Content="Deletar Conta" 
+                        Click="btnDeletarConta_Click" 
+                        HorizontalAlignment="Stretch" />
+
+                <StackPanel x:Name="spConfirmacaoContaDelete" Visibility="Collapsed" Spacing="8">
+                    <TextBlock x:Name="txtConfirmarContaUsuario" Text="" 
+                               TextWrapping="Wrap" 
+                               Foreground="{StaticResource Branco}" 
+                               FontWeight="Normal" 
+                               TextAlignment="Center"/>
+
+                    <TextBox x:Name="txtUsuarioContaConfirmacao" TextChanged="txtUsuarioContaConfirmacao_TextChanged" PlaceholderText=""/>
+
+                    <Button x:Name="btnConfirmarContaExclusao" 
+                            Content="Excluir" 
+                            IsEnabled="False"
+                            Click="btnConfirmarContaExclusao_Click" Background="{StaticResource Vermelho1}" FontWeight="Bold" Foreground="White" HorizontalAlignment="Stretch" />
+                </StackPanel>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</ContentDialog>

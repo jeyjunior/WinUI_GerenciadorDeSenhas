@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "GerenciadorDeSenhas (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "GerenciadorDeSenhas (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
