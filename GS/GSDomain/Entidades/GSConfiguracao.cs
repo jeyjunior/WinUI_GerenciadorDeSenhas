@@ -10,12 +10,4 @@ namespace GSDomain.Entidades
     public class GSConfiguracao
     {
     }
-
-    public class CriptografiaRequest
-    {
-        public string Valor { get; set; }
-        public string IV { get; set; }
-
-        public ValidarResultado ValidarResultado { get; set; }
-    }
 }

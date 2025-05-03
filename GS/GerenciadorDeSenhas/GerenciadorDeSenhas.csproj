@@ -67,9 +67,6 @@
     <Reference Include="JJ.NET.Core">
       <HintPath>..\..\DLL\JJ.NET.Core.dll</HintPath>
     </Reference>
-    <Reference Include="JJ.NET.Cryptography">
-      <HintPath>..\..\DLL\JJ.NET.Cryptography.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Update="Assets\Square71x71Logo.scale-150.png">
@@ -126,11 +123,12 @@
     <AppxPackageDir>D:\1_Projetos\2_BUILDs\</AppxPackageDir>
     <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
-    <AppxBundle>Never</AppxBundle>
+    <AppxBundle>Always</AppxBundle>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
     <ApplicationIcon>Assets\gerenciador_de_senhas.ico</ApplicationIcon>
     <PackageIcon>Square71x71Logo.scale-150.png</PackageIcon>
     <DefaultLanguage>pt-Br</DefaultLanguage>
+    <AppxBundlePlatforms>x64</AppxBundlePlatforms>
   </PropertyGroup>
 </Project>

@@ -20,7 +20,7 @@ namespace GSDomain.Entidades
         [Obrigatorio]
         public string Senha { get; set; }
         [Obrigatorio]
-        public string IVSenha { get; set; }
+        public string Salt { get; set; }
         [Editavel(false)]
         public ValidarResultado ValidarResultado { get; set; } = new ValidarResultado();
 
@@ -32,7 +32,7 @@ namespace GSDomain.Entidades
                 Usuario = this.Usuario,
                 Nome = this.Nome,
                 Senha = this.Senha,
-                IVSenha = this.IVSenha,
+                Salt = this.Salt,
                 ValidarResultado = new ValidarResultado(),
             };
         }

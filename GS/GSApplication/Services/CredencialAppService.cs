@@ -139,23 +139,16 @@ namespace GSApplication.Services
             if (gSCredencial.FK_GSCategoria != null && gSCredencial.FK_GSCategoria > 0)
                 credencial.FK_GSCategoria = gSCredencial.FK_GSCategoria;
 
-            var criptografarRequest = new JJ.NET.Cryptography.CriptografiaRequest
-            {
-                TipoCriptografia = JJ.NET.Cryptography.Enumerador.TipoCriptografia.AES,
-                Valor = gSCredencial.Senha,
-                IV = gSCredencial.IVSenha.ObterValorOuPadrao(""),
-            };
+            var criptografarResult = configAppService.Criptografar(gSCredencial.Senha);
 
-            var criptografarResult = Criptografia.Criptografar(criptografarRequest);
-
-            if (criptografarResult.Erro.ObterValorOuPadrao("").Trim() != "")
+            if (criptografarResult.ValidarResultado.ObterValorOuPadrao("").Trim() != "")
             {
-                gSCredencial.ValidarResultado.Adicionar(criptografarResult.Erro);
+                gSCredencial.ValidarResultado.Adicionar(criptografarResult.ValidarResultado.ObterPrimeiroErro());
                 return -1;
             }
 
             credencial.Senha = criptografarResult.Valor;
-            credencial.IVSenha = criptografarResult.IV;
+            credencial.Salt = criptografarResult.Salt;
 
             int PK_GESCredencial = -1;
 

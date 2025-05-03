@@ -24,7 +24,6 @@ using GSDomain.Entidades;
 using GSDomain.Enumeradores;
 using GerenciadorDeSenhas.ViewModel;
 using GerenciadorDeSenhas.Controls;
-using JJ.NET.Cryptography;
 
 namespace GerenciadorDeSenhas.Views
 {
@@ -116,7 +115,7 @@ namespace GerenciadorDeSenhas.Views
 
                 if (credencialViewModel.ExibirSenha)
                 {
-                    var criptografiaResult = configAppService.Descriptografar(credencial.Senha, credencial.IVSenha);
+                    var criptografiaResult = configAppService.Descriptografar(new GSDomain.DTO.CriptografiaRequisicao { Valor = credencial.Senha, Salt = credencial.Salt });
 
                     credencialViewModel.Senha = criptografiaResult.Valor;
                     credencialViewModel.BotaoStyle = (Style)App.Current.Resources["DefaultButtonStyle"];
@@ -126,7 +125,7 @@ namespace GerenciadorDeSenhas.Views
                 }
                 else
                 {
-                    credencialViewModel.Senha = this.OcultarSenha(credencial.Senha, credencial.IVSenha);
+                    credencialViewModel.Senha = this.OcultarSenha(credencial.Senha, credencial.Salt);
                     credencialViewModel.BotaoStyle = (Style)App.Current.Resources["AlternateCloseButtonStyle"];
 
                     if (button.Content is FontIcon icon)
@@ -156,11 +155,11 @@ namespace GerenciadorDeSenhas.Views
                 if (gSCredencials == null)
                     return;
 
-                var criptografiaResult = configAppService.Descriptografar(gSCredencial.Senha, gSCredencial.IVSenha);
+                var criptografiaResult = configAppService.Descriptografar(new GSDomain.DTO.CriptografiaRequisicao { Valor = gSCredencial.Senha, Salt = gSCredencial.Salt });
 
-                if (criptografiaResult.Erro.ObterValorOuPadrao("").Trim() != "")
+                if (criptografiaResult.ValidarResultado.ObterValorOuPadrao("").Trim() != "")
                 {
-                    await Mensagem.ErroAsync(criptografiaResult.Erro, this.XamlRoot);
+                    await Mensagem.ErroAsync(criptografiaResult.ValidarResultado.ObterPrimeiroErro(), this.XamlRoot);
                     return;
                 }
 
@@ -295,7 +294,7 @@ namespace GerenciadorDeSenhas.Views
                         Categoria = item.GSCategoria?.Categoria ?? "",
                         Modificacao = item.DataModificacao?.ToShortDateString() ?? "",
                         Credencial = item.Credencial,
-                        Senha = OcultarSenha(item.Senha, item.IVSenha),
+                        Senha = OcultarSenha(item.Senha, item.Salt),
                         ExibirSenha = false,
                         BotaoStyle = (Style)App.Current.Resources["AlternateCloseButtonStyle"]
                     })
@@ -303,9 +302,10 @@ namespace GerenciadorDeSenhas.Views
                 );
             }
         }
-        private string OcultarSenha(string senha, string iv)
+        private string OcultarSenha(string senha, string salt)
         {
-            var criptografiaResult = configAppService.Descriptografar(senha, iv);
+
+            var criptografiaResult = configAppService.Descriptografar(new GSDomain.DTO.CriptografiaRequisicao { Valor = senha, Salt = salt });
             return criptografiaResult.Valor.Trim().Ocultar();
         }
         private void OrdenarLista()

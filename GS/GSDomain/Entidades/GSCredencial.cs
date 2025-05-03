@@ -19,7 +19,7 @@ namespace GSDomain.Entidades
         [Obrigatorio]
         public string Senha { get; set; }
         [Obrigatorio]
-        public string IVSenha { get; set; }
+        public string Salt { get; set; }
 
         [Relacionamento("GSCategoria", "PK_GSCategoria")]
         public int? FK_GSCategoria { get; set; }

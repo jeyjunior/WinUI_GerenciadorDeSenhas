@@ -1,4 +1,5 @@
-﻿using JJ.NET.Cryptography;
+﻿using GSDomain.DTO;
+using JJ.NET.Cryptography;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,10 @@ namespace GSApplication.Interfaces
 {
     public interface IConfigAppService
     {
-        CriptografiaResult Descriptografar(string valor, string iv);
-        CriptografiaResult Criptografar(string valor, string iv);
+        DescriptografiaResultado Descriptografar(CriptografiaRequisicao criptoRequest);
+        CriptografiaResultado Criptografar(string valor);
         bool DeletarContaUsuarioLogado(int PK_GSUsuario);
+
+        string GerarChavePrincipal();
     }
 }

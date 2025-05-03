@@ -17,6 +17,8 @@ using JJ.NET.Data;
 using GSApplication.Services;
 using GSInfraData.Repository;
 using Windows.Storage;
+using JJ.NET.Cryptography.Interfaces;
+using JJ.NET.Cryptography;
 
 namespace GSApplication
 {
@@ -47,6 +49,9 @@ namespace GSApplication
                 Container.Register<ICredencialAppService, CredencialAppService>(Lifestyle.Singleton);
                 Container.Register<ICategoriaAppService, CategoriaAppService>(Lifestyle.Singleton);
                 Container.Register<IConfigAppService, ConfigAppService>(Lifestyle.Singleton);
+
+                // RECURSOS 
+                Container.Register<ISeguranca, Seguranca>(Lifestyle.Singleton);
 
                 Container.Options.EnableAutoVerification = false;
 

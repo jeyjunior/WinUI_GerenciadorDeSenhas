@@ -9,42 +9,87 @@ using JJ.NET.Cryptography;
 using JJ.NET.Data;
 using GSInfraData.Repository;
 using GSApplication.Interfaces;
+using GSDomain.DTO;
+using JJ.NET.Cryptography.Interfaces;
 
 namespace GSApplication.Services
 {
     public class ConfigAppService : IConfigAppService
     {
-        public CriptografiaResult Descriptografar(string valor, string iv)
+        private readonly ISeguranca seguranca;
+        public ConfigAppService()
         {
-            var criptografiaRequest = new JJ.NET.Cryptography.CriptografiaRequest
-            {
-                IV = iv.ObterValorOuPadrao("").Trim(),
-                Valor = valor.ObterValorOuPadrao("").Trim(),
-                TipoCriptografia = JJ.NET.Cryptography.Enumerador.TipoCriptografia.AES,
-            };
-
-            var criptografiaResult = Criptografia.Descriptografar(criptografiaRequest);
-
-            if (criptografiaResult.Erro.ObterValorOuPadrao("").Trim() != "")
-                return new CriptografiaResult { Valor = "", IV = "", Erro = criptografiaResult.Erro };
-
-            return criptografiaResult;
+            seguranca = Bootstrap.Container.GetInstance<ISeguranca>();
         }
-        public CriptografiaResult Criptografar(string valor, string iv)
+        public DescriptografiaResultado Descriptografar(CriptografiaRequisicao criptoRequest)
         {
-            var criptografiaRequest = new JJ.NET.Cryptography.CriptografiaRequest
+            var result = new DescriptografiaResultado
             {
-                IV = iv.ObterValorOuPadrao("").Trim(),
-                Valor = valor.ObterValorOuPadrao("").Trim(),
-                TipoCriptografia = JJ.NET.Cryptography.Enumerador.TipoCriptografia.AES,
+                ValidarResultado = new JJ.NET.Core.Validador.ValidarResultado(),
+                Valor = ""
             };
 
-            var criptografiaResult = Criptografia.Criptografar(criptografiaRequest);
+            try
+            {
+                var request = new JJ.NET.Cryptography.DTO.DescriptografiaRequest
+                {
+                    ValorCriptografado = criptoRequest.Valor.ObterValorOuPadrao("").Trim(),
+                    Salt = criptoRequest.Salt.ObterValorOuPadrao("").Trim()
+                };
 
-            if (criptografiaResult.Erro.ObterValorOuPadrao("").Trim() != "")
-                return new CriptografiaResult { Valor = "", IV = "", Erro = criptografiaResult.Erro };
+                var valorDescriptografado = seguranca.Descriptografar(request);
 
-            return criptografiaResult;
+                if (valorDescriptografado.ObterValorOuPadrao("").Trim() == "")
+                {
+                    result.ValidarResultado.Adicionar("Falha ao tentar descriptografar.");
+                    return result;
+                }
+
+                result.Valor = valorDescriptografado;
+            }
+            catch (Exception ex)
+            {
+                result.Valor = "";
+                result.ValidarResultado.Adicionar(ex.Message);
+            }
+
+            return result;
+        }
+        public CriptografiaResultado Criptografar(string valor)
+        {
+            var result = new CriptografiaResultado
+            {
+                ValidarResultado = new JJ.NET.Core.Validador.ValidarResultado(),
+                Valor = "",
+                Salt = ""
+            };
+
+            try
+            {
+                var criptografiaResult = seguranca.Criptografar(valor);
+
+                if (criptografiaResult == null)
+                {
+                    result.ValidarResultado.Adicionar("Falha ao tentar criptografar.");
+                    return result;
+                }
+                else if(criptografiaResult.ValorCriptografado.ObterValorOuPadrao("").Trim() == "" || criptografiaResult.Salt.ObterValorOuPadrao("").Trim() == "")
+                {
+                    result.ValidarResultado.Adicionar("Falha ao tentar criptografar.");
+                    return result;
+                }
+
+                result.Salt = criptografiaResult.Salt;
+                result.Valor = criptografiaResult.ValorCriptografado;
+            }
+            catch (Exception ex)
+            {
+                result.Salt = "";
+                result.Valor = "";
+                result.ValidarResultado.Adicionar(ex.Message);
+            }
+
+            return result;
         }
         public bool DeletarContaUsuarioLogado(int PK_GSUsuario)
         {
@@ -75,6 +120,11 @@ namespace GSApplication.Services
             }
 
             return ret;
+        }
+
+        public string GerarChavePrincipal()
+        {
+            return seguranca.GerarChavePrincipal();
         }
     }
 }

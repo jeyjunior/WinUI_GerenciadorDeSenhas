@@ -145,7 +145,8 @@ namespace GerenciadorDeSenhas.Views
         {
             HabilitarEdicaoSenha(false);
 
-            var criptografiaResult = configAppService.Descriptografar(gSUsuarioAtivo.Senha, gSUsuarioAtivo.IVSenha);
+            var criptografiaRequisicao = new GSDomain.DTO.CriptografiaRequisicao { Valor = gSUsuarioAtivo.Senha, Salt = gSUsuarioAtivo.Salt };
+            var criptografiaResult = configAppService.Descriptografar(criptografiaRequisicao);
             passSenha.Password = criptografiaResult.Valor;
         }
         private async void btnSalvarSenha_Click(object sender, RoutedEventArgs e)
@@ -157,18 +158,18 @@ namespace GerenciadorDeSenhas.Views
             {
                 GSUsuario gSUsuario = gSUsuarioAtivo.DeepCopy();
                 gSUsuario.Senha = passSenha.Password.ObterValorOuPadrao("").Trim();
-                gSUsuario.IVSenha = "";
+                gSUsuario.Salt = "";
 
-                var criptografiaResult = configAppService.Criptografar(gSUsuario.Senha, gSUsuario.IVSenha);
+                var criptografiaResult = configAppService.Criptografar(gSUsuario.Senha);
 
-                if (criptografiaResult.Erro.ObterValorOuPadrao("").Trim() != "")
+                if (criptografiaResult.ValidarResultado.ObterValorOuPadrao("").Trim() != "")
                 {
-                    await Mensagem.ErroAsync(criptografiaResult.Erro, this.XamlRoot);
+                    await Mensagem.ErroAsync(criptografiaResult.ValidarResultado.ObterPrimeiroErro(), this.XamlRoot);
                     return;
                 }
 
                 gSUsuario.Senha = criptografiaResult.Valor;
-                gSUsuario.IVSenha = criptografiaResult.IV;
+                gSUsuario.Salt = criptografiaResult.Salt;
 
                 loginService.AtualizarUsuario(gSUsuario);
 
@@ -327,7 +328,9 @@ namespace GerenciadorDeSenhas.Views
             txtNome.Text = gSUsuarioAtivo.Nome;
             txtUsuario.Text = gSUsuarioAtivo.Usuario;
 
-            var criptografiaResult = configAppService.Descriptografar(gSUsuarioAtivo.Senha, gSUsuarioAtivo.IVSenha);
+            var criptografiaRequisicao = new GSDomain.DTO.CriptografiaRequisicao { Valor = gSUsuarioAtivo.Senha, Salt = gSUsuarioAtivo.Salt };
+
+            var criptografiaResult = configAppService.Descriptografar(criptografiaRequisicao);
             passSenha.Password = criptografiaResult.Valor;
         }
         private void MoverScrollParaAreaExpandida(GeneralTransform transform)

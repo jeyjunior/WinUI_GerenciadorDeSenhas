@@ -490,7 +490,8 @@ namespace GerenciadorDeSenhas.Views
             {
                 txtCredencial.Text = gSCredencialSelecionada.Credencial.ObterValorOuPadrao("");
 
-                var criptografiaResult = configAppService.Descriptografar(gSCredencialSelecionada.Senha, gSCredencialSelecionada.IVSenha);
+                var criptografiaRequisicao = new GSDomain.DTO.CriptografiaRequisicao { Valor = gSCredencialSelecionada.Senha, Salt = gSCredencialSelecionada.Salt };
+                var criptografiaResult = configAppService.Descriptografar(criptografiaRequisicao);
                 txtSenha.Text = criptografiaResult.Valor;
             }
             else

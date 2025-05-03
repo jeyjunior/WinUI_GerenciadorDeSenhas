@@ -58,9 +58,9 @@ namespace GSApplication.Services
 
                 foreach (var item in gSUsuarios)
                 {
-                    var criptografiaResult = configAppService.Descriptografar(item.Senha, item.IVSenha);
+                    var criptografiaResult = configAppService.Descriptografar(new GSDomain.DTO.CriptografiaRequisicao { Valor = item.Senha, Salt = item.Salt });
 
-                    if (criptografiaResult.Erro.ObterValorOuPadrao("").Trim() != "")
+                    if (criptografiaResult.ValidarResultado.ObterPrimeiroErro().ObterValorOuPadrao("").Trim() != "")
                         continue;
 
                     if (gSUsuarioRequest.Senha == criptografiaResult.Valor)
@@ -107,18 +107,19 @@ namespace GSApplication.Services
                 return false;
             }
 
-            var criptografarRequest = new JJ.NET.Cryptography.CriptografiaRequest
-            {
-                TipoCriptografia = JJ.NET.Cryptography.Enumerador.TipoCriptografia.AES,
-                Valor = gSUsuarioRequest.Senha,
-                IV = "",
-            };
+            var ret = configAppService.GerarChavePrincipal();
 
-            var criptografarResult = Criptografia.Criptografar(criptografarRequest);
-
-            if (criptografarResult.Erro.ObterValorOuPadrao("").Trim() != "")
+            if (ret.ObterValorOuPadrao("").Trim() == "")
             {
-                gSUsuarioRequest.ValidarResultado.Adicionar(criptografarResult.Erro);
+                gSUsuarioRequest.ValidarResultado.Adicionar("Não foi possível gerar uma Chave Principal para o registro do usuário.");
+                return false;
+            }
+
+            var criptografarResult = configAppService.Criptografar(gSUsuarioRequest.Senha);
+
+            if (criptografarResult.ValidarResultado.ObterValorOuPadrao("").Trim() != "")
+            {
+                gSUsuarioRequest.ValidarResultado.Adicionar(criptografarResult.ValidarResultado.ObterPrimeiroErro());
                 return false;
             }
 
@@ -128,7 +129,7 @@ namespace GSApplication.Services
                 Usuario = gSUsuarioRequest.Usuario.ObterValorOuPadrao("").Trim(),
                 Nome = gSUsuarioRequest.Nome.ObterValorOuPadrao("").Trim(),
                 Senha = criptografarResult.Valor.ObterValorOuPadrao("").Trim(),
-                IVSenha = criptografarResult.IV.ObterValorOuPadrao("").Trim(),
+                Salt = criptografarResult.Salt.ObterValorOuPadrao("").Trim(),
                 ValidarResultado = new ValidarResultado()
             };
 
@@ -212,7 +213,7 @@ namespace GSApplication.Services
                 return false;
             }
 
-            if (gSUsuario.Nome.ObterValorOuPadrao("").Trim() == "" || gSUsuario.Usuario.ObterValorOuPadrao("").Trim() == "" || gSUsuario.Senha.ObterValorOuPadrao("").Trim() == "" || gSUsuario.IVSenha.ObterValorOuPadrao("").Trim() == "")
+            if (gSUsuario.Nome.ObterValorOuPadrao("").Trim() == "" || gSUsuario.Usuario.ObterValorOuPadrao("").Trim() == "" || gSUsuario.Senha.ObterValorOuPadrao("").Trim() == "" || gSUsuario.Salt.ObterValorOuPadrao("").Trim() == "")
             {
                 gSUsuario.ValidarResultado.Adicionar("É necessário informar todos os dados do usuário (Nome, Usuário e Senha).");
                 return false;
