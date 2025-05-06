@@ -15,7 +15,7 @@ namespace GSDomain.DTO
 
     public class CriptografiaRequisicao : CriptografiaBase
     {
-
+        public int PK_GSUsuario { get; set; }
     }
 
     public class CriptografiaResultado : CriptografiaBase

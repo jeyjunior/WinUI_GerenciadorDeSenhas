@@ -106,7 +106,7 @@ namespace GerenciadorDeSenhas.Views
             }
             catch (Exception ex)
             {
-                await Mensagem.SucessoAsync(ex.Message, this.XamlRoot);
+                await Mensagem.ErroAsync(ex.Message, this.XamlRoot);
             }
         }
         private void txtNome_TextChanged(object sender, TextChangedEventArgs e)

@@ -34,10 +34,14 @@ namespace GSApplication.Services
                 var request = new JJ.NET.Cryptography.DTO.DescriptografiaRequest
                 {
                     ValorCriptografado = criptoRequest.Valor.ObterValorOuPadrao("").Trim(),
-                    Salt = criptoRequest.Salt.ObterValorOuPadrao("").Trim()
+                    Salt = criptoRequest.Salt.ObterValorOuPadrao("").Trim(),
+                    IDUsuario = criptoRequest.PK_GSUsuario
                 };
 
-                var valorDescriptografado = seguranca.Descriptografar(request);
+                var seg = new Seguranca();
+
+                //var valorDescriptografado = seguranca.Descriptografar(request);
+                var valorDescriptografado = seg.Descriptografar(request);
 
                 if (valorDescriptografado.ObterValorOuPadrao("").Trim() == "")
                 {
@@ -55,7 +59,7 @@ namespace GSApplication.Services
 
             return result;
         }
-        public CriptografiaResultado Criptografar(string valor)
+        public CriptografiaResultado Criptografar(string valor, int pk_GESUsuario)
         {
             var result = new CriptografiaResultado
             {
@@ -66,7 +70,7 @@ namespace GSApplication.Services
 
             try
             {
-                var criptografiaResult = seguranca.Criptografar(valor);
+                var criptografiaResult = seguranca.Criptografar(valor, pk_GESUsuario);
 
                 if (criptografiaResult == null)
                 {
@@ -122,9 +126,9 @@ namespace GSApplication.Services
             return ret;
         }
 
-        public string GerarChavePrincipal()
+        public string GerarChavePrincipal(int PK_GSUsuario)
         {
-            return seguranca.GerarChavePrincipal();
+            return seguranca.GerarChavePrincipal(PK_GSUsuario);
         }
     }
 }

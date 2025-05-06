@@ -160,7 +160,7 @@ namespace GerenciadorDeSenhas.Views
                 gSUsuario.Senha = passSenha.Password.ObterValorOuPadrao("").Trim();
                 gSUsuario.Salt = "";
 
-                var criptografiaResult = configAppService.Criptografar(gSUsuario.Senha);
+                var criptografiaResult = configAppService.Criptografar(gSUsuario.Senha, App.PK_GESUsuarioAtivo);
 
                 if (criptografiaResult.ValidarResultado.ObterValorOuPadrao("").Trim() != "")
                 {

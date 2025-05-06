@@ -26,8 +26,16 @@
         <StackPanel Grid.Row="1" Spacing="4">
             <TextBlock Text="Senha" Foreground="{StaticResource Cinza1}"/>
             <PasswordBox x:Name="passBoxSenha" Width="300" MaxLength="128" KeyDown="passBoxSenha_KeyDown"/>
+            <HyperlinkButton Content="Esqueci a senha" 
+                             x:Name="hlbEsqueciSenha" 
+                             Click="hlbEsqueciSenha_Click"
+                             Foreground="{StaticResource Azul1}"
+                             Padding="10,0,0,0" 
+                             HorizontalAlignment="Left" 
+                             Background="Transparent" 
+                             BorderThickness="0"/>
         </StackPanel>
-
+        
         <StackPanel Grid.Row="2" Spacing="8">
             <CheckBox x:Name="chkLembrarUsuario" IsChecked="False" Content="Lembrar usuário"/>
             <Button x:Name="btnEntrar" Click="btnEntrar_Click" Content="Entrar" HorizontalAlignment="Stretch" Style="{StaticResource AccentButtonStyle}"/>

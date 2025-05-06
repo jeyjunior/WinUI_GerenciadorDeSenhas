@@ -58,7 +58,7 @@ namespace GSApplication.Services
 
                 foreach (var item in gSUsuarios)
                 {
-                    var criptografiaResult = configAppService.Descriptografar(new GSDomain.DTO.CriptografiaRequisicao { Valor = item.Senha, Salt = item.Salt });
+                    var criptografiaResult = configAppService.Descriptografar(new GSDomain.DTO.CriptografiaRequisicao { Valor = item.Senha, Salt = item.Salt, PK_GSUsuario = item.PK_GSUsuario });
 
                     if (criptografiaResult.ValidarResultado.ObterPrimeiroErro().ObterValorOuPadrao("").Trim() != "")
                         continue;
@@ -107,32 +107,6 @@ namespace GSApplication.Services
                 return false;
             }
 
-            var ret = configAppService.GerarChavePrincipal();
-
-            if (ret.ObterValorOuPadrao("").Trim() == "")
-            {
-                gSUsuarioRequest.ValidarResultado.Adicionar("Não foi possível gerar uma Chave Principal para o registro do usuário.");
-                return false;
-            }
-
-            var criptografarResult = configAppService.Criptografar(gSUsuarioRequest.Senha);
-
-            if (criptografarResult.ValidarResultado.ObterValorOuPadrao("").Trim() != "")
-            {
-                gSUsuarioRequest.ValidarResultado.Adicionar(criptografarResult.ValidarResultado.ObterPrimeiroErro());
-                return false;
-            }
-
-            var gSUsuario = new GSUsuario
-            {
-                PK_GSUsuario = 0,
-                Usuario = gSUsuarioRequest.Usuario.ObterValorOuPadrao("").Trim(),
-                Nome = gSUsuarioRequest.Nome.ObterValorOuPadrao("").Trim(),
-                Senha = criptografarResult.Valor.ObterValorOuPadrao("").Trim(),
-                Salt = criptografarResult.Salt.ObterValorOuPadrao("").Trim(),
-                ValidarResultado = new ValidarResultado()
-            };
-
             using (var uow = new UnitOfWork(ConfiguracaoBancoDados.ObterConexao()))
             {
                 var _gSUsuarioRepository = new GSUsuarioRepository(uow);
@@ -140,7 +114,45 @@ namespace GSApplication.Services
                 {
                     uow.Begin();
 
+                    var gSUsuario = new GSUsuario
+                    {
+                        PK_GSUsuario = 0,
+                        Usuario = gSUsuarioRequest.Usuario.ObterValorOuPadrao("").Trim(),
+                        Nome = gSUsuarioRequest.Nome.ObterValorOuPadrao("").Trim(),
+                        Senha = "",
+                        Salt = "",
+                        ValidarResultado = new ValidarResultado()
+                    };
+
                     int PK_GSUsuario = _gSUsuarioRepository.Adicionar(gSUsuario);
+
+                    var ret = configAppService.GerarChavePrincipal(PK_GSUsuario);
+                    
+                    if (ret.ObterValorOuPadrao("").Trim() == "")
+                    {
+                        gSUsuarioRequest.ValidarResultado.Adicionar("Não foi possível gerar uma Chave Principal para o registro do usuário.");
+                        return false;
+                    }
+
+                    var criptografarResult = configAppService.Criptografar(gSUsuarioRequest.Senha, PK_GSUsuario);
+
+                    if (!criptografarResult.ValidarResultado.EhValido)
+                    {
+                        gSUsuarioRequest.ValidarResultado.Adicionar(criptografarResult.ValidarResultado.ObterPrimeiroErro());
+                        return false;
+                    }
+
+                    gSUsuario = new GSUsuario
+                    {
+                        PK_GSUsuario = PK_GSUsuario,
+                        Usuario = gSUsuarioRequest.Usuario.ObterValorOuPadrao("").Trim(),
+                        Nome = gSUsuarioRequest.Nome.ObterValorOuPadrao("").Trim(),
+                        Senha = criptografarResult.Valor.ObterValorOuPadrao("").Trim(),
+                        Salt = criptografarResult.Salt.ObterValorOuPadrao("").Trim(),
+                        ValidarResultado = new ValidarResultado()
+                    };
+
+                    _gSUsuarioRepository.Atualizar(gSUsuario);
 
                     uow.Commit();
 

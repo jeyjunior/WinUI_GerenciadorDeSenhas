@@ -37,6 +37,7 @@ namespace GerenciadorDeSenhas.Views
         }
         #endregion
 
+        #region Eventos
         private async void btnEntrar_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -117,5 +118,22 @@ namespace GerenciadorDeSenhas.Views
                 chkLembrarUsuario.IsChecked = true;
             }
         }
+        private async void hlbEsqueciSenha_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var dialog = new EsqueciSenhaDialog();
+                dialog.XamlRoot = this.Content.XamlRoot;
+                await dialog.ShowAsync();
+            }
+            catch (Exception ex)
+            {
+                await Mensagem.ErroAsync(ex.Message, this.XamlRoot);
+            }
+        }
+        #endregion
+
+        #region Metodos
+        #endregion
     }
 }

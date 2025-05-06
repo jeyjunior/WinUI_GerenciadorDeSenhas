@@ -139,7 +139,7 @@ namespace GSApplication.Services
             if (gSCredencial.FK_GSCategoria != null && gSCredencial.FK_GSCategoria > 0)
                 credencial.FK_GSCategoria = gSCredencial.FK_GSCategoria;
 
-            var criptografarResult = configAppService.Criptografar(gSCredencial.Senha);
+            var criptografarResult = configAppService.Criptografar(gSCredencial.Senha, gSCredencial.FK_GSUsuario);
 
             if (criptografarResult.ValidarResultado.ObterValorOuPadrao("").Trim() != "")
             {

@@ -32,7 +32,6 @@ namespace GSApplication
                 string caminhoDestino = ApplicationData.Current.LocalFolder.Path;
                 ConfiguracaoBancoDados.IniciarConfiguracao(Conexao.SQLite, caminhoDestino);
                 var dbConnection = ConfiguracaoBancoDados.ObterConexao();
-
                 Container = new Container();
                 Container.Options.DefaultLifestyle = Lifestyle.Scoped;
 
