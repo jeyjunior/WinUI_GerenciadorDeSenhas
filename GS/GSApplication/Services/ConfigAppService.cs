@@ -25,7 +25,7 @@ namespace GSApplication.Services
         {
             var result = new DescriptografiaResultado
             {
-                ValidarResultado = new JJ.NET.Core.Validador.ValidarResultado(),
+                ValidarResultado = new JJ.NET.Core.Validador.ValidarResultado(), 
                 Valor = ""
             };
 
@@ -38,10 +38,7 @@ namespace GSApplication.Services
                     IDUsuario = criptoRequest.PK_GSUsuario
                 };
 
-                var seg = new Seguranca();
-
-                //var valorDescriptografado = seguranca.Descriptografar(request);
-                var valorDescriptografado = seg.Descriptografar(request);
+                var valorDescriptografado = seguranca.Descriptografar(request);
 
                 if (valorDescriptografado.ObterValorOuPadrao("").Trim() == "")
                 {

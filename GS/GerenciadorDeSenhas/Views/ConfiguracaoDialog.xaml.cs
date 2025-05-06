@@ -145,7 +145,7 @@ namespace GerenciadorDeSenhas.Views
         {
             HabilitarEdicaoSenha(false);
 
-            var criptografiaRequisicao = new GSDomain.DTO.CriptografiaRequisicao { Valor = gSUsuarioAtivo.Senha, Salt = gSUsuarioAtivo.Salt };
+            var criptografiaRequisicao = new GSDomain.DTO.CriptografiaRequisicao { Valor = gSUsuarioAtivo.Senha, Salt = gSUsuarioAtivo.Salt, PK_GSUsuario = gSUsuarioAtivo.PK_GSUsuario };
             var criptografiaResult = configAppService.Descriptografar(criptografiaRequisicao);
             passSenha.Password = criptografiaResult.Valor;
         }
@@ -328,7 +328,7 @@ namespace GerenciadorDeSenhas.Views
             txtNome.Text = gSUsuarioAtivo.Nome;
             txtUsuario.Text = gSUsuarioAtivo.Usuario;
 
-            var criptografiaRequisicao = new GSDomain.DTO.CriptografiaRequisicao { Valor = gSUsuarioAtivo.Senha, Salt = gSUsuarioAtivo.Salt };
+            var criptografiaRequisicao = new GSDomain.DTO.CriptografiaRequisicao { Valor = gSUsuarioAtivo.Senha, Salt = gSUsuarioAtivo.Salt, PK_GSUsuario = gSUsuarioAtivo.PK_GSUsuario };
 
             var criptografiaResult = configAppService.Descriptografar(criptografiaRequisicao);
             passSenha.Password = criptografiaResult.Valor;

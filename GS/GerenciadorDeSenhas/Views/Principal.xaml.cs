@@ -115,7 +115,7 @@ namespace GerenciadorDeSenhas.Views
 
                 if (credencialViewModel.ExibirSenha)
                 {
-                    var criptografiaResult = configAppService.Descriptografar(new GSDomain.DTO.CriptografiaRequisicao { Valor = credencial.Senha, Salt = credencial.Salt });
+                    var criptografiaResult = configAppService.Descriptografar(new GSDomain.DTO.CriptografiaRequisicao { Valor = credencial.Senha, Salt = credencial.Salt, PK_GSUsuario = credencial.FK_GSUsuario });
 
                     credencialViewModel.Senha = criptografiaResult.Valor;
                     credencialViewModel.BotaoStyle = (Style)App.Current.Resources["DefaultButtonStyle"];
@@ -155,7 +155,7 @@ namespace GerenciadorDeSenhas.Views
                 if (gSCredencials == null)
                     return;
 
-                var criptografiaResult = configAppService.Descriptografar(new GSDomain.DTO.CriptografiaRequisicao { Valor = gSCredencial.Senha, Salt = gSCredencial.Salt });
+                var criptografiaResult = configAppService.Descriptografar(new GSDomain.DTO.CriptografiaRequisicao { Valor = gSCredencial.Senha, Salt = gSCredencial.Salt, PK_GSUsuario = gSCredencial.FK_GSUsuario });
 
                 if (criptografiaResult.ValidarResultado.ObterValorOuPadrao("").Trim() != "")
                 {
@@ -304,8 +304,7 @@ namespace GerenciadorDeSenhas.Views
         }
         private string OcultarSenha(string senha, string salt)
         {
-
-            var criptografiaResult = configAppService.Descriptografar(new GSDomain.DTO.CriptografiaRequisicao { Valor = senha, Salt = salt });
+            var criptografiaResult = configAppService.Descriptografar(new GSDomain.DTO.CriptografiaRequisicao { Valor = senha, Salt = salt, PK_GSUsuario = App.PK_GESUsuarioAtivo });
             return criptografiaResult.Valor.Trim().Ocultar();
         }
         private void OrdenarLista()
