@@ -55,20 +55,20 @@ namespace GerenciadorDeSenhas.Views
         {
             try
             {
-                if (txtNome.Text.ObterValorOuPadrao("").Trim() == "" || txtNome.Text.Length < qtdMinimaNome)
+                if (txtEmail.Text.ObterValorOuPadrao("").Trim() == "" || txtEmail.Text.Length < qtdMinimaNome || !txtEmail.Text.Contains("@"))
                 {
                     args.Cancel = true;
-                    txtNome.Focus(FocusState.Keyboard);
+                    txtEmail.Focus(FocusState.Keyboard);
                     AlterarIconeValidacao(true, fontIconNome);
-                    await Mensagem.AvisoAsync("Nome de usuário inválido.", this.XamlRoot);
+                    await Mensagem.AvisoAsync("E-mail inválido.", this.XamlRoot);
                     return;
                 }
-                else if (txtUsuario.Text.ObterValorOuPadrao("").Trim() == "" || txtUsuario.Text.Length < qtdMinimaUsuario)
+                else if (txtLogin.Text.ObterValorOuPadrao("").Trim() == "" || txtLogin.Text.Length < qtdMinimaUsuario)
                 {
                     args.Cancel = true;
-                    txtUsuario.Focus(FocusState.Keyboard);
+                    txtLogin.Focus(FocusState.Keyboard);
                     AlterarIconeValidacao(true, fontIconUsuario);
-                    await Mensagem.AvisoAsync("Usuário inválido.", this.XamlRoot);
+                    await Mensagem.AvisoAsync("Login inválido.", this.XamlRoot);
                     return;
                 }
                 else if (passBoxSenha.Password.ObterValorOuPadrao("").Trim() == "" || passBoxSenha.Password.Length < qtdMinimaSenha)
@@ -82,8 +82,8 @@ namespace GerenciadorDeSenhas.Views
 
                 var gSUsuarioRequest = new GSUsuarioRequest
                 {
-                    Nome = txtNome.Text.Trim(),
-                    Usuario = txtUsuario.Text.Trim(),
+                    Email = txtEmail.Text.Trim(),
+                    Login = txtLogin.Text.Trim(),
                     Senha = passBoxSenha.Password.Trim()
                 };
 
@@ -109,24 +109,6 @@ namespace GerenciadorDeSenhas.Views
                 await Mensagem.ErroAsync(ex.Message, this.XamlRoot);
             }
         }
-        private void txtNome_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            fontIconNome.Visibility = Visibility.Collapsed;
-
-            if (txtNome.Text.Length <= 0)
-                return;
-
-            AlterarIconeValidacao((txtNome.Text.Length < qtdMinimaNome), fontIconNome);
-        }
-        private void txtUsuario_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            fontIconUsuario.Visibility = Visibility.Collapsed;
-
-            if (txtUsuario.Text.Length <= 0)
-                return;
-
-            AlterarIconeValidacao((txtUsuario.Text.Length < qtdMinimaUsuario), fontIconUsuario);
-        }
         private void passBoxSenha_PasswordChanged(object sender, RoutedEventArgs e)
         {
             fontIconSenha.Visibility = Visibility.Collapsed;
@@ -135,6 +117,24 @@ namespace GerenciadorDeSenhas.Views
                 return;
 
             AlterarIconeValidacao((passBoxSenha.Password.Length < qtdMinimaSenha), fontIconSenha);
+        }
+        private void txtEmail_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            fontIconNome.Visibility = Visibility.Collapsed;
+
+            if (txtEmail.Text.Length <= 0)
+                return;
+
+            AlterarIconeValidacao((txtEmail.Text.Length < qtdMinimaNome), fontIconNome);
+        }
+        private void txtLogin_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            fontIconUsuario.Visibility = Visibility.Collapsed;
+
+            if (txtLogin.Text.Length <= 0)
+                return;
+
+            AlterarIconeValidacao((txtLogin.Text.Length < qtdMinimaUsuario), fontIconUsuario);
         }
         #endregion
 

@@ -51,7 +51,7 @@ namespace GSApplication.Services
 
             try
             {
-                var gSUsuarios = gSUsuarioRepository.ObterLista("Usuario = @Usuario", new { Usuario = gSUsuarioRequest.Usuario.ObterValorOuPadrao("").Trim() }).ToList();
+                var gSUsuarios = gSUsuarioRepository.ObterLista("Login = @Login", new { Login = gSUsuarioRequest.Login.ObterValorOuPadrao("").Trim() }).ToList();
 
                 if (gSUsuarios == null || gSUsuarios.Count <= 0)
                     return -1;
@@ -73,7 +73,7 @@ namespace GSApplication.Services
                 return -1;
             }
 
-            gSUsuarioRequest.ValidarResultado.Adicionar("Usuário ou senha inválido.");
+            gSUsuarioRequest.ValidarResultado.Adicionar("Login ou senha inválido.");
             return -1;
         }
         public bool Registrar(GSUsuarioRequest gSUsuarioRequest)
@@ -83,14 +83,14 @@ namespace GSApplication.Services
 
             gSUsuarioRequest.ValidarResultado = new ValidarResultado();
 
-            if (gSUsuarioRequest.Usuario.ObterValorOuPadrao("").Trim() == "")
+            if (gSUsuarioRequest.Login.ObterValorOuPadrao("").Trim() == "")
             {
-                gSUsuarioRequest.ValidarResultado.Adicionar("Usuário é um campo obrigatório.");
+                gSUsuarioRequest.ValidarResultado.Adicionar("Login é um campo obrigatório.");
                 return false;
             }
-            else if (gSUsuarioRequest.Nome.ObterValorOuPadrao("").Trim() == "")
+            else if (gSUsuarioRequest.Email.ObterValorOuPadrao("").Trim() == "")
             {
-                gSUsuarioRequest.ValidarResultado.Adicionar("Nome é um campo obrigatório.");
+                gSUsuarioRequest.ValidarResultado.Adicionar("E-mail é um campo obrigatório.");
                 return false;
             }
             else if (gSUsuarioRequest.Senha.ObterValorOuPadrao("").Trim() == "")
@@ -99,11 +99,11 @@ namespace GSApplication.Services
                 return false;
             }
 
-            var gSUsuarioExistente = gSUsuarioRepository.ObterLista("Usuario = @Usuario", new { Usuario = gSUsuarioRequest.Usuario }).FirstOrDefault();
+            var gSUsuarioExistente = gSUsuarioRepository.ObterLista("Login = @Login", new { Login = gSUsuarioRequest.Login }).FirstOrDefault();
 
             if (gSUsuarioExistente != null)
             {
-                gSUsuarioRequest.ValidarResultado.Adicionar("Usuário já existe.");
+                gSUsuarioRequest.ValidarResultado.Adicionar("Login já existe.");
                 return false;
             }
 
@@ -117,8 +117,8 @@ namespace GSApplication.Services
                     var gSUsuario = new GSUsuario
                     {
                         PK_GSUsuario = 0,
-                        Usuario = gSUsuarioRequest.Usuario.ObterValorOuPadrao("").Trim(),
-                        Nome = gSUsuarioRequest.Nome.ObterValorOuPadrao("").Trim(),
+                        Login = gSUsuarioRequest.Login.ObterValorOuPadrao("").Trim(),
+                        Email = gSUsuarioRequest.Email.ObterValorOuPadrao("").Trim(),
                         Senha = "",
                         Salt = "",
                         ValidarResultado = new ValidarResultado()
@@ -145,8 +145,8 @@ namespace GSApplication.Services
                     gSUsuario = new GSUsuario
                     {
                         PK_GSUsuario = PK_GSUsuario,
-                        Usuario = gSUsuarioRequest.Usuario.ObterValorOuPadrao("").Trim(),
-                        Nome = gSUsuarioRequest.Nome.ObterValorOuPadrao("").Trim(),
+                        Login = gSUsuarioRequest.Login.ObterValorOuPadrao("").Trim(),
+                        Email = gSUsuarioRequest.Email.ObterValorOuPadrao("").Trim(),
                         Senha = criptografarResult.Valor.ObterValorOuPadrao("").Trim(),
                         Salt = criptografarResult.Salt.ObterValorOuPadrao("").Trim(),
                         ValidarResultado = new ValidarResultado()
@@ -181,7 +181,7 @@ namespace GSApplication.Services
         {
             try
             {
-                var json = JsonSerializer.Serialize(new GSUsuarioLembrar { Usuario = usuario });
+                var json = JsonSerializer.Serialize(new GSUsuarioLembrar { Login = usuario });
                 string localPath = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
                 var arquivo = Path.Combine(localPath, "lembrarUsuario.json");
                 await File.WriteAllTextAsync(arquivo, json);
@@ -201,7 +201,7 @@ namespace GSApplication.Services
 
                 var json = await File.ReadAllTextAsync(arquivo);
                 var obj = JsonSerializer.Deserialize<GSUsuarioLembrar>(json);
-                return obj?.Usuario;
+                return obj?.Login;
             }
             catch
             {
@@ -225,9 +225,9 @@ namespace GSApplication.Services
                 return false;
             }
 
-            if (gSUsuario.Nome.ObterValorOuPadrao("").Trim() == "" || gSUsuario.Usuario.ObterValorOuPadrao("").Trim() == "" || gSUsuario.Senha.ObterValorOuPadrao("").Trim() == "" || gSUsuario.Salt.ObterValorOuPadrao("").Trim() == "")
+            if (gSUsuario.Email.ObterValorOuPadrao("").Trim() == "" || gSUsuario.Login.ObterValorOuPadrao("").Trim() == "" || gSUsuario.Senha.ObterValorOuPadrao("").Trim() == "" || gSUsuario.Salt.ObterValorOuPadrao("").Trim() == "")
             {
-                gSUsuario.ValidarResultado.Adicionar("É necessário informar todos os dados do usuário (Nome, Usuário e Senha).");
+                gSUsuario.ValidarResultado.Adicionar("É necessário informar todos os dados do usuário (E-mail, Login e Senha).");
                 return false;
             }
 

@@ -57,7 +57,7 @@ namespace GerenciadorDeSenhas.Views
 
                 var gSUsuarioRequest = new GSUsuarioRequest
                 {
-                    Usuario = txtUsuario.Text.ObterValorOuPadrao("").Trim(),
+                    Login = txtUsuario.Text.ObterValorOuPadrao("").Trim(),
                     Senha = passBoxSenha.Password.ObterValorOuPadrao("").Trim()
                 };
 
@@ -79,7 +79,7 @@ namespace GerenciadorDeSenhas.Views
                 loginService.DeletarUsuarioLembrado();
 
                 if (chkLembrarUsuario.IsChecked == true)
-                    loginService.SalvarUsuarioLembrado(gSUsuarioRequest.Usuario);
+                    loginService.SalvarUsuarioLembrado(gSUsuarioRequest.Login);
 
                 App.PK_GESUsuarioAtivo = PK_GSUsuario;
                 NavigationService.NavegarPara(typeof(Principal));

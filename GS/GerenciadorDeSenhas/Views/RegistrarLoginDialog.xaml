@@ -26,16 +26,16 @@
                     CornerRadius="10">
 
             <StackPanel Orientation="Horizontal" Spacing="10" Padding="0">
-                <TextBlock Text="Nome" Margin="0" Foreground="{StaticResource Cinza1}"/>
+                <TextBlock Text="E-mail" Margin="0" Foreground="{StaticResource Cinza1}"/>
                 <FontIcon x:Name="fontIconNome" Glyph="&#xE783;" Foreground="{StaticResource Amarelo}" Visibility="Collapsed" FontFamily="Segoe Fluent Icons" FontSize="18"/>
             </StackPanel>
-            <TextBox x:Name="txtNome" TextChanged="txtNome_TextChanged" MinWidth="468" MaxLength="128" BorderBrush="{StaticResource Nenhuma}" BorderThickness="2" HorizontalAlignment="Stretch" />
+            <TextBox x:Name="txtEmail" TextChanged="txtEmail_TextChanged" MinWidth="468" MaxLength="128" BorderBrush="{StaticResource Nenhuma}" BorderThickness="2" HorizontalAlignment="Stretch" />
 
             <StackPanel Orientation="Horizontal" Spacing="10" Padding="0">
-                <TextBlock Text="Usuário" Margin="0,8,0,0" Foreground="{StaticResource Cinza1}"/>
+                <TextBlock Text="Login" Margin="0,8,0,0" Foreground="{StaticResource Cinza1}"/>
                 <FontIcon x:Name="fontIconUsuario" Glyph="&#xE783;" Foreground="{StaticResource Amarelo}" Visibility="Collapsed" FontFamily="Segoe Fluent Icons" FontSize="18"/>
             </StackPanel>
-            <TextBox x:Name="txtUsuario" TextChanged="txtUsuario_TextChanged" MinWidth="468" MaxLength="128" BorderBrush="{StaticResource Nenhuma}" BorderThickness="1" HorizontalAlignment="Stretch" />
+            <TextBox x:Name="txtLogin" TextChanged="txtLogin_TextChanged" MinWidth="468" MaxLength="128" BorderBrush="{StaticResource Nenhuma}" BorderThickness="1" HorizontalAlignment="Stretch" />
 
             <StackPanel Orientation="Horizontal" Spacing="10" Padding="0">
                 <TextBlock Text="Senha" Margin="0,8,0,0" Foreground="{StaticResource Cinza1}"/>

@@ -74,7 +74,7 @@ namespace GerenciadorDeSenhas.Views
         private void btnCancelarNome_Click(object sender, RoutedEventArgs e)
         {
             HabilitarEdicaoNome(false);
-            txtNome.Text = gSUsuarioAtivo.Nome;
+            txtNome.Text = gSUsuarioAtivo.Email;
         }
         private async void btnSalvarNome_Click(object sender, RoutedEventArgs e)
         {
@@ -84,7 +84,7 @@ namespace GerenciadorDeSenhas.Views
             try
             {
                 GSUsuario gSUsuario = gSUsuarioAtivo.DeepCopy();
-                gSUsuario.Nome = txtNome.Text.ObterValorOuPadrao("").Trim();
+                gSUsuario.Email = txtNome.Text.ObterValorOuPadrao("").Trim();
 
                 loginService.AtualizarUsuario(gSUsuario);
 
@@ -109,7 +109,7 @@ namespace GerenciadorDeSenhas.Views
         private void btnCancelarUsuario_Click(object sender, RoutedEventArgs e)
         {
             HabilitarEdicaoUsuario(false);
-            txtUsuario.Text = gSUsuarioAtivo.Usuario;
+            txtUsuario.Text = gSUsuarioAtivo.Login;
         }
         private async void btnSalvarUsuario_Click(object sender, RoutedEventArgs e)
         {
@@ -119,7 +119,7 @@ namespace GerenciadorDeSenhas.Views
             try
             {
                 GSUsuario gSUsuario = gSUsuarioAtivo.DeepCopy();
-                gSUsuario.Usuario = txtUsuario.Text.ObterValorOuPadrao("").Trim();
+                gSUsuario.Login = txtUsuario.Text.ObterValorOuPadrao("").Trim();
 
                 loginService.AtualizarUsuario(gSUsuario);
 
@@ -325,8 +325,8 @@ namespace GerenciadorDeSenhas.Views
         }
         private void BindPrincipal()
         {
-            txtNome.Text = gSUsuarioAtivo.Nome;
-            txtUsuario.Text = gSUsuarioAtivo.Usuario;
+            txtNome.Text = gSUsuarioAtivo.Email;
+            txtUsuario.Text = gSUsuarioAtivo.Login;
 
             var criptografiaRequisicao = new GSDomain.DTO.CriptografiaRequisicao { Valor = gSUsuarioAtivo.Senha, Salt = gSUsuarioAtivo.Salt, PK_GSUsuario = gSUsuarioAtivo.PK_GSUsuario };
 
@@ -349,7 +349,7 @@ namespace GerenciadorDeSenhas.Views
             if (!estavaVisivel)
             {
                 painel.Visibility = Visibility.Visible;
-                campoTextoConfirmacao.Text = $"{mensagem}\nPara confirmar, digite seu nome de usuário: {gSUsuarioAtivo.Usuario.Trim()}";
+                campoTextoConfirmacao.Text = $"{mensagem}\nPara confirmar, digite seu nome de usuário: {gSUsuarioAtivo.Login.Trim()}";
             }
 
             await Task.Delay(50);
@@ -367,7 +367,7 @@ namespace GerenciadorDeSenhas.Views
         }
         private async Task<bool> UsuarioValido(string textoDigitado)
         {
-            if (textoDigitado.ObterValorOuPadrao("").Trim() != gSUsuarioAtivo.Usuario.Trim())
+            if (textoDigitado.ObterValorOuPadrao("").Trim() != gSUsuarioAtivo.Login.Trim())
             {
                 await Mensagem.AvisoAsync("Usuário inválido.", this.XamlRoot);
                 return false;

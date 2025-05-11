@@ -14,9 +14,9 @@ namespace GSDomain.Entidades
         public int PK_GSUsuario { get; set; }
 
         [Obrigatorio]
-        public string Usuario { get; set; }
+        public string Login { get; set; }
         [Obrigatorio]
-        public string Nome { get; set; }
+        public string Email { get; set; }
         [Obrigatorio]
         public string Senha { get; set; }
         [Obrigatorio]
@@ -29,8 +29,8 @@ namespace GSDomain.Entidades
             return new GSUsuario
             {
                 PK_GSUsuario = this.PK_GSUsuario,
-                Usuario = this.Usuario,
-                Nome = this.Nome,
+                Login = this.Login,
+                Email = this.Email,
                 Senha = this.Senha,
                 Salt = this.Salt,
                 ValidarResultado = new ValidarResultado(),
@@ -40,14 +40,14 @@ namespace GSDomain.Entidades
 
     public class GSUsuarioRequest
     {
-        public string Usuario { get; set; }
-        public string Nome { get; set; }
+        public string Login { get; set; }
+        public string Email { get; set; }
         public string Senha { get; set; }
         public ValidarResultado ValidarResultado { get; set; } = new ValidarResultado();
     }
 
     public class GSUsuarioLembrar
     {
-        public string Usuario { get; set; }
+        public string Login { get; set; }
     }
 }

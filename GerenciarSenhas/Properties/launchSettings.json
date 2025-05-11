@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "GerenciarSenhas (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "GerenciarSenhas (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
