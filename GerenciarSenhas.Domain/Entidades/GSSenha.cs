@@ -9,6 +9,7 @@ using JJ.NET.CrossData.Atributo;
 
 namespace GerenciarSenhas.Domain.Entidades
 {
+    [Entidade("GSSenha")]
     public class GSSenha
     {
         [ChavePrimaria, Obrigatorio]

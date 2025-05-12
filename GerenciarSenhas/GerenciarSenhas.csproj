@@ -45,6 +45,9 @@
     <PackageReference Include="SimpleInjector" Version="5.5.0" />
     <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.11" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GerenciarSenhas.Services\GerenciarSenhas.Services.csproj" />
+  </ItemGroup>
 
   <!--
     Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution

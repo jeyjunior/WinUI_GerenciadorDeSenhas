@@ -1,14 +1,15 @@
-﻿using JJ.NET.Core.Extensoes;
-using JJ.NET.Core.Validador;
-using JJ.NET.CrossData.Atributo;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JJ.NET.Core.Extensoes;
+using JJ.NET.Core.Validador;
+using JJ.NET.CrossData.Atributo;
 
 namespace GerenciarSenhas.Domain.Entidades
 {
+    [Entidade("GSCategoria")]
     public class GSCategoria
     {
         [ChavePrimaria, Obrigatorio]

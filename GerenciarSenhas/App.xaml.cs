@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using GerenciarSenhas.Services;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -8,6 +9,7 @@ using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -26,6 +28,8 @@ namespace GerenciarSenhas
     /// </summary>
     public partial class App : Application
     {
+        public static int PK_GSLoginAtivo { get; set; }
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -39,8 +43,20 @@ namespace GerenciarSenhas
         /// Invoked when the application is launched.
         /// </summary>
         /// <param name="args">Details about the launch request and process.</param>
-        protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+        protected override async void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
+            try
+            {
+                await Bootstrap.IniciarAsync();
+
+                m_window = new MainWindow();
+                m_window.Activate();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Falha na inicialização: {ex.Message}");
+            }
+
             m_window = new MainWindow();
             m_window.Activate();
         }

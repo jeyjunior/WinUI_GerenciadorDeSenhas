@@ -16,5 +16,16 @@
     <PackageReference Include="SimpleInjector" Version="5.5.0" />
     <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.11" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GerenciarSenhas.InfraData\GerenciarSenhas.InfraData.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="JJ.NET.CrossData">
+      <HintPath>..\DLL\JJ.NET.CrossData.dll</HintPath>
+    </Reference>
+    <Reference Include="JJ.NET.Data">
+      <HintPath>..\DLL\JJ.NET.Data.dll</HintPath>
+    </Reference>
+  </ItemGroup>
   
 </Project>
